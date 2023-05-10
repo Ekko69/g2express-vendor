@@ -1,0 +1,7 @@
+flutter_application_id:
+  android:
+    id: "com.g2express.vendor"
+    name: "G2Express Vendor"
+  ios:
+    id: "com.g2express.vendor"
+    name: "G2Express Vendor"
