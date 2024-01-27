@@ -12,7 +12,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EditPackagePricingPage extends StatelessWidget {
-  const EditPackagePricingPage(this.packageTypePricing, {Key key})
+  const EditPackagePricingPage(this.packageTypePricing, {Key? key})
       : super(key: key);
 
   final PackageTypePricing packageTypePricing;
@@ -23,7 +23,7 @@ class EditPackagePricingPage extends StatelessWidget {
         context,
         packageTypePricing,
       ),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showLeadingAction: true,
@@ -101,7 +101,7 @@ class EditPackagePricingPage extends StatelessWidget {
                       ),
                       onChanged: (value) {},
                       // valueTransformer: (text) => num.tryParse(text),
-                     validator: (value) => CustomFormBuilderValidator.compose([
+                      validator: (value) => CustomFormBuilderValidator.compose([
                         CustomFormBuilderValidator.required(value),
                         CustomFormBuilderValidator.numeric(value),
                       ]),
@@ -120,7 +120,7 @@ class EditPackagePricingPage extends StatelessWidget {
                       ),
                       onChanged: (value) {},
                       // valueTransformer: (text) => num.tryParse(text),
-                     validator: (value) => CustomFormBuilderValidator.compose([
+                      validator: (value) => CustomFormBuilderValidator.compose([
                         CustomFormBuilderValidator.required(value),
                         CustomFormBuilderValidator.numeric(value),
                       ]),

@@ -15,8 +15,12 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:numeral/numeral.dart';
 
+import 'widgets/document_request.view.dart';
+import 'widgets/online_status.toggle.dart';
+import 'widgets/vendor_profile.switch.dart';
+
 class VendorDetailsPage extends StatefulWidget {
-  const VendorDetailsPage({Key key}) : super(key: key);
+  const VendorDetailsPage({Key? key}) : super(key: key);
 
   @override
   _VendorDetailsPageState createState() => _VendorDetailsPageState();
@@ -27,7 +31,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<VendorDetailsViewModel>.reactive(
       viewModelBuilder: () => VendorDetailsViewModel(context),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           body: SafeArea(
@@ -35,45 +39,17 @@ class _VendorDetailsPageState extends State<VendorDetailsPage> {
               enablePullDown: true,
               controller: vm.refreshController,
               onRefresh: () => vm.fetchVendorDetails(refresh: true),
-              child: vm.isBusy
+              child: (vm.isBusy || vm.vendor == null)
                   ? BusyIndicator().centered()
                   : VStack(
                       [
                         "Vendor Details".tr().text.xl2.semiBold.make().p20(),
+                        //vendor switcher
+                        VendorProfileSwitcher(vm).px20(),
+                        //
+                        DocumentRequestView(),
                         //online status
-                        VStack(
-                          [
-                            HStack(
-                              [
-                                "Status".tr().text.medium.lg.make().expand(),
-                                ((vm.vendor?.isOpen ?? false)
-                                        ? "Open".tr()
-                                        : "Close".tr())
-                                    .text
-                                    .semiBold
-                                    .xl
-                                    .color((vm.vendor?.isOpen ?? false)
-                                        ? AppColor.openColor
-                                        : AppColor.closeColor)
-                                    .make(),
-                              ],
-                            ),
-                            //
-                            CustomButton(
-                              title: (vm.vendor?.isOpen ?? false)
-                                  ? "Tap to Close".tr()
-                                  : "Tap to Open".tr(),
-                              color: !(vm.vendor?.isOpen ?? false)
-                                  ? AppColor.openColor
-                                  : AppColor.closeColor,
-                              loading: vm.busy(vm.vendor?.isOpen ?? false),
-                              elevation: 0,
-                              onPressed: vm.toggleVendorAvailablity,
-                            ).h(32).wFull(context).py12(),
-
-                            UiSpacer.divider(),
-                          ],
-                        ).px20(),
+                        OnlineStatusToggle(vm).px20(),
 
                         //subscription section
                         VStack(
@@ -81,7 +57,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage> {
                             //subscription indicator
 
                             Visibility(
-                              visible: vm.vendor?.useSubscription ?? false,
+                              visible: vm.vendor!.useSubscription,
                               child: HStack(
                                 [
                                   "Subscription Status"
@@ -92,16 +68,15 @@ class _VendorDetailsPageState extends State<VendorDetailsPage> {
                                       .make()
                                       .expand(),
                                   UiSpacer.hSpace(),
-                                  ((vm.vendor?.hasSubscription ?? false)
+                                  ((vm.vendor!.hasSubscription)
                                           ? "Subscribed"
                                           : "No Subscription")
                                       .text
                                       .semiBold
                                       .xl
-                                      .color(
-                                          (vm.vendor?.hasSubscription ?? false)
-                                              ? AppColor.openColor
-                                              : AppColor.closeColor)
+                                      .color((vm.vendor!.hasSubscription)
+                                          ? AppColor.openColor
+                                          : AppColor.closeColor)
                                       .make(),
                                 ],
                               ),
@@ -109,8 +84,8 @@ class _VendorDetailsPageState extends State<VendorDetailsPage> {
                             UiSpacer.vSpace(6),
                             //subscription payment indicator
                             Visibility(
-                              visible: (vm.vendor?.useSubscription ?? false) &&
-                                  !(vm.vendor?.hasSubscription ?? false),
+                              visible: (vm.vendor!.useSubscription) &&
+                                  !(vm.vendor!.hasSubscription),
                               child: HStack(
                                 [
                                   "Your subscription has expired"
@@ -221,7 +196,7 @@ class _VendorDetailsPageState extends State<VendorDetailsPage> {
                               [
                                 //name
                                 "Name".tr().text.lg.make(),
-                                "${vm.vendor?.name ?? ''}"
+                                "${vm.vendor?.name}"
                                     .text
                                     .xl
                                     .semiBold

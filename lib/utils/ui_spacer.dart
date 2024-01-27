@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class UiSpacer {
-  
   //space between widgets vertically
   static Widget verticalSpace({double space = 20}) => SizedBox(height: space);
   static Widget hSpace([double space = 20]) => SizedBox(width: space);
@@ -20,10 +19,16 @@ class UiSpacer {
         child: SizedBox.shrink(),
       );
 
-  static Widget divider({double height = 1, double thickness = 1}) => Divider(height: height, thickness: thickness,);
+  static Widget divider({double height = 1, double thickness = 1}) => Divider(
+        height: height,
+        thickness: thickness,
+      );
 
-   //
-  static Widget cutDivider({Color color}) => ClipPath(
+  //
+  static Widget cutDivider({
+    Color? color,
+  }) =>
+      ClipPath(
         clipper: MultiplePointsClipper(Sides.bottom,
             heightOfPoint: 5, numberOfPoints: 40),
         child: SizedBox(

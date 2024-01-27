@@ -6,7 +6,7 @@
 //   const CustomHtmlInput({
 //     this.controller,
 //     this.initalText,
-//     Key key,
+//     Key? key,
 //   }) : super(key: key);
 
 //   final HtmlEditorController controller;

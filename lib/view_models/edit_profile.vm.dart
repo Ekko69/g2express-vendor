@@ -11,8 +11,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class EditProfileViewModel extends MyBaseViewModel {
-  User currentUser;
-  File newPhoto;
+  User? currentUser;
+  File? newPhoto;
   //the textediting controllers
   TextEditingController nameTEC = new TextEditingController();
   TextEditingController emailTEC = new TextEditingController();
@@ -29,9 +29,9 @@ class EditProfileViewModel extends MyBaseViewModel {
   void initialise() async {
     //
     currentUser = await AuthServices.getCurrentUser();
-    nameTEC.text = currentUser.name;
-    emailTEC.text = currentUser.email;
-    phoneTEC.text = currentUser.phone;
+    nameTEC.text = currentUser!.name;
+    emailTEC.text = currentUser!.email;
+    phoneTEC.text = currentUser!.phone;
     notifyListeners();
   }
 
@@ -50,7 +50,7 @@ class EditProfileViewModel extends MyBaseViewModel {
   //
   processUpdate() async {
     //
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState!.validate()) {
       //
       setBusy(true);
 

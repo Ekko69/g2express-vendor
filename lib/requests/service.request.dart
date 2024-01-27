@@ -9,8 +9,10 @@ import 'package:fuodz/services/http.service.dart';
 
 class ServiceRequest extends HttpService {
   //
-  Future<List<Service>> getServices(
-      {Map<String, dynamic> queryParams, int page = 1}) async {
+  Future<List<Service>> getServices({
+    Map<String, dynamic>? queryParams,
+    int? page = 1,
+  }) async {
     final apiResult = await get(
       Api.services,
       queryParameters: {
@@ -57,8 +59,8 @@ class ServiceRequest extends HttpService {
 
   Future<ApiResponse> updateService(
     Service service, {
-    Map<String, dynamic> data,
-    List<File> photos,
+    Map<String, dynamic>? data,
+    List<File>? photos,
   }) async {
     final postBody = {
       "_method": "PUT",
@@ -67,7 +69,7 @@ class ServiceRequest extends HttpService {
     };
 
     FormData formData = FormData.fromMap(postBody);
-    for (File file in photos) {
+    for (File file in photos ?? []) {
       formData.files.addAll([
         MapEntry("photos[]", await MultipartFile.fromFile(file.path)),
       ]);
@@ -84,8 +86,8 @@ class ServiceRequest extends HttpService {
   }
 
   Future<ApiResponse> newService({
-    Map<String, dynamic> data,
-    List<File> photos,
+    required Map<String, dynamic> data,
+    List<File>? photos,
   }) async {
     final postBody = {
       ...data,
@@ -93,7 +95,7 @@ class ServiceRequest extends HttpService {
     };
 
     FormData formData = FormData.fromMap(postBody);
-    for (File file in photos) {
+    for (File file in photos ?? []) {
       formData.files.addAll([
         MapEntry("photos[]", await MultipartFile.fromFile(file.path)),
       ]);

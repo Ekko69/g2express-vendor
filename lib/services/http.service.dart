@@ -11,9 +11,9 @@ import 'local_storage.service.dart';
 
 class HttpService {
   String host = Api.baseUrl;
-  BaseOptions baseOptions;
-  Dio dio;
-  SharedPreferences prefs;
+  late BaseOptions baseOptions;
+  late Dio dio;
+  late SharedPreferences prefs;
 
   Future<Map<String, String>> getHeaders() async {
     final userToken = await AuthServices.getAuthBearerToken();
@@ -30,7 +30,7 @@ class HttpService {
     baseOptions = new BaseOptions(
       baseUrl: host,
       validateStatus: (status) {
-        return status <= 500;
+        return status != null && status <= 500;
       },
       // connectTimeout: 300,
     );
@@ -50,7 +50,7 @@ class HttpService {
     // );
   }
 
-  DioCacheManager getCacheManager(){
+  DioCacheManager getCacheManager() {
     return DioCacheManager(
       CacheConfig(
         baseUrl: host,
@@ -62,7 +62,7 @@ class HttpService {
   //for get api calls
   Future<Response> get(
     String url, {
-    Map<String, dynamic> queryParameters,
+    Map<String, dynamic>? queryParameters,
     bool includeHeaders = true,
   }) async {
     //preparing the api uri/url
@@ -109,7 +109,7 @@ class HttpService {
   Future<Response> postWithFiles(
     String url,
     body, {
-    FormData formData,
+    FormData? formData,
     bool includeHeaders = true,
   }) async {
     //preparing the api uri/url
@@ -129,7 +129,39 @@ class HttpService {
         data: formData != null ? formData : FormData.fromMap(body),
         options: mOptions,
       );
+    } on DioError catch (error) {
+      response = formatDioExecption(error);
     } catch (error) {
+      throw "$error";
+    }
+
+    return response;
+  }
+
+  Future<Response> postCustomFiles(
+    String url,
+    body, {
+    FormData? formData,
+    bool includeHeaders = true,
+  }) async {
+    //preparing the api uri/url
+    String uri = "$host$url";
+    //preparing the post options if header is required
+    final mOptions = !includeHeaders
+        ? null
+        : Options(
+            headers: await getHeaders(),
+          );
+
+    Response response;
+
+    try {
+      response = await dio.post(
+        uri,
+        data: formData != null ? formData : FormData.fromMap(body),
+        options: mOptions,
+      );
+    } on DioError catch (error) {
       response = formatDioExecption(error);
     }
 
@@ -172,15 +204,13 @@ class HttpService {
         };
       } else {
         response.data = {
-          "message": ex.message ??
-              "Please check your internet connection and try again",
+          "message": "Please check your internet connection and try again",
         };
       }
     } catch (error) {
       response.statusCode = 400;
       response.data = {
-        "message": error.message ??
-            "Please check your internet connection and try again",
+        "message": "Please check your internet connection and try again",
       };
     }
 

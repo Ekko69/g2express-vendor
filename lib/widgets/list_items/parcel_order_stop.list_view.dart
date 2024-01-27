@@ -13,7 +13,7 @@ class ParcelOrderStopListView extends StatefulWidget {
   const ParcelOrderStopListView(
     this.title,
     this.stop, {
-    Key key,
+    Key? key,
     this.canCall = false,
     this.routeToLocation,
   }) : super(key: key);
@@ -21,7 +21,7 @@ class ParcelOrderStopListView extends StatefulWidget {
   final OrderStop stop;
   final String title;
   final bool canCall;
-  final Function(DeliveryAddress) routeToLocation;
+  final Function(DeliveryAddress)? routeToLocation;
 
   @override
   _ParcelOrderStopListViewState createState() =>
@@ -38,8 +38,8 @@ class _ParcelOrderStopListViewState extends State<ParcelOrderStopListView> {
         VStack(
           [
             "${widget.title}".text.gray500.medium.sm.make(),
-            "${widget.stop?.deliveryAddress?.name}".text.xl.medium.make(),
-            "${widget.stop?.deliveryAddress?.address}".text.make(),
+            "${widget.stop.deliveryAddress?.name}".text.xl.medium.make(),
+            "${widget.stop.deliveryAddress?.address}".text.make(),
           ],
         ),
         //route
@@ -50,8 +50,9 @@ class _ParcelOrderStopListViewState extends State<ParcelOrderStopListView> {
             iconColor: Colors.white,
             color: AppColor.primaryColor,
             shapeRadius: Vx.dp20,
-            onPressed: () =>
-                widget.routeToLocation(widget.stop?.deliveryAddress),
+            onPressed: (widget.routeToLocation != null)
+                ? () => widget.routeToLocation!(widget.stop.deliveryAddress!)
+                : null,
           ).wh(Vx.dp64, Vx.dp40).p12(),
         ),
 
@@ -95,7 +96,7 @@ class _ParcelOrderStopListViewState extends State<ParcelOrderStopListView> {
                 ],
               ).expand(),
               //call
-              (widget.stop.phone.isNotBlank && widget.canCall)
+              (widget.stop.phone != null && widget.canCall)
                   ? CustomButton(
                       icon: FlutterIcons.phone_call_fea,
                       iconColor: Colors.white,

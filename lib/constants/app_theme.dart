@@ -7,7 +7,8 @@ class AppTheme {
   ThemeData lightTheme() {
     return ThemeData(
       // fontFamily: GoogleFonts.iBMPlexSerif().fontFamily,
-      fontFamily: GoogleFonts.krub().fontFamily,
+      // fontFamily: GoogleFonts.krub().fontFamily,
+      fontFamily: GoogleFonts.nunito().fontFamily,
       primaryColor: AppColor.primaryColor,
       primaryColorDark: AppColor.primaryColorDark,
       textSelectionTheme: TextSelectionThemeData(
@@ -36,7 +37,10 @@ class AppTheme {
         secondary: AppColor.accentColor,
         brightness: Brightness.light,
       ).copyWith(
-          primary: AppColor.primaryMaterialColor, background: Colors.white),
+        primary: AppColor.primaryMaterialColor,
+        background: Colors.white,
+      ),
+      useMaterial3: false,
     );
   }
 
@@ -44,7 +48,8 @@ class AppTheme {
   ThemeData darkTheme() {
     return ThemeData(
       // fontFamily: GoogleFonts.iBMPlexSerif().fontFamily,
-      fontFamily: GoogleFonts.krub().fontFamily,
+      // fontFamily: GoogleFonts.krub().fontFamily,
+      fontFamily: GoogleFonts.nunito().fontFamily,
       primaryColor: AppColor.primaryColor,
       primaryColorDark: AppColor.primaryColorDark,
       textSelectionTheme: TextSelectionThemeData(
@@ -63,15 +68,14 @@ class AppTheme {
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Colors.black,
       ),
-      colorScheme: ColorScheme.fromSwatch()
-          .copyWith(
-            primary: AppColor.primaryColor,
-            secondary: AppColor.accentColor,
-            brightness: Brightness.dark,
-          )
-          .copyWith(
-              primary: AppColor.primaryMaterialColor,
-              background: Colors.grey[850]),
+      colorScheme: ColorScheme.fromSwatch().copyWith(
+        secondary: AppColor.accentColor,
+        brightness: Brightness.dark,
+        // primary: AppColor.primaryColor,
+        primary: AppColor.primaryMaterialColor,
+        background: Colors.grey[850],
+      ),
+      useMaterial3: false,
     );
   }
 }

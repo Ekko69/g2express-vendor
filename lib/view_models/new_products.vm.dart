@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/models/menu.dart';
-import 'package:fuodz/models/product.dart';
 import 'package:fuodz/models/product_category.dart';
 import 'package:fuodz/models/vendor.dart';
 import 'package:fuodz/requests/product.request.dart';
@@ -18,18 +17,18 @@ class NewProductViewModel extends MyBaseViewModel {
   //
   NewProductViewModel(BuildContext context) {
     this.viewContext = context;
-    this.product = Product();
   }
 
   //
-  Product product;
+  // Product? product;
+  String? productDescription;
   ProductRequest productRequest = ProductRequest();
   VendorRequest vendorRequest = VendorRequest();
   List<ProductCategory> categories = [];
   List<ProductCategory> subCategories = [];
   List<ProductCategory> unFilterSubCategories = [];
   List<Menu> menus = [];
-  List<File> selectedPhotos;
+  List<File> selectedPhotos = [];
 
   void initialise() {
     fetchProductCategories();
@@ -44,7 +43,7 @@ class NewProductViewModel extends MyBaseViewModel {
     try {
       categories = await productRequest.getProductCategories(
         vendorTypeId:
-            (await AuthServices.getCurrentVendor(force: true)).vendorType.id,
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
       );
       clearErrors();
     } catch (error) {
@@ -62,7 +61,7 @@ class NewProductViewModel extends MyBaseViewModel {
       unFilterSubCategories = await productRequest.getProductCategories(
         subCat: true,
         vendorTypeId:
-            (await AuthServices.getCurrentVendor(force: true)).vendorType.id,
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
       );
       clearErrors();
     } catch (error) {
@@ -98,16 +97,33 @@ class NewProductViewModel extends MyBaseViewModel {
 
   //
   processNewProduct() async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       //
       setBusy(true);
 
       try {
         Map<String, dynamic> productData = Map.from(
-          formBuilderKey.currentState.value,
+          formBuilderKey.currentState!.value,
         );
+
+        final categoryIds = productData["category_ids"];
+        final subCategoryIds = productData["sub_category_ids"];
+        final menuIds = productData["menu_ids"];
+        //reassing the values
+        if (categoryIds == null ||
+            (categoryIds is List && categoryIds.isEmpty)) {
+          productData["category_ids"] = "[]";
+        }
+        if (subCategoryIds == null ||
+            (subCategoryIds is List && subCategoryIds.isEmpty)) {
+          productData["sub_category_ids"] = "[]";
+        }
+        if (menuIds == null || (menuIds is List && menuIds.isEmpty)) {
+          productData["menu_ids"] = "[]";
+        }
+
         productData.addAll({
-          "description": product.description,
+          "description": productDescription,
         });
 
         final apiResponse = await productRequest.newProduct(
@@ -140,10 +156,11 @@ class NewProductViewModel extends MyBaseViewModel {
   }
 
   //
-  void filterSubcategories(List<String> categoryIds) {
+  void filterSubcategories(List<String?>? categoryIds) {
+    categoryIds ??= [];
     subCategories = unFilterSubCategories.where(
       (e) {
-        return categoryIds.contains(e.categoryId.toString());
+        return categoryIds!.contains(e.categoryId.toString());
       },
     ).toList();
     notifyListeners();
@@ -154,12 +171,12 @@ class NewProductViewModel extends MyBaseViewModel {
     final result = await viewContext.push(
       (context) => CustomTextEditorPage(
         title: "Product Description".tr(),
-        content: product.description,
+        content: productDescription,
       ),
     );
     //
     if (result != null) {
-      product.description = result;
+      productDescription = result;
       notifyListeners();
     }
   }

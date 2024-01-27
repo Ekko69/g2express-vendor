@@ -6,7 +6,7 @@ import 'package:fuodz/utils/ui_spacer.dart';
 import 'package:fuodz/view_models/login.view_model.dart';
 import 'package:fuodz/widgets/base.page.dart';
 import 'package:fuodz/widgets/buttons/custom_button.dart';
-import 'package:fuodz/widgets/buttons/custom_text_button.dart';
+import 'package:fuodz/widgets/buttons/custom_outline_button.dart';
 import 'package:fuodz/widgets/custom_text_form_field.dart';
 
 import 'package:stacked/stacked.dart';
@@ -16,7 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'login/scan_login.view.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
       viewModelBuilder: () => LoginViewModel(context),
-      onModelReady: (model) => model.initialise(),
+      onViewModelReady: (model) => model.initialise(),
       builder: (context, model, child) {
         return BasePage(
           isLoading: model.isBusy,
@@ -88,15 +88,16 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: model.processLogin,
                     ).centered().py12(),
 
+                    20.heightBox,
                     ScanLoginView(model),
 
                     //registration link
                     Visibility(
                       visible: AppStrings.partnersCanRegister,
-                      child: CustomTextButton(
+                      child: CustomOutlineButton(
                         title: "Become a partner".tr(),
                         onPressed: model.openRegistrationlink,
-                      ).centered(),
+                      ).wFull(context).centered(),
                     ),
                   ],
                   crossAlignment: CrossAxisAlignment.end,

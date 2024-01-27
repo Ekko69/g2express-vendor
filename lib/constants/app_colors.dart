@@ -12,37 +12,37 @@ class AppColor {
       Vx.hexToColor(colorEnv('primaryColorDark'));
   static Color get cursorColor => accentColor;
 
-  //material color 
+  //material color
   static MaterialColor get accentMaterialColor => MaterialColor(
-  Vx.getColorFromHex(colorEnv('accentColor')),
-   <int, Color>{
-    50: Vx.hexToColor(colorEnv('accentColor')),
-    100: Vx.hexToColor(colorEnv('accentColor')),
-    200: Vx.hexToColor(colorEnv('accentColor')),
-    300: Vx.hexToColor(colorEnv('accentColor')),
-    400: Vx.hexToColor(colorEnv('accentColor')),
-    500: Vx.hexToColor(colorEnv('accentColor')),
-    600: Vx.hexToColor(colorEnv('accentColor')),
-    700: Vx.hexToColor(colorEnv('accentColor')),
-    800: Vx.hexToColor(colorEnv('accentColor')),
-    900: Vx.hexToColor(colorEnv('accentColor')),
-  },
-);
+        Vx.getColorFromHex(colorEnv('accentColor')),
+        <int, Color>{
+          50: Vx.hexToColor(colorEnv('accentColor')),
+          100: Vx.hexToColor(colorEnv('accentColor')),
+          200: Vx.hexToColor(colorEnv('accentColor')),
+          300: Vx.hexToColor(colorEnv('accentColor')),
+          400: Vx.hexToColor(colorEnv('accentColor')),
+          500: Vx.hexToColor(colorEnv('accentColor')),
+          600: Vx.hexToColor(colorEnv('accentColor')),
+          700: Vx.hexToColor(colorEnv('accentColor')),
+          800: Vx.hexToColor(colorEnv('accentColor')),
+          900: Vx.hexToColor(colorEnv('accentColor')),
+        },
+      );
   static MaterialColor get primaryMaterialColor => MaterialColor(
-  Vx.getColorFromHex(colorEnv('primaryColor')),
-   <int, Color>{
-    50: Vx.hexToColor(colorEnv('primaryColor')),
-    100: Vx.hexToColor(colorEnv('primaryColor')),
-    200: Vx.hexToColor(colorEnv('primaryColor')),
-    300: Vx.hexToColor(colorEnv('primaryColor')),
-    400: Vx.hexToColor(colorEnv('primaryColor')),
-    500: Vx.hexToColor(colorEnv('primaryColor')),
-    600: Vx.hexToColor(colorEnv('primaryColor')),
-    700: Vx.hexToColor(colorEnv('primaryColor')),
-    800: Vx.hexToColor(colorEnv('primaryColor')),
-    900: Vx.hexToColor(colorEnv('primaryColor')),
-  },
-);
+        Vx.getColorFromHex(colorEnv('primaryColor')),
+        <int, Color>{
+          50: Vx.hexToColor(colorEnv('primaryColor')),
+          100: Vx.hexToColor(colorEnv('primaryColor')),
+          200: Vx.hexToColor(colorEnv('primaryColor')),
+          300: Vx.hexToColor(colorEnv('primaryColor')),
+          400: Vx.hexToColor(colorEnv('primaryColor')),
+          500: Vx.hexToColor(colorEnv('primaryColor')),
+          600: Vx.hexToColor(colorEnv('primaryColor')),
+          700: Vx.hexToColor(colorEnv('primaryColor')),
+          800: Vx.hexToColor(colorEnv('primaryColor')),
+          900: Vx.hexToColor(colorEnv('primaryColor')),
+        },
+      );
 
   //onboarding colors
   static Color get onboarding1Color =>
@@ -58,12 +58,12 @@ class AppColor {
       Vx.hexToColor(colorEnv('onboardingIndicatorActiveDotColor'));
 
   //Shimmer Colors
-  static Color shimmerBaseColor = Colors.grey[300];
-  static Color shimmerHighlightColor = Colors.grey[200];
+  static Color shimmerBaseColor = Colors.grey.shade300;
+  static Color shimmerHighlightColor = Colors.grey.shade200;
 
   //inputs
-  static Color get inputFillColor => Colors.grey[200];
-  static Color get iconHintColor => Colors.grey[500];
+  static Color get inputFillColor => Colors.grey.shade200;
+  static Color get iconHintColor => Colors.grey.shade500;
 
   static Color get openColor => Vx.hexToColor(colorEnv('openColor'));
   static Color get closeColor => Vx.hexToColor(colorEnv('closeColor'));
@@ -72,49 +72,53 @@ class AppColor {
   static Color get ratingColor => Vx.hexToColor(colorEnv('ratingColor'));
 
   static Color getStausColor(String status) {
+    String color = "#000000";
     //'pending','preparing','enroute','failed','cancelled','delivered'
     switch (status) {
       case "pending":
-        return Vx.hexToColor(colorEnv('pendingColor'));
+        color = colorEnv('pendingColor');
         break;
       case "preparing":
-        return Vx.hexToColor(colorEnv('preparingColor'));
+        color = colorEnv('preparingColor');
         break;
       case "enroute":
-        return Vx.hexToColor(colorEnv('enrouteColor'));
+        color = colorEnv('enrouteColor');
         break;
       case "failed":
-        return Vx.hexToColor(colorEnv('failedColor'));
+        color = colorEnv('failedColor');
         break;
       case "cancelled":
-        return Vx.hexToColor(colorEnv('cancelledColor'));
+        color = colorEnv('cancelledColor');
         break;
       case "delivered":
-        return Vx.hexToColor(colorEnv('deliveredColor'));
+        color = colorEnv('deliveredColor');
+        break;
       case "successful":
-        return Vx.hexToColor(colorEnv('successfulColor'));
+        color = colorEnv('successfulColor');
         break;
       default:
-        return Vx.hexToColor(colorEnv('pendingColor'));
+        color = colorEnv('pendingColor');
     }
+
+    return Vx.hexToColor(color);
   }
 
   //saving
   static Future<bool> saveColorsToLocalStorage(String colorsMap) async {
-    return await LocalStorageService.prefs
+    return await LocalStorageService.prefs!
         .setString(AppStrings.appColors, colorsMap);
   }
 
   static dynamic appColorsObject;
   static Future<void> getColorsFromLocalStorage() async {
-    appColorsObject = LocalStorageService.prefs.getString(AppStrings.appColors);
+    appColorsObject =
+        LocalStorageService.prefs!.getString(AppStrings.appColors);
     if (appColorsObject != null) {
       appColorsObject = jsonDecode(appColorsObject);
     }
   }
 
   static String colorEnv(String colorRef) {
-
     //
     getColorsFromLocalStorage();
     //

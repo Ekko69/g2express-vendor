@@ -13,7 +13,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ProductsPage extends StatefulWidget {
-  const ProductsPage({Key key}) : super(key: key);
+  const ProductsPage({Key? key}) : super(key: key);
 
   @override
   _ProductsPageState createState() => _ProductsPageState();
@@ -27,7 +27,7 @@ class _ProductsPageState extends State<ProductsPage>
     return SafeArea(
       child: ViewModelBuilder<ProductViewModel>.reactive(
         viewModelBuilder: () => ProductViewModel(context),
-        onModelReady: (vm) => vm.initialise(),
+        onViewModelReady: (vm) => vm.initialise(),
         builder: (context, vm, child) {
           return BasePage(
             fab: FloatingActionButton.extended(

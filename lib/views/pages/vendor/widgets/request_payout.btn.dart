@@ -5,14 +5,17 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class RequestPayoutButton extends StatelessWidget {
-  const RequestPayoutButton({this.vm, Key key}) : super(key: key);
+  const RequestPayoutButton({
+    required this.vm,
+    Key? key,
+  }) : super(key: key);
 
   final VendorDetailsViewModel vm;
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: vm.totalEarning != null && vm.totalEarning > 0,
+      visible: vm.totalEarning > 0,
       child: CustomButton(
         title: "Request Payout".tr(),
         onPressed: vm.requestPayout,

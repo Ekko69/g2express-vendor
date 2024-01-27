@@ -2,6 +2,7 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:firestore_chat/firestore_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/constants/app_routes.dart';
+import 'package:fuodz/constants/app_ui_settings.dart';
 import 'package:fuodz/models/delivery_address.dart';
 import 'package:fuodz/models/order.dart';
 import 'package:fuodz/requests/order.request.dart';
@@ -38,7 +39,7 @@ class OrderDetailsViewModel extends MyBaseViewModel {
   }
 
   void callDriver() {
-    launchUrlString("tel:${order.driver.phone}");
+    launchUrlString("tel:${order.driver?.phone}");
   }
 
   void callCustomer() {
@@ -52,28 +53,29 @@ class OrderDetailsViewModel extends MyBaseViewModel {
   chatDriver() {
     //
     Map<String, PeerUser> peers = {
-      'vendor_${order.vendor.id}': PeerUser(
-        id: "vendor_${order.vendor.id}",
-        name: order.vendor.name,
-        image: order.vendor.logo,
+      'vendor_${order.vendor?.id}': PeerUser(
+        id: "vendor_${order.vendor?.id}",
+        name: order.vendor?.name ?? "Vendor".tr(),
+        image: order.vendor?.logo,
       ),
       '${order.driverId}': PeerUser(
         id: '${order.driverId}',
-        name: order.driver.name,
-        image: order.driver.photo,
+        name: order.driver?.name ?? "Driver".tr(),
+        image: order.driver?.photo,
       ),
     };
     //
     final chatEntity = ChatEntity(
       onMessageSent: ChatService.sendChatMessage,
-      mainUser: peers['vendor_${order.vendor.id}'],
+      mainUser: peers['vendor_${order.vendor?.id}']!,
       peers: peers,
       //don't translate this
       path: 'orders/' + order.code + "/driverVendor/chats",
       title: "Chat with driver".tr(),
+      supportMedia: AppUISettings.canVendorChatSupportMedia,
     );
     //
-    viewContext.navigator.pushNamed(
+    Navigator.of(viewContext).pushNamed(
       AppRoutes.chatRoute,
       arguments: chatEntity,
     );
@@ -82,10 +84,10 @@ class OrderDetailsViewModel extends MyBaseViewModel {
   chatCustomer() {
     //
     Map<String, PeerUser> peers = {
-      'vendor_${order.vendor.id}': PeerUser(
-        id: "vendor_${order.vendor.id}",
-        name: order.vendor.name,
-        image: order.vendor.logo,
+      'vendor_${order.vendor!.id}': PeerUser(
+        id: "vendor_${order.vendor!.id}",
+        name: order.vendor!.name,
+        image: order.vendor!.logo,
       ),
       '${order.userId}': PeerUser(
         id: '${order.userId}',
@@ -96,14 +98,15 @@ class OrderDetailsViewModel extends MyBaseViewModel {
     //
     final chatEntity = ChatEntity(
       onMessageSent: ChatService.sendChatMessage,
-      mainUser: peers['vendor_${order.vendor.id}'],
+      mainUser: peers['vendor_${order.vendor!.id}']!,
       peers: peers,
       //don't translate this
       path: 'orders/' + order.code + "/customerVendor/chats",
       title: "Chat with customer".tr(),
+      supportMedia: AppUISettings.canVendorChatSupportMedia,
     );
     //
-    viewContext.navigator.pushNamed(
+    Navigator.of(viewContext).pushNamed(
       AppRoutes.chatRoute,
       arguments: chatEntity,
     );
@@ -242,7 +245,7 @@ class OrderDetailsViewModel extends MyBaseViewModel {
 
   onBackPressed() {
     //
-    AppService().navigatorKey.currentContext.pop(order);
+    AppService().navigatorKey.currentContext?.pop(order);
   }
 
   //
@@ -254,7 +257,7 @@ class OrderDetailsViewModel extends MyBaseViewModel {
       final availableMaps = await MapLauncher.installedMaps;
 
       showModalBottomSheet(
-        context: AppService().navigatorKey.currentContext,
+        context: AppService().navigatorKey.currentContext!,
         builder: (BuildContext context) {
           return SafeArea(
             child: SingleChildScrollView(

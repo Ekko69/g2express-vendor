@@ -14,14 +14,14 @@ import 'package:fuodz/services/auth.service.dart';
 import 'package:fuodz/view_models/base.view_model.dart';
 import 'package:fuodz/widgets/cards/language_selector.view.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:package_info/package_info.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ProfileViewModel extends MyBaseViewModel {
   //
   String appVersionInfo = "";
-  User currentUser;
+  User? currentUser;
 
   //
   AuthRequest _authRequest = AuthRequest();
@@ -46,11 +46,11 @@ class ProfileViewModel extends MyBaseViewModel {
    */
 
   openEditProfile() async {
-    final result = await viewContext.navigator.pushNamed(
+    final result = await Navigator.of(viewContext).pushNamed(
       AppRoutes.editProfileRoute,
     );
 
-    if (result != null && result) {
+    if (result != null && result is bool && result) {
       initialise();
     }
   }
@@ -60,7 +60,7 @@ class ProfileViewModel extends MyBaseViewModel {
    */
 
   openChangePassword() async {
-    viewContext.navigator.pushNamed(
+    Navigator.of(viewContext).pushNamed(
       AppRoutes.changePasswordRoute,
     );
   }
@@ -108,7 +108,7 @@ class ProfileViewModel extends MyBaseViewModel {
     } else {
       //
       await AuthServices.logout();
-      viewContext.navigator.pushAndRemoveUntil(
+      Navigator.of(viewContext).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => SplashPage()),
         (route) => false,
       );
@@ -116,7 +116,7 @@ class ProfileViewModel extends MyBaseViewModel {
   }
 
   openNotification() async {
-    viewContext.navigator.pushNamed(
+    Navigator.of(viewContext).pushNamed(
       AppRoutes.notificationsRoute,
     );
   }
@@ -180,6 +180,4 @@ class ProfileViewModel extends MyBaseViewModel {
   deleteAccount() {
     viewContext.nextPage(AccountDeletePage());
   }
-
-
 }

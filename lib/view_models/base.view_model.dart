@@ -14,13 +14,13 @@ import 'package:velocity_x/velocity_x.dart';
 
 class MyBaseViewModel extends BaseViewModel with UpdateService {
   //
-  BuildContext viewContext;
+  late BuildContext viewContext;
   final formKey = GlobalKey<FormState>();
   final formBuilderKey = GlobalKey<FormBuilderState>();
   final currencySymbol = AppStrings.currencySymbol;
   GlobalKey pageKey = GlobalKey<FormState>();
-  DeliveryAddress deliveryaddress = DeliveryAddress();
-  String firebaseVerificationId;
+  DeliveryAddress? deliveryaddress;
+  String? firebaseVerificationId;
 
   void initialise() {
     //FirestoreRepository();
@@ -44,7 +44,7 @@ class MyBaseViewModel extends BaseViewModel with UpdateService {
     );
   }
 
-  toastError(String msg, {Toast length}) {
+  toastError(String msg, {Toast? length}) {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: length ?? Toast.LENGTH_SHORT,

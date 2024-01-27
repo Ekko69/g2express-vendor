@@ -52,14 +52,14 @@ class AppStrings {
   //
   //saving
   static Future<bool> saveAppSettingsToLocalStorage(String colorsMap) async {
-    return await LocalStorageService.prefs
+    return await LocalStorageService.prefs!
         .setString(AppStrings.appRemoteSettings, colorsMap);
   }
 
   static dynamic appSettingsObject;
   static Future<void> getAppSettingsFromLocalStorage() async {
     appSettingsObject =
-        LocalStorageService.prefs.getString(AppStrings.appRemoteSettings);
+        LocalStorageService.prefs!.getString(AppStrings.appRemoteSettings);
     if (appSettingsObject != null) {
       appSettingsObject = jsonDecode(appSettingsObject);
     }

@@ -10,7 +10,7 @@ class ScanLoginView extends StatelessWidget {
   const ScanLoginView(
     this.model, {
     this.bottomPadding = Vx.dp48,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final LoginViewModel model;

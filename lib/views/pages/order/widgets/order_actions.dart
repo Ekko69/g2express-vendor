@@ -10,22 +10,22 @@ import 'package:velocity_x/velocity_x.dart';
 class OrderActions extends StatelessWidget {
   const OrderActions({
     this.canChatCustomer,
-    this.busy,
-    this.order,
+    this.busy = false,
+    required this.order,
     this.onEditPressed,
     this.onCancelledPressed,
     this.onAssignPressed,
-    @required this.onAcceptPressed,
-    Key key,
+    required this.onAcceptPressed,
+    Key? key,
   }) : super(key: key);
 
-  final bool canChatCustomer;
+  final bool? canChatCustomer;
   final bool busy;
   final Order order;
-  final Function onEditPressed;
-  final Function onCancelledPressed;
-  final Function onAcceptPressed;
-  final Function onAssignPressed;
+  final Function? onEditPressed;
+  final Function? onCancelledPressed;
+  final Function? onAcceptPressed;
+  final Function? onAssignPressed;
 
   @override
   Widget build(BuildContext context) {

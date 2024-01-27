@@ -10,14 +10,14 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class PackagePricingPage extends StatelessWidget {
-  const PackagePricingPage({Key key}) : super(key: key);
+  const PackagePricingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ViewModelBuilder<PackageTypePricingViewModel>.reactive(
         viewModelBuilder: () => PackageTypePricingViewModel(context),
-        onModelReady: (vm) => vm.initialise(),
+        onViewModelReady: (vm) => vm.initialise(),
         builder: (context, vm, child) {
           return BasePage(
             fab: FloatingActionButton.extended(

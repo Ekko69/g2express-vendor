@@ -9,7 +9,7 @@ import 'constants/app_strings.dart';
 import 'package:fuodz/services/router.service.dart' as router;
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: translator.delegates,
           locale: translator.activeLocale,
           supportedLocales: translator.locals(),
-          home:SplashPage(),
+          home: SplashPage(),
           theme: theme,
           darkTheme: darkTheme,
         );

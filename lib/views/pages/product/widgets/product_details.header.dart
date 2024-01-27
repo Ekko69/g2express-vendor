@@ -8,7 +8,10 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ProductDetailsHeader extends StatelessWidget {
-  const ProductDetailsHeader({this.product, Key key}) : super(key: key);
+  const ProductDetailsHeader({
+    required this.product,
+    Key? key,
+  }) : super(key: key);
 
   final Product product;
 
@@ -28,7 +31,7 @@ class ProductDetailsHeader extends StatelessWidget {
                 //product name
                 product.name.text.xl.semiBold.make(),
                 //vendor name
-                product.vendor.name.text.lg.medium.make(),
+                "${product.vendor?.name}".text.lg.medium.make(),
               ],
             ).expand(),
 

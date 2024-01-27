@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fuodz/models/vendor.dart';
 import 'package:fuodz/services/app.service.dart';
 import 'package:fuodz/services/auth.service.dart';
+import 'package:fuodz/services/in_app_order_notification.service.dart';
 import 'package:fuodz/view_models/base.view_model.dart';
 
 class HomeViewModel extends MyBaseViewModel {
@@ -16,14 +17,14 @@ class HomeViewModel extends MyBaseViewModel {
   int currentIndex = 0;
   PageController pageViewController = PageController(initialPage: 0);
   int totalCartItems = 0;
-  StreamSubscription homePageChangeStream;
-  Vendor currentVendor;
+  StreamSubscription? homePageChangeStream;
+  Vendor? currentVendor;
 
   @override
   void initialise() async {
     //
-    handleAppUpdate(viewContext);
-     //
+    InAppOrderNotificationService().handleBringAppToForeground(viewContext);
+    //
     currentVendor = await AuthServices.getCurrentVendor(force: true);
     notifyListeners();
     //
@@ -40,7 +41,7 @@ class HomeViewModel extends MyBaseViewModel {
   //
   dispose() {
     super.dispose();
-    homePageChangeStream.cancel();
+    homePageChangeStream?.cancel();
   }
 
   //

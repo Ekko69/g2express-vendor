@@ -3,14 +3,18 @@ class Currency {
   String code = "USD";
   String symbol = "\$";
 
-  Currency();
+  Currency({
+    required this.id,
+    required this.code,
+    required this.symbol,
+  });
 
   factory Currency.fromJSON(dynamic json) {
-    final currency = Currency();
-    currency.id = json["id"];
-    currency.code = json["code"];
-    currency.symbol = json["symbol"];
-    return currency;
+    return Currency(
+      id: json["id"],
+      code: json["code"],
+      symbol: json["symbol"],
+    );
   }
 
   Map<String, dynamic> toJson() => {

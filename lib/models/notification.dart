@@ -1,11 +1,11 @@
 import 'package:intl/intl.dart';
 
 class NotificationModel {
-  int index;
-  String title;
-  String body;
-  String image;
-  int timeStamp;
+  int? index;
+  String? title;
+  String? body;
+  String? image;
+  int? timeStamp;
   bool read;
 
   NotificationModel({
@@ -18,8 +18,8 @@ class NotificationModel {
   });
 
   String get formattedTimeStamp {
-    final notificationDateTime =
-        DateTime.fromMillisecondsSinceEpoch(this.timeStamp);
+    final notificationDateTime = DateTime.fromMillisecondsSinceEpoch(
+        this.timeStamp ?? DateTime.now().millisecondsSinceEpoch);
     final formmartedDate = DateFormat("EEE dd, MMM yyyy").format(
       notificationDateTime,
     );

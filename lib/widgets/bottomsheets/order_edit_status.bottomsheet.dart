@@ -5,8 +5,11 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class OrderEditStatusBottomSheet extends StatefulWidget {
-  OrderEditStatusBottomSheet(this.selectedStatus, {Key key, this.onConfirm})
-      : super(key: key);
+  OrderEditStatusBottomSheet(
+    this.selectedStatus, {
+    required this.onConfirm,
+    Key? key,
+  }) : super(key: key);
 
   final Function(String) onConfirm;
   final String selectedStatus;
@@ -27,7 +30,7 @@ class _OrderEditStatusBottomSheetState
     'cancelled',
     'delivered'
   ];
-  String selectedStatus;
+  String? selectedStatus;
 
   @override
   void initState() {
@@ -70,9 +73,9 @@ class _OrderEditStatusBottomSheetState
           //
           CustomButton(
             title: "Change".tr(),
-            onPressed: () {
-              widget.onConfirm(selectedStatus);
-            },
+            onPressed: selectedStatus != null
+                ? () => widget.onConfirm(selectedStatus!)
+                : null,
           ),
         ],
       ).p20().scrollVertical().hTwoThird(context),

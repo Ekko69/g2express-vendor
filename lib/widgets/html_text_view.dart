@@ -7,18 +7,19 @@ class HtmlTextView extends StatelessWidget {
   const HtmlTextView(
     this.htmlContent, {
     this.padding,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
-  final String htmlContent;
-  final double padding;
+  final String? htmlContent;
+  final double? padding;
 
   @override
   Widget build(BuildContext context) {
     return HtmlWidget(
-      htmlContent,
-      onTapImage: (ImageMetadata imageMetadata) {
-        return launchUrlString(imageMetadata.sources.first.url);
+      htmlContent ?? "",
+      onTapImage: (ImageMetadata imageMetadata) async {
+        final url = imageMetadata.sources.first.url;
+        await launchUrlString(url);
       },
       onTapUrl: (url) {
         return launchUrlString(url);

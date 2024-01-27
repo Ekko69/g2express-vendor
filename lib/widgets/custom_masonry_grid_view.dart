@@ -8,10 +8,10 @@ import 'package:velocity_x/velocity_x.dart';
 
 class CustomMasonryGridView extends StatelessWidget {
   //
-  final Widget title;
-  final Widget loadingWidget;
-  final Widget errorWidget;
-  final Widget emptyWidget;
+  final Widget? title;
+  final Widget? loadingWidget;
+  final Widget? errorWidget;
+  final Widget? emptyWidget;
   final List<Widget> items;
   final bool isLoading;
   final bool hasError;
@@ -23,9 +23,9 @@ class CustomMasonryGridView extends StatelessWidget {
 
   //
   final bool canRefresh;
-  final RefreshController refreshController;
-  final Function onRefresh;
-  final Function onLoading;
+  final RefreshController? refreshController;
+  final Function? onRefresh;
+  final Function? onLoading;
   final bool canPullUp;
 
   const CustomMasonryGridView({
@@ -36,7 +36,7 @@ class CustomMasonryGridView extends StatelessWidget {
     this.isLoading = false,
     this.hasError = false,
     this.justList = true,
-    @required this.items,
+    required this.items,
     this.crossAxisCount = 2,
     this.childAspectRatio = 1.0,
     this.crossAxisSpacing = 2,
@@ -48,7 +48,7 @@ class CustomMasonryGridView extends StatelessWidget {
     this.onRefresh,
     this.onLoading,
     this.canPullUp = false,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -80,13 +80,13 @@ class CustomMasonryGridView extends StatelessWidget {
 
   //
   Widget _getBodyList() {
-    return this.canRefresh
+    return (this.canRefresh && this.refreshController != null)
         ? SmartRefresher(
             enablePullDown: true,
             enablePullUp: canPullUp,
-            controller: this.refreshController,
-            onRefresh: this.onRefresh,
-            onLoading: this.onLoading,
+            controller: this.refreshController!,
+            onRefresh: this.onRefresh != null ? () => this.onRefresh!() : null,
+            onLoading: this.onLoading != null ? () => this.onLoading!() : null,
             child: _getListView(),
           )
         : _getListView();
@@ -100,7 +100,5 @@ class CustomMasonryGridView extends StatelessWidget {
       mainAxisSpacing: this.mainAxisSpacing,
       children: this.items,
     );
-
-   
   }
 }

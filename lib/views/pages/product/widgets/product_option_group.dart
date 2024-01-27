@@ -6,7 +6,11 @@ import 'package:fuodz/widgets/list_items/option.list_item.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ProductOptionGroup extends StatelessWidget {
-  const ProductOptionGroup({this.optionGroup, this.model, Key key}) : super(key: key);
+  const ProductOptionGroup({
+    required this.optionGroup,
+    required this.model,
+    Key? key,
+  }) : super(key: key);
 
   final OptionGroup optionGroup;
   final ProductDetailsViewModel model;

@@ -4,7 +4,7 @@ import 'package:fuodz/services/auth.service.dart';
 
 class Api {
   static String get baseUrl {
-    return "https://g2-express.com/api";
+    return "https://g2-express.shop/api";
     // return "http://192.168.8.145:8000/api";
   }
 
@@ -43,6 +43,19 @@ class Api {
   //
   static const vendorDetails = "/vendor/id/details";
   static const vendorAvailability = "/availability/vendor/id";
+  static const documentSubmission = "/my/vendor/document/request/submission";
+
+  //manage vendors
+  static const myVendors = "/my/vendors";
+  static const switchVendor = "/switch/vendor";
+
+  //map
+  static const geocoderForward = "/geocoder/forward";
+  static const geocoderReserve = "/geocoder/2/reserve";
+  static const geocoderPlaceDetails = "/geocoder/place/details";
+
+  //misc
+  static const externalRedirect = "/external/redirect";
 
   static String get webUrl {
     return baseUrl.replaceAll('/api', '');

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/models/api_response.dart';
 import 'package:fuodz/models/vendor.dart';
@@ -30,6 +33,51 @@ class VendorRequest extends HttpService {
       {
         "is_open": !vendor.isOpen,
       },
+    );
+    return ApiResponse.fromResponse(apiResult);
+  }
+
+  Future<List<Vendor>> myVendors() async {
+    final apiResult = await get(Api.myVendors);
+    final apiResponse = ApiResponse.fromResponse(apiResult);
+    if (apiResponse.allGood) {
+      return (apiResponse.body as List)
+          .map(
+            (e) => Vendor.fromJson(e),
+          )
+          .toList();
+    } else {
+      throw apiResponse.message;
+    }
+  }
+
+  switchVendor(Vendor vendor) async {
+    final apiResult = await post(
+      Api.switchVendor,
+      {
+        "vendor_id": vendor.id,
+      },
+    );
+    final apiResponse = ApiResponse.fromResponse(apiResult);
+    if (apiResponse.allGood) {
+      return;
+    } else {
+      throw apiResponse.message;
+    }
+  }
+
+  Future<ApiResponse> submitDocumentsRequest({required List<File> docs}) async {
+    FormData formData = FormData.fromMap({});
+    for (File file in docs) {
+      formData.files.addAll([
+        MapEntry("documents[]", await MultipartFile.fromFile(file.path)),
+      ]);
+    }
+
+    final apiResult = await postCustomFiles(
+      Api.documentSubmission,
+      null,
+      formData: formData,
     );
     return ApiResponse.fromResponse(apiResult);
   }

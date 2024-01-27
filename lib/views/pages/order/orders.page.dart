@@ -14,7 +14,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class OrdersPage extends StatefulWidget {
-  const OrdersPage({Key key}) : super(key: key);
+  const OrdersPage({Key? key}) : super(key: key);
 
   @override
   _OrdersPageState createState() => _OrdersPageState();
@@ -34,7 +34,7 @@ class _OrdersPageState extends State<OrdersPage>
     return SafeArea(
       child: ViewModelBuilder<OrdersViewModel>.reactive(
         viewModelBuilder: () => OrdersViewModel(context),
-        onModelReady: (vm) => vm.initialise(),
+        onViewModelReady: (vm) => vm.initialise(),
         builder: (context, vm, child) {
           return BasePage(
             body: VStack(
@@ -55,7 +55,7 @@ class _OrdersPageState extends State<OrdersPage>
                       onPressed: () => vm.statusChanged(status),
                       color: status == vm.selectedStatus
                           ? AppColor.primaryColor
-                          : Colors.grey[600],
+                          : Colors.grey.shade600,
                     );
                   },
                 ).h(50).py12(),

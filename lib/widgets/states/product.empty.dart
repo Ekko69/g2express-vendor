@@ -5,7 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class EmptyProduct extends StatelessWidget {
-  const EmptyProduct({Key key}) : super(key: key);
+  const EmptyProduct({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

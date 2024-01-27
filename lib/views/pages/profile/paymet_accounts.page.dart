@@ -8,19 +8,20 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:stacked/stacked.dart';
 
 class PaymentAccountsPage extends StatelessWidget {
-  const PaymentAccountsPage({Key key}) : super(key: key);
+  const PaymentAccountsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<PaymentAccountsViewModel>.reactive(
       viewModelBuilder: () => PaymentAccountsViewModel(context),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showAppBar: true,
           title: "Payment Accounts".tr(),
           showLeadingAction: true,
           body: CustomListView(
+            //todo: add empty state
             refreshController: vm.refreshController,
             canPullUp: true,
             canRefresh: true,
@@ -34,7 +35,8 @@ class PaymentAccountsPage extends StatelessWidget {
               return PaymentAccountListItem(
                 paymentAccount,
                 onEditPressed: () => vm.editPaymentAccount(paymentAccount),
-                onStatusPressed: () => vm.togglePaymentAccountStatus(paymentAccount),
+                onStatusPressed: () =>
+                    vm.togglePaymentAccountStatus(paymentAccount),
               );
             },
           ),

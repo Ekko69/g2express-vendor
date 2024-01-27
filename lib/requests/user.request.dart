@@ -1,4 +1,3 @@
-
 import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/models/api_response.dart';
 import 'package:fuodz/models/user.dart';
@@ -7,10 +6,8 @@ import 'package:fuodz/services/http.service.dart';
 class UserRequest extends HttpService {
   //
   Future<List<User>> getUsers({
-    String role,
+    String? role,
   }) async {
-
-   
     final apiResult = await get(
       Api.users,
       queryParameters: {
@@ -27,5 +24,4 @@ class UserRequest extends HttpService {
       throw apiResponse.message;
     }
   }
-
 }

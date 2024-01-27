@@ -16,17 +16,17 @@ class OrderSummary extends StatelessWidget {
     this.vendorTax,
     this.total,
     this.driverTrip = 0.00,
-    @required this.fees,
-    Key key,
+    required this.fees,
+    Key? key,
   }) : super(key: key);
 
-  final double subTotal;
-  final double discount;
-  final double deliveryFee;
-  final double driverTrip;
-  final double tax;
-  final String vendorTax;
-  final double total;
+  final double? subTotal;
+  final double? discount;
+  final double? deliveryFee;
+  final double? driverTrip;
+  final double? tax;
+  final String? vendorTax;
+  final double? total;
   final List<OrderFee> fees;
   @override
   Widget build(BuildContext context) {
@@ -46,18 +46,18 @@ class OrderSummary extends StatelessWidget {
           "Tax (%s)".tr().fill([vendorTax]),
           "+ " + "$currencySymbol ${tax}".currencyFormat(),
         ).py2(),
-        DottedLine(dashColor: context.textTheme.bodyLarge.color).py8(),
+        DottedLine(dashColor: context.textTheme.bodyLarge!.color!).py8(),
         Visibility(
-          visible: fees != null && fees.isNotEmpty,
+          visible: fees.isNotEmpty,
           child: VStack(
             [
-              ...((fees ?? []).map((fee) {
+              ...((fees).map((fee) {
                 return AmountTile(
                   "${fee.name}".tr(),
-                  "+ " + " $currencySymbol ${fee.amount ?? 0}".currencyFormat(),
+                  "+ " + " $currencySymbol ${fee.amount}".currencyFormat(),
                 ).py2();
               }).toList()),
-              DottedLine(dashColor: context.textTheme.bodyLarge.color).py8(),
+              DottedLine(dashColor: context.textTheme.bodyLarge!.color!).py8(),
             ],
           ),
         ),
@@ -67,7 +67,7 @@ class OrderSummary extends StatelessWidget {
               "$currencySymbol ${driverTrip != null ? driverTrip : '0.00'}"
                   .currencyFormat(),
         ).py2(),
-        DottedLine(dashColor: context.textTheme.bodyLarge.color).py8(),
+        DottedLine(dashColor: context.textTheme.bodyLarge!.color!).py8(),
         AmountTile(
           "Total Amount".tr(),
           "$currencySymbol ${total}".currencyFormat(),

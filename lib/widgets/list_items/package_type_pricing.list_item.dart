@@ -11,13 +11,14 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class PackageTypePricingListItem extends StatelessWidget {
   //
-  const PackageTypePricingListItem(this.packageTypePricing,
-      {this.isLoading = false,
-      this.onEditPressed,
-      this.onToggleStatusPressed,
-      this.onDeletePressed,
-      Key key})
-      : super(key: key);
+  const PackageTypePricingListItem(
+    this.packageTypePricing, {
+    this.isLoading = false,
+    required this.onEditPressed,
+    required this.onToggleStatusPressed,
+    required this.onDeletePressed,
+    Key? key,
+  }) : super(key: key);
 
   //
   final PackageTypePricing packageTypePricing;
@@ -73,7 +74,8 @@ class PackageTypePricingListItem extends StatelessWidget {
                     //base price
                     "Base Price".tr().text.sm.medium.make(),
                     //description
-                    "$currencySymbol ${packageTypePricing.basePrice}".currencyFormat()
+                    "$currencySymbol ${packageTypePricing.basePrice}"
+                        .currencyFormat()
                         .text
                         .lg
                         .semiBold
@@ -87,7 +89,8 @@ class PackageTypePricingListItem extends StatelessWidget {
                     //Package price
                     "Package Price".tr().text.sm.medium.make(),
                     //description
-                    "$currencySymbol ${packageTypePricing.sizePrice}".currencyFormat()
+                    "$currencySymbol ${packageTypePricing.sizePrice}"
+                        .currencyFormat()
                         .text
                         .lg
                         .semiBold
@@ -100,7 +103,8 @@ class PackageTypePricingListItem extends StatelessWidget {
                     //Distance price
                     "Distance Price".tr().text.sm.medium.make(),
                     //description
-                    "$currencySymbol ${packageTypePricing.distancePrice}".currencyFormat()
+                    "$currencySymbol ${packageTypePricing.distancePrice}"
+                        .currencyFormat()
                         .text
                         .lg
                         .semiBold

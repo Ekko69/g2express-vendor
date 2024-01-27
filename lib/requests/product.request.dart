@@ -12,7 +12,7 @@ import 'package:fuodz/utils/utils.dart';
 class ProductRequest extends HttpService {
   //
   Future<List<Product>> getProducts({
-    String keyword,
+    String? keyword,
     int page = 1,
   }) async {
     final apiResult = await get(
@@ -26,9 +26,16 @@ class ProductRequest extends HttpService {
     //
     final apiResponse = ApiResponse.fromResponse(apiResult);
     if (apiResponse.allGood) {
-      return apiResponse.data.map((jsonObject) {
-        return Product.fromJson(jsonObject);
-      }).toList();
+      List<Product> products = [];
+      apiResponse.data.forEach((jsonObject) {
+        try {
+          final mProduct = Product.fromJson(jsonObject);
+          products.add(mProduct);
+        } catch (error) {
+          print("Error ==> $error");
+        }
+      });
+      return products;
     } else {
       throw apiResponse.message;
     }
@@ -48,8 +55,10 @@ class ProductRequest extends HttpService {
     }
   }
 
-  Future<List<ProductCategory>> getProductCategories(
-      {bool subCat = false, int vendorTypeId}) async {
+  Future<List<ProductCategory>> getProductCategories({
+    bool subCat = false,
+    int? vendorTypeId,
+  }) async {
     final apiResult = await get(
       Api.productCategories,
       queryParameters: {
@@ -70,24 +79,26 @@ class ProductRequest extends HttpService {
 
   Future<ApiResponse> newProduct(
     Map<String, dynamic> value, {
-    List<File> photos,
+    List<File>? photos,
   }) async {
     //
     final postBody = {
       ...value,
-      "vendor_id": AuthServices.currentVendor.id,
+      "vendor_id": AuthServices.currentVendor?.id,
     };
 
     FormData formData = FormData.fromMap(postBody);
     if (photos != null && photos.isNotEmpty) {
       for (File file in photos) {
-        file = await Utils.compressFile(
+        File? mFile = await Utils.compressFile(
           file: file,
           quality: 60,
         );
-        formData.files.addAll([
-          MapEntry("photos[]", await MultipartFile.fromFile(file.path)),
-        ]);
+        if (mFile != null) {
+          formData.files.addAll([
+            MapEntry("photos[]", await MultipartFile.fromFile(mFile.path)),
+          ]);
+        }
       }
     }
 
@@ -112,26 +123,31 @@ class ProductRequest extends HttpService {
 
   Future<ApiResponse> updateDetails(
     Product product, {
-    Map<String, dynamic> data = null,
-    List<File> photos,
+    Map<String, dynamic>? data,
+    List<File>? photos,
   }) async {
     //
     final postBody = {
       "_method": "PUT",
       ...(data == null ? product.toJson() : data),
-      "vendor_id": AuthServices.currentVendor.id,
+      "vendor_id": AuthServices.currentVendor?.id,
     };
+    FormData formData = FormData.fromMap(
+      postBody,
+      ListFormat.multiCompatible,
+    );
 
-    FormData formData = FormData.fromMap(postBody);
     if (photos != null && photos.isNotEmpty) {
       for (File file in photos) {
-        file = await Utils.compressFile(
+        File? mFile = await Utils.compressFile(
           file: file,
           quality: 60,
         );
-        formData.files.addAll([
-          MapEntry("photos[]", await MultipartFile.fromFile(file.path)),
-        ]);
+        if (mFile != null) {
+          formData.files.addAll([
+            MapEntry("photos[]", await MultipartFile.fromFile(mFile.path)),
+          ]);
+        }
       }
     }
 
@@ -144,7 +160,9 @@ class ProductRequest extends HttpService {
     return ApiResponse.fromResponse(apiResult);
   }
 
-  Future<List<ProductCategory>> fetchSubCategories({String categoryId}) async {
+  Future<List<ProductCategory>> fetchSubCategories({
+    required dynamic categoryId,
+  }) async {
     final apiResult = await get(
       Api.productCategories,
       queryParameters: {

@@ -11,6 +11,8 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
+		<string>G2Express</string>
+		<key>CFBundleDisplayName</key>
 		<string>G2Express Vendor</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
@@ -65,8 +67,11 @@
 		<string>We need access to location to search for nearby printers for printing receipts.</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>We need access to your gallery for profile photo.</string>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>We need permission to make audio calls</string>
 		<key>UIBackgroundModes</key>
 		<array>
+			<string>fetch</string>
 			<string>remote-notification</string>
 		</array>
 		<key>UILaunchStoryboardName</key>
@@ -92,5 +97,7 @@
 		<false/>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
-	</dict>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+</dict>
 </plist>

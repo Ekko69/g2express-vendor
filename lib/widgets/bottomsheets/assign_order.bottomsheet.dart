@@ -9,7 +9,10 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class AssignOrderBottomSheet extends StatelessWidget {
-  AssignOrderBottomSheet({Key key, this.onConfirm}) : super(key: key);
+  AssignOrderBottomSheet({
+    Key? key,
+    required this.onConfirm,
+  }) : super(key: key);
 
   final Function(int) onConfirm;
 
@@ -18,7 +21,7 @@ class AssignOrderBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<AssignOrderViewModel>.reactive(
       viewModelBuilder: () => AssignOrderViewModel(),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return SafeArea(
           child: VStack(
@@ -63,10 +66,9 @@ class AssignOrderBottomSheet extends StatelessWidget {
               //
               CustomButton(
                 title: "Assign".tr(),
-                onPressed: () {
-                  //
-                  onConfirm(vm.selectedDriverId);
-                },
+                onPressed: vm.selectedDriverId != null
+                    ? () => onConfirm(vm.selectedDriverId!)
+                    : null,
               ),
             ],
           ).p20().h(context.safePercentHeight * 80),

@@ -7,7 +7,8 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ServiceDetailsPriceSectionView extends StatelessWidget {
-  const ServiceDetailsPriceSectionView(this.service, {this.onlyPrice = false, Key key})
+  const ServiceDetailsPriceSectionView(this.service,
+      {this.onlyPrice = false, Key? key})
       : super(key: key);
 
   final Service service;
@@ -49,10 +50,10 @@ class ServiceDetailsPriceSectionView extends StatelessWidget {
         Visibility(
           visible: !onlyPrice,
           child: VxRating(
-            value: double.parse((service?.vendor?.rating ?? 5.0).toString()),
+            value: double.parse((service.vendor?.rating ?? 5.0).toString()),
             count: 5,
             isSelectable: false,
-            onRatingUpdate: null,
+            onRatingUpdate: (value) {},
             selectionColor: AppColor.ratingColor,
             normalColor: Colors.grey,
           ),

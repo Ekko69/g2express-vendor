@@ -5,13 +5,16 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ProductOptionsHeader extends StatelessWidget {
-  const ProductOptionsHeader(
-      {this.iconData, this.title, this.description, Key key})
-      : super(key: key);
+  const ProductOptionsHeader({
+    this.iconData,
+    this.title,
+    this.description,
+    Key? key,
+  }) : super(key: key);
 
-  final IconData iconData;
-  final String title;
-  final String description;
+  final IconData? iconData;
+  final String? title;
+  final String? description;
   @override
   Widget build(BuildContext context) {
     return HStack(
@@ -23,15 +26,11 @@ class ProductOptionsHeader extends StatelessWidget {
         //
         VStack(
           [
-            title != null && title.isNotBlank
-                ? title.text.xl.semiBold.make()
+            title != null && title!.isNotBlank
+                ? "$title".text.xl.semiBold.make()
                 : "Options".tr().text.xl.semiBold.make(),
-            description.isNotBlank
-                ? description
-                    .text
-                    .sm
-                    .medium
-                    .make()
+            description != null && description!.isNotBlank
+                ? "$description".text.sm.medium.make()
                 : UiSpacer.emptySpace(),
           ],
         ).expand(),

@@ -2,9 +2,11 @@ import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/constants/app_colors.dart';
 import 'package:fuodz/constants/app_page_settings.dart';
+import 'package:fuodz/models/address.dart';
 import 'package:fuodz/services/custom_form_builder_validator.service.dart';
 import 'package:fuodz/utils/ui_spacer.dart';
 import 'package:fuodz/utils/utils.dart';
@@ -18,9 +20,14 @@ import 'package:stacked/stacked.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class RegisterPage extends StatelessWidget {
-  RegisterPage({Key key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  RegisterPage({Key? key}) : super(key: key);
 
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     //
@@ -31,14 +38,12 @@ class RegisterPage extends StatelessWidget {
     //
     return ViewModelBuilder<RegisterViewModel>.reactive(
       viewModelBuilder: () => RegisterViewModel(context),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           isLoading: vm.isBusy,
           body: FormBuilder(
             key: vm.formBuilderKey,
-            autoFocusOnValidationFailure: true,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: VStack(
               [
                 //appbar
@@ -105,6 +110,58 @@ class RegisterPage extends StatelessWidget {
                         ),
 
                         //
+                        20.heightBox,
+                        //address
+                        TypeAheadField<Address>(
+                          hideOnLoading: false,
+                          hideSuggestionsOnKeyboardHide: false,
+                          minCharsForSuggestions: 3,
+                          debounceDuration: const Duration(seconds: 1),
+                          textFieldConfiguration: TextFieldConfiguration(
+                            autofocus: false,
+                            controller: vm.addressTEC,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.primaryColor,
+                                ),
+                              ),
+                              hintText: "Address".tr(),
+                              labelText: "Address".tr(),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.primaryColor,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: AppColor.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          suggestionsCallback: vm.searchAddress,
+                          itemBuilder: (context, Address? suggestion) {
+                            if (suggestion == null) {
+                              return Divider();
+                            }
+                            //
+                            return VStack(
+                              [
+                                "${suggestion.addressLine ?? ''}"
+                                    .text
+                                    .semiBold
+                                    .lg
+                                    .make()
+                                    .px(12),
+                                Divider(),
+                              ],
+                            );
+                          },
+                          onSuggestionSelected: vm.onAddressSelected,
+                        ),
+
+                        //
                         CustomLoadingStateView(
                           loading: vm.busy(vm.vendorTypes),
                           child: FormBuilderDropdown(
@@ -113,6 +170,8 @@ class RegisterPage extends StatelessWidget {
                               labelText: "Vendor Type".tr(),
                               hintText: 'Select Vendor Type'.tr(),
                             ),
+                            initialValue: vm.selectedVendorTypeId,
+                            onChanged: vm.changeSelectedVendorType,
                             validator: CustomFormBuilderValidator.required,
                             items: vm.vendorTypes
                                 .map(
@@ -150,13 +209,15 @@ class RegisterPage extends StatelessWidget {
                               [
                                 //icon/flag
                                 Flag.fromString(
-                                  vm.selectedVendorCountry.countryCode,
+                                  vm.selectedVendorCountry?.countryCode ?? "us",
                                   width: 20,
                                   height: 20,
                                 ),
                                 UiSpacer.horizontalSpace(space: 5),
                                 //text
-                                ("+" + vm.selectedVendorCountry.phoneCode)
+                                ("+" +
+                                        (vm.selectedVendorCountry?.phoneCode ??
+                                            "1"))
                                     .text
                                     .make(),
                               ],
@@ -212,13 +273,13 @@ class RegisterPage extends StatelessWidget {
                               [
                                 //icon/flag
                                 Flag.fromString(
-                                  vm.selectedCountry.countryCode,
+                                  vm.selectedCountry?.countryCode ?? "us",
                                   width: 20,
                                   height: 20,
                                 ),
                                 UiSpacer.horizontalSpace(space: 5),
                                 //text
-                                ("+" + vm.selectedCountry.phoneCode)
+                                ("+" + (vm.selectedCountry?.phoneCode ?? "1"))
                                     .text
                                     .make(),
                               ],

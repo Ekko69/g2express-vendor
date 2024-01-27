@@ -8,26 +8,25 @@ import 'package:velocity_x/velocity_x.dart';
 
 class AccountDeleteViewModel extends MyBaseViewModel {
   //
-  User currentUser;
+  late User currentUser;
   AuthRequest _authRequest = AuthRequest();
   bool otherReason = false;
-  String reason;
+  String? reason;
 
   AccountDeleteViewModel(BuildContext context) {
     this.viewContext = context;
   }
 
-  
-
   processAccountDeletion() async {
     _authRequest.delete("");
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       //
       setBusy(true);
       try {
-        final formValue = formBuilderKey.currentState.value;
+        final formValue = formBuilderKey.currentState!.value;
         final apiResponse = await _authRequest.deleteProfile(
           password: formValue["password"],
+          reason: reason,
         );
         if (apiResponse.allGood) {
           toastSuccessful("${apiResponse.message}");

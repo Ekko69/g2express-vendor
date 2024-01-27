@@ -11,7 +11,7 @@ import 'package:stacked/stacked.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AccountDeletePage extends StatelessWidget {
-  const AccountDeletePage({Key key}) : super(key: key);
+  const AccountDeletePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +33,29 @@ class AccountDeletePage extends StatelessWidget {
               [
                 UiSpacer.vSpace(5),
                 //description
-                "You are about to delete your profile, please select an option below on why you are deleting your profile/account"
+                "We're sorry to see you go, but we understand that sometimes things change. If you're sure you want to delete your account, we want to make the process as simple and straightforward as possible."
                     .tr()
                     .text
-                    .light
                     .make(),
-                UiSpacer.vSpace(12),
-                UiSpacer.divider(),
-                UiSpacer.vSpace(),
                 //verification section
+                "Deleting your account is permanent, and it cannot be undone."
+                    .tr()
+                    .text
+                    .semiBold
+                    .make()
+                    .py(10),
+
+                "This means all your data, including profile information, preferences, and activity history, will be permanently removed from our system. You won't be able to recover any of this information once the account deletion is complete."
+                    .tr()
+                    .text
+                    .make(),
+
+                UiSpacer.divider().py(15),
                 "Enter you account password to confirm account deletion"
                     .tr()
                     .text
-                    .light
                     .make(),
+                UiSpacer.vSpace(5),
 
                 //verification coe input
                 UiSpacer.vSpace(10),

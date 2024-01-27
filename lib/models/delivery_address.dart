@@ -8,20 +8,20 @@ String deliveryAddressToJson(DeliveryAddress data) =>
 
 class DeliveryAddress {
   DeliveryAddress({
-    this.id,
-    this.name,
-    this.city,
-    this.state,
-    this.country,
+    required this.id,
+    required this.name,
+    required this.city,
+    required this.state,
+    required this.country,
     this.address = "Current Location",
-    this.latitude,
-    this.longitude,
-    this.isDefault,
-    this.userId,
-    this.createdAt,
-    this.updatedAt,
-    this.formattedDate,
-    this.photo,
+    required this.latitude,
+    required this.longitude,
+    required this.isDefault,
+    required this.userId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.formattedDate,
+    required this.photo,
     this.distance,
   });
 
@@ -39,19 +39,21 @@ class DeliveryAddress {
   DateTime updatedAt;
   String formattedDate;
   String photo;
-  double distance;
+  double? distance;
 
   factory DeliveryAddress.fromJson(Map<String, dynamic> json) =>
       DeliveryAddress(
         id: json["id"],
         name: json["name"],
-        address: json["address"],
-        city: json["city"],
-        state: json["state"],
-        country: json["country"],
+        address: json["address"] ?? "",
+        city: json["city"] ?? "",
+        state: json["state"] ?? "",
+        country: json["country"] ?? "",
         latitude: double.parse(json["latitude"].toString()),
         longitude: double.parse(json["longitude"].toString()),
-        distance: json["distance"] == null ? null : double.parse(json["distance"].toString()),
+        distance: json["distance"] == null
+            ? null
+            : double.parse(json["distance"].toString()),
         isDefault: int.parse(json["is_default"].toString()),
         userId: int.parse(json["user_id"].toString()),
         createdAt: DateTime.parse(json["created_at"]),
@@ -77,7 +79,7 @@ class DeliveryAddress {
         "formatted_date": formattedDate,
         "photo": photo,
       };
-  
+
   //
   Map<String, dynamic> toSaveJson() => {
         "name": name,

@@ -20,7 +20,7 @@ class ManagePackageTypePricingViewModel extends MyBaseViewModel {
   PackageTypePricingRequest packageTypePricingRequest =
       PackageTypePricingRequest();
   List<PackageType> packageTypes = [];
-  PackageTypePricing packageTypePricing;
+  PackageTypePricing? packageTypePricing;
 
   void initialise() {
     fetchPackageTypes();
@@ -41,18 +41,17 @@ class ManagePackageTypePricingViewModel extends MyBaseViewModel {
     setBusyForObject(packageTypes, false);
   }
 
-
   //update pricing
   processUpdate() async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       //
       setBusy(true);
 
       try {
         try {
           final apiResponse = await packageTypePricingRequest.updateDetails(
-            packageTypePricing,
-            data: formBuilderKey.currentState.value,
+            packageTypePricing!,
+            data: formBuilderKey.currentState!.value,
           );
           //
           //show dialog to present state
@@ -84,14 +83,14 @@ class ManagePackageTypePricingViewModel extends MyBaseViewModel {
 
   //New pricing
   processNewPricing() async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       //
       setBusy(true);
 
       try {
         try {
           final apiResponse = await packageTypePricingRequest.newPricing(
-            formBuilderKey.currentState.value,
+            formBuilderKey.currentState!.value,
           );
           //
           //show dialog to present state
@@ -120,6 +119,4 @@ class ManagePackageTypePricingViewModel extends MyBaseViewModel {
       setBusy(false);
     }
   }
-
-
 }

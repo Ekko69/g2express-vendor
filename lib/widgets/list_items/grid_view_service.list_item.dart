@@ -10,9 +10,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class GridViewServiceListItem extends StatelessWidget {
   const GridViewServiceListItem({
-    this.service,
-    this.onPressed,
-    Key key,
+    required this.service,
+    required this.onPressed,
+    Key? key,
   }) : super(key: key);
 
   final Function(Service) onPressed;
@@ -25,10 +25,10 @@ class GridViewServiceListItem extends StatelessWidget {
         Stack(
           children: [
             Hero(
-              tag: service.heroTag,
+              tag: service.heroTag ?? service.id,
               child: CustomImage(
                 imageUrl:
-                    "${service.photos.isNotEmpty ? service?.photos?.first : ''}",
+                    "${service.photos.isNotEmpty ? service.photos.first : ''}",
                 boxFit: BoxFit.cover,
                 width: double.infinity,
                 height: Vx.dp64 * 2,

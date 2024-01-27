@@ -9,8 +9,11 @@ import 'package:velocity_x/velocity_x.dart';
 
 class HorizontalProductListItem extends StatelessWidget {
   //
-  const HorizontalProductListItem(this.product, {this.onPressed, Key key})
-      : super(key: key);
+  const HorizontalProductListItem(
+    this.product, {
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   //
   final Product product;
@@ -25,7 +28,7 @@ class HorizontalProductListItem extends StatelessWidget {
       [
         //
         Hero(
-          tag: product.heroTag,
+          tag: product.heroTag ?? product.id,
           child: CustomImage(imageUrl: product.photo)
               .wh(Vx.dp64, Vx.dp64)
               .box
@@ -60,9 +63,8 @@ class HorizontalProductListItem extends StatelessWidget {
             CurrencyHStack(
               [
                 currencySymbol.text.lg.make(),
-                (product.showDiscount
-                        ? product.discountPrice
-                        : product.price).currencyValueFormat()
+                (product.showDiscount ? product.discountPrice : product.price)
+                    .currencyValueFormat()
                     .text
                     .xl
                     .semiBold
@@ -75,7 +77,12 @@ class HorizontalProductListItem extends StatelessWidget {
                 ? CurrencyHStack(
                     [
                       currencySymbol.text.lineThrough.xs.make(),
-                      product.price.currencyValueFormat().text.lineThrough.lg.medium
+                      product.price
+                          .currencyValueFormat()
+                          .text
+                          .lineThrough
+                          .lg
+                          .medium
                           .make(),
                     ],
                   )

@@ -386,3 +386,38 @@ This field cannot be empty
 This field must be numeric
 Invalid email address
 Faqs
+Order payment yet to be completed, hence you can't open order
+Product Description
+Service Description
+This means all your data, including profile information, preferences, and activity history, will be permanently removed from our system. You won't be able to recover any of this information once the account deletion is complete.
+Deleting your account is permanent, and it cannot be undone.
+We're sorry to see you go, but we understand that sometimes things change. If you're sure you want to delete your account, we want to make the process as simple and straightforward as possible.
+Currenct Vendor
+Tap to switch
+List of vendors
+Please select a vendor to switch to
+Document Request
+Document Request
+Pending Verification
+Your document is pending verification, once verified you will receive an email from us. Thank you
+Please select a document
+Address
+Never miss a new order
+Please allow the app to draw over other apps to enable the app to show pop alert about new order when the app is in background.
+Payment Method
+Delivery Address
+Ok, Close popup
+New Order
+A new order has been placed
+Order Code
+Total
+Pickup Order
+Keep app running in background
+Please allow the app to run in background to enable the app to listen for new order when the app is in background.
+Open Order Details
+Fixed
+Hour
+Day
+Month
+Year
+Select a photo

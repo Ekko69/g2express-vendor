@@ -8,13 +8,13 @@ class PaymentOptionListItem extends StatelessWidget {
   const PaymentOptionListItem(
     this.paymentMethod, {
     this.selected = false,
-    Key key,
+    Key? key,
     this.onSelected,
   }) : super(key: key);
 
   final bool selected;
   final PaymentMethod paymentMethod;
-  final Function(PaymentMethod) onSelected;
+  final Function(PaymentMethod)? onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +35,12 @@ class PaymentOptionListItem extends StatelessWidget {
         .border(
           color: selected
               ? AppColor.primaryColor
-              : context.textTheme.bodyLarge.color.withOpacity(0.20),
+              : context.textTheme.bodyLarge!.color!.withOpacity(0.20),
           width: selected ? 2 : 1,
         )
         .make()
         .onInkTap(
-          () => onSelected(paymentMethod),
+          onSelected != null ? () => onSelected!(paymentMethod) : null,
         );
   }
 }

@@ -7,8 +7,11 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class AccountVerificationEntry extends StatefulWidget {
-  const AccountVerificationEntry({this.onSubmit, this.vm, Key key})
-      : super(key: key);
+  const AccountVerificationEntry({
+    required this.onSubmit,
+    required this.vm,
+    Key? key,
+  }) : super(key: key);
 
   final Function(String) onSubmit;
   final MyBaseViewModel vm;
@@ -19,7 +22,7 @@ class AccountVerificationEntry extends StatefulWidget {
 }
 
 class _AccountVerificationEntryState extends State<AccountVerificationEntry> {
-  String smsCode;
+  String smsCode = "";
   @override
   Widget build(BuildContext context) {
     //
@@ -37,7 +40,7 @@ class _AccountVerificationEntryState extends State<AccountVerificationEntry> {
           obscureText: false,
           keyboardType: TextInputType.number,
           animationType: AnimationType.fade,
-          textStyle: context.textTheme.bodyLarge.copyWith(fontSize: 20),
+          textStyle: context.textTheme.bodyLarge!.copyWith(fontSize: 20),
           controller: pinTEC,
           pinTheme: PinTheme(
             shape: PinCodeFieldShape.underline,

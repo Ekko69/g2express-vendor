@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/models/product_category.dart';
-import 'package:fuodz/models/service.dart';
 import 'package:fuodz/requests/product.request.dart';
 import 'package:fuodz/requests/service.request.dart';
 import 'package:fuodz/requests/vendor.request.dart';
@@ -16,18 +15,22 @@ class NewServiceViewModel extends MyBaseViewModel {
   //
   NewServiceViewModel(BuildContext context) {
     this.viewContext = context;
-    this.service = Service();
   }
 
   //
   ServiceRequest serviceRequest = ServiceRequest();
   ProductRequest productRequest = ProductRequest();
   VendorRequest vendorRequest = VendorRequest();
-  Service service;
+  String? description;
+  //
+  int? selectedCategoryId;
+  int? selectedSubCategoryId;
+  String? selectedServiceDuration;
+  //
   List<ProductCategory> categories = [];
   List<ProductCategory> subcategories = [];
   List<String> serviceDurations = [];
-  List<File> selectedPhotos;
+  List<File>? selectedPhotos = [];
 
   void initialise() {
     fetchVendorTypeCategories();
@@ -41,7 +44,7 @@ class NewServiceViewModel extends MyBaseViewModel {
     try {
       categories = await productRequest.getProductCategories(
         vendorTypeId:
-            (await AuthServices.getCurrentVendor(force: true)).vendorType.id,
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
       );
       clearErrors();
     } catch (error) {
@@ -52,7 +55,8 @@ class NewServiceViewModel extends MyBaseViewModel {
     setBusyForObject(categories, false);
   }
 
-  fetchSubCategories(String categoryId) async {
+  fetchSubCategories(int? categoryId) async {
+    selectedCategoryId = categoryId;
     setBusyForObject(subcategories, true);
 
     try {
@@ -90,7 +94,7 @@ class NewServiceViewModel extends MyBaseViewModel {
 
   //
   processNewService() async {
-    if (formBuilderKey.currentState.saveAndValidate() &&
+    if (formBuilderKey.currentState!.saveAndValidate() &&
         validateSelectedPhotos()) {
       //
       setBusy(true);
@@ -98,8 +102,8 @@ class NewServiceViewModel extends MyBaseViewModel {
       try {
         final apiResponse = await serviceRequest.newService(
           data: {
-            ...formBuilderKey.currentState.value,
-            "description": service.description,
+            ...formBuilderKey.currentState!.value,
+            "description": description,
           },
           photos: selectedPhotos,
         );
@@ -129,7 +133,7 @@ class NewServiceViewModel extends MyBaseViewModel {
   }
 
   bool validateSelectedPhotos() {
-    if (selectedPhotos == null || selectedPhotos.isEmpty) {
+    if (selectedPhotos == null || selectedPhotos!.isEmpty) {
       CoolAlert.show(
         context: viewContext,
         type: CoolAlertType.warning,
@@ -146,12 +150,12 @@ class NewServiceViewModel extends MyBaseViewModel {
     final result = await viewContext.push(
       (context) => CustomTextEditorPage(
         title: "Service Description".tr(),
-        content: service.description,
+        content: description ?? "",
       ),
     );
     //
     if (result != null) {
-      service.description = result;
+      description = result;
       notifyListeners();
     }
   }

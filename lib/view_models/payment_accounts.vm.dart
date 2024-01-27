@@ -73,14 +73,14 @@ class PaymentAccountsViewModel extends MyBaseViewModel {
   Future<bool> saveNewPaymentAccount(
     GlobalKey<FormBuilderState> formBuilderKey,
   ) async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       bool result = true;
-      final params = formBuilderKey.currentState.value;
+      final params = formBuilderKey.currentState!.value;
       try {
         final newPaymentAccount =
             await paymentAccountRequest.newPaymentAccount({
           ...params,
-          "vendor_id": AuthServices.currentVendor.id,
+          "vendor_id": AuthServices.currentVendor!.id,
         });
         //
         paymentAccounts.insert(0, newPaymentAccount);
@@ -116,9 +116,9 @@ class PaymentAccountsViewModel extends MyBaseViewModel {
     GlobalKey<FormBuilderState> formBuilderKey,
     PaymentAccount paymentAccount,
   ) async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       bool result = true;
-      final params = formBuilderKey.currentState.value;
+      final params = formBuilderKey.currentState!.value;
       try {
         final apiResponse = await paymentAccountRequest.updatePaymentAccount(
           paymentAccount.id,

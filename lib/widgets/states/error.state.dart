@@ -5,9 +5,12 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class LoadingError extends StatelessWidget {
-  const LoadingError({this.onrefresh, Key key}) : super(key: key);
+  const LoadingError({
+    this.onrefresh,
+    Key? key,
+  }) : super(key: key);
 
-  final Function onrefresh;
+  final Function? onrefresh;
   @override
   Widget build(BuildContext context) {
     return EmptyState(

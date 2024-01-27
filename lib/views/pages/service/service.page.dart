@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fuodz/constants/app_colors.dart';
-import 'package:fuodz/utils/ui_spacer.dart';
 import 'package:fuodz/view_models/service.vm.dart';
 import 'package:fuodz/widgets/base.page.dart';
 import 'package:fuodz/widgets/custom_list_view.dart';
@@ -11,14 +10,14 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ServicePage extends StatelessWidget {
-  const ServicePage({Key key}) : super(key: key);
+  const ServicePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: ViewModelBuilder<ServiceViewModel>.reactive(
         viewModelBuilder: () => ServiceViewModel(context),
-        onModelReady: (vm) => vm.initialise(),
+        onViewModelReady: (vm) => vm.initialise(),
         builder: (context, vm, child) {
           return BasePage(
             fab: FloatingActionButton.extended(
@@ -32,24 +31,16 @@ class ServicePage extends StatelessWidget {
             ),
             body: VStack(
               [
-                //
-                "Services"
-                    .tr()
-                    .text
-                    .xl2
-                    .semiBold
-                    .make().px20()
-                    .pOnly(bottom: Vx.dp10),
-                //
+                "Services".tr().text.xl2.semiBold.make().p20(),
                 CustomListView(
                   refreshController: vm.refreshController,
                   canRefresh: true,
-                  canPullUp:true,
+                  canPullUp: true,
                   onRefresh: vm.fetchMyServices,
                   onLoading: () => vm.fetchMyServices(initialLoading: false),
                   isLoading: vm.isBusy,
-                  dataSet: vm.services ,
-                  padding:EdgeInsets.zero,
+                  dataSet: vm.services,
+                  padding: EdgeInsets.only(bottom: context.percentHeight * 10),
                   itemBuilder: (context, index) {
                     //service
                     return GridViewServiceListItem(
@@ -58,8 +49,6 @@ class ServicePage extends StatelessWidget {
                     ).px20();
                   },
                 ).expand(),
-                UiSpacer.verticalSpace(),
-                UiSpacer.verticalSpace(),
               ],
             ),
           );

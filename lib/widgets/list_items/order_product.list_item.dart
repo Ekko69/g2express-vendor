@@ -6,8 +6,8 @@ import 'package:velocity_x/velocity_x.dart';
 
 class OrderProductListItem extends StatelessWidget {
   const OrderProductListItem({
-    this.orderProduct,
-    Key key,
+    required this.orderProduct,
+    Key? key,
   }) : super(key: key);
 
   final OrderProduct orderProduct;
@@ -20,10 +20,10 @@ class OrderProductListItem extends StatelessWidget {
         VStack(
           [
             //
-            orderProduct.product.name.text.medium.make(),
+            "${orderProduct.product?.name}".text.medium.make(),
             Visibility(
               visible: orderProduct.options != null &&
-                  orderProduct.options.isNotEmpty,
+                  orderProduct.options!.isNotEmpty,
               child:
                   "${orderProduct.options ?? ''}".text.sm.gray500.medium.make(),
             ),

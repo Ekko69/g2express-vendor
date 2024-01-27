@@ -7,8 +7,11 @@ import 'package:fuodz/widgets/custom_image.view.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ProductListItem extends StatelessWidget {
-  const ProductListItem({this.product, this.onPressed, Key key})
-      : super(key: key);
+  const ProductListItem({
+    required this.product,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   final Function(Product) onPressed;
   final Product product;
@@ -21,7 +24,7 @@ class ProductListItem extends StatelessWidget {
           children: [
             //product image
             Hero(
-              tag: product.heroTag,
+              tag: product.heroTag ?? product.id,
               child: CustomImage(
                 imageUrl: product.photo,
                 boxFit: BoxFit.cover,
@@ -61,7 +64,9 @@ class ProductListItem extends StatelessWidget {
             .maxLines(1)
             .overflow(TextOverflow.ellipsis)
             .make(),
-        product.vendor.name.text.sm
+        "${product.vendor?.name}"
+            .text
+            .sm
             .maxLines(1)
             .overflow(TextOverflow.ellipsis)
             .makeCentered(),

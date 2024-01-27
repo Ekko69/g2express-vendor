@@ -9,8 +9,11 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class EditPaymentAccountBottomSheet extends StatefulWidget {
-  EditPaymentAccountBottomSheet(this.vm, {this.paymentAccount, Key key})
-      : super(key: key);
+  EditPaymentAccountBottomSheet(
+    this.vm, {
+    required this.paymentAccount,
+    Key? key,
+  }) : super(key: key);
 
   final PaymentAccountsViewModel vm;
   final PaymentAccount paymentAccount;
@@ -22,7 +25,7 @@ class EditPaymentAccountBottomSheet extends StatefulWidget {
 
 class _EditPaymentAccountBottomSheetState
     extends State<EditPaymentAccountBottomSheet> {
-  GlobalKey formBuilderKey = GlobalKey<FormBuilderState>();
+  GlobalKey<FormBuilderState> formBuilderKey = GlobalKey<FormBuilderState>();
   bool isLoading = false;
 
   @override
@@ -103,7 +106,7 @@ class _EditPaymentAccountBottomSheetState
                   });
 
                   //
-                  if (result is bool && result) {
+                  if (result) {
                     context.pop();
                   }
                 },

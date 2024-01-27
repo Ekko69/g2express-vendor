@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/models/api_response.dart';
 import 'package:fuodz/services/http.service.dart';
@@ -9,8 +9,8 @@ import 'package:fuodz/services/http.service.dart';
 class AuthRequest extends HttpService {
   //
   Future<ApiResponse> loginRequest({
-    @required String email,
-    @required String password,
+    required String email,
+    required String password,
   }) async {
     final apiResult = await post(
       Api.login,
@@ -25,15 +25,15 @@ class AuthRequest extends HttpService {
   }
 
   Future<ApiResponse> registerRequest({
-    Map<String, dynamic> vals,
-    List<File> docs,
+    required Map<String, dynamic> vals,
+    List<File>? docs,
   }) async {
     final postBody = {
       ...vals,
     };
 
     FormData formData = FormData.fromMap(postBody);
-    for (File file in docs) {
+    for (File file in docs ?? []) {
       formData.files.addAll([
         MapEntry("documents[]", await MultipartFile.fromFile(file.path)),
       ]);
@@ -50,7 +50,7 @@ class AuthRequest extends HttpService {
 
   //
   Future<ApiResponse> qrLoginRequest({
-    @required String code,
+    required String code,
   }) async {
     final apiResult = await post(
       Api.qrlogin,
@@ -65,9 +65,10 @@ class AuthRequest extends HttpService {
 
   //
   Future<ApiResponse> resetPasswordRequest({
-    @required String phone,
-    @required String password,
-    @required String firebaseToken,
+    required String phone,
+    required String password,
+    String? firebaseToken,
+    String? customToken,
   }) async {
     final apiResult = await post(
       Api.forgotPassword,
@@ -75,6 +76,7 @@ class AuthRequest extends HttpService {
         "phone": phone,
         "password": password,
         "firebase_id_token": firebaseToken,
+        "verification_token": customToken,
       },
     );
 
@@ -89,10 +91,10 @@ class AuthRequest extends HttpService {
 
   //
   Future<ApiResponse> updateProfile({
-    File photo,
-    String name,
-    String email,
-    String phone,
+    File? photo,
+    required String name,
+    required String email,
+    required String phone,
   }) async {
     final apiResult = await postWithFiles(
       Api.updateProfile,
@@ -112,9 +114,9 @@ class AuthRequest extends HttpService {
   }
 
   Future<ApiResponse> updatePassword({
-    String password,
-    String new_password,
-    String new_password_confirmation,
+    required String password,
+    required String new_password,
+    required String new_password_confirmation,
   }) async {
     final apiResult = await post(
       Api.updatePassword,
@@ -175,7 +177,10 @@ class AuthRequest extends HttpService {
     }
   }
 
-  Future<ApiResponse> deleteProfile({String password, String reason}) async {
+  Future<ApiResponse> deleteProfile({
+    required String password,
+    String? reason,
+  }) async {
     final apiResult = await post(
       Api.accountDelete,
       {

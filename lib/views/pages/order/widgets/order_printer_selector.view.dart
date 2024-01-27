@@ -14,7 +14,7 @@ import 'package:fuodz/widgets/custom_list_view.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class OrderPrinterSelector extends StatefulWidget {
-  OrderPrinterSelector(this.order, {Key key}) : super(key: key);
+  OrderPrinterSelector(this.order, {Key? key}) : super(key: key);
   final Order order;
 
   @override
@@ -26,7 +26,7 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
   List<BluetoothDevice> _devices = [];
-  BluetoothDevice _selectedDevice;
+  BluetoothDevice? _selectedDevice;
   bool _deviceConnected = false;
 
   @override
@@ -73,12 +73,12 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
                     [
                       VStack(
                         [
-                          currentDevice.name.text.make(),
-                          currentDevice.address.text.xs.make(),
+                          "${currentDevice.name}".text.make(),
+                          "${currentDevice.address}".text.xs.make(),
                         ],
                       ).expand(),
                       (_selectedDevice != null &&
-                              currentDevice.address == _selectedDevice.address)
+                              currentDevice.address == _selectedDevice?.address)
                           ? Icon(
                               FlutterIcons.check_ant,
                               color: Colors.green,
@@ -120,9 +120,9 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
     if (_selectedDevice == null) {
       context.showToast(msg: 'No device selected.', bgColor: Colors.red);
     } else {
-      bluetooth.isConnected.then((isConnected) {
-        if (!isConnected) {
-          bluetooth.connect(_selectedDevice).then((value) {
+      bluetooth.isConnected.then((bool? isConnected) {
+        if (isConnected == null || !isConnected) {
+          bluetooth.connect(_selectedDevice!).then((value) {
             setState(() {
               _deviceConnected = value ?? false;
             });
@@ -141,8 +141,8 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
   }
 
   //disconnect from device
-  void _disconnect() async {
-    if (await bluetooth.isConnected) {
+  _disconnect() async {
+    if (await bluetooth.isConnected ?? false) {
       await bluetooth.disconnect();
     }
   }
@@ -165,14 +165,14 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
     // 1- ESC_ALIGN_CENTER
     // 2- ESC_ALIGN_RIGHT
     bluetooth.isConnected.then((isConnected) {
-      if (isConnected) {
+      if (isConnected != null && isConnected) {
         bluetooth.printNewLine();
         bluetooth.printCustom("${AppStrings.appName}", 3, 1);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
-        bluetooth.printCustom("${widget.order.vendor.name}", 2, 1);
+        bluetooth.printCustom("${widget.order.vendor?.name}", 2, 1);
         bluetooth.printNewLine();
-        bluetooth.printCustom("${widget.order.vendor.address}", 1, 1);
+        bluetooth.printCustom("${widget.order.vendor?.address}", 1, 1);
         bluetooth.printNewLine();
         bluetooth.printLeftRight("Code", "  ${widget.order.code}", 1);
         bluetooth.printLeftRight(
@@ -182,13 +182,13 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
         //parcel order
         if (widget.order.isPackageDelivery) {
           //print stops
-          widget.order.orderStops.forEachIndexed((index, orderStop) {
+          widget.order.orderStops?.forEachIndexed((index, orderStop) {
             if (index == 0) {
               bluetooth.printCustom("Pickup Address".tr(), 1, 0);
             } else {
               bluetooth.printCustom("Stop".tr(), 1, 0);
             }
-            bluetooth.printCustom("${orderStop.deliveryAddress.name}", 2, 0);
+            bluetooth.printCustom("${orderStop.deliveryAddress?.name}", 2, 0);
             // recipient info
             bluetooth.printLeftRight("Name".tr(), "  ${orderStop.name}", 1);
             bluetooth.printLeftRight("Phone".tr(), "  ${orderStop.phone}", 1);
@@ -200,19 +200,19 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
           bluetooth.printNewLine();
           bluetooth.printCustom("Package Details".tr(), 2, 0);
           bluetooth.printLeftRight(
-              "Package Type".tr(), "  ${widget.order.packageType.name}", 1);
+              "Package Type".tr(), "  ${widget.order.packageType?.name}", 1);
           bluetooth.printLeftRight(
-              "Width".tr() + "   ", widget.order.width + "cm", 1);
+              "Width".tr() + "   ", "${widget.order.width} cm", 1);
           bluetooth.printLeftRight(
-              "Length".tr() + "   ", widget.order.length + "cm", 1);
+              "Length".tr() + "   ", "${widget.order.length} cm", 1);
           bluetooth.printLeftRight(
-              "Height".tr() + "   ", widget.order.height + "cm", 1);
+              "Height".tr() + "   ", "${widget.order.height} cm", 1);
           bluetooth.printLeftRight(
-              "Weight".tr() + "   ", widget.order.weight + "kg", 1);
+              "Weight".tr() + "   ", "${widget.order.weight} kg", 1);
         } else {
           bluetooth.printCustom("Delivery Address".tr(), 1, 0);
           bluetooth.printCustom(
-              "${widget.order.deliveryAddress != null ? widget.order.deliveryAddress.name : 'Customer Pickup'}",
+              "${widget.order.deliveryAddress != null ? widget.order.deliveryAddress?.name : 'Customer Pickup'}",
               2,
               0);
 
@@ -220,11 +220,12 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
           bluetooth.printNewLine();
           bluetooth.printCustom("Products".tr(), 2, 1);
           //products
-          for (var orderProduct in widget.order.orderProducts) {
+          for (var orderProduct in widget.order.orderProducts ?? []) {
             //
             bluetooth.printLeftRight(
                 "${orderProduct.product.name} x${orderProduct.quantity}",
-                "    ${AppStrings.currencySymbol} ${orderProduct.price}".currencyFormat(),
+                "    ${AppStrings.currencySymbol} ${orderProduct.price}"
+                    .currencyFormat(),
                 1);
             //product options
             if (orderProduct.options != null) {
@@ -239,17 +240,20 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
         bluetooth.printNewLine();
         bluetooth.printLeftRight(
           "Subtotal".tr(),
-          "  ${AppStrings.currencySymbol} ${widget.order.subTotal}".currencyFormat(),
+          "  ${AppStrings.currencySymbol} ${widget.order.subTotal}"
+              .currencyFormat(),
           1,
         );
         bluetooth.printLeftRight(
           "Discount".tr(),
-          "  ${AppStrings.currencySymbol} ${widget.order.discount}".currencyFormat(),
+          "  ${AppStrings.currencySymbol} ${widget.order.discount}"
+              .currencyFormat(),
           1,
         );
         bluetooth.printLeftRight(
           "Delivery Fee".tr(),
-          "  ${AppStrings.currencySymbol} ${widget.order.deliveryFee}".currencyFormat(),
+          "  ${AppStrings.currencySymbol} ${widget.order.deliveryFee}"
+              .currencyFormat(),
           1,
         );
         bluetooth.printLeftRight(
@@ -259,13 +263,15 @@ class _OrderPrinterSelectorState extends State<OrderPrinterSelector> {
         );
         bluetooth.printLeftRight(
           "Driver Tip".tr(),
-          "  ${AppStrings.currencySymbol} ${widget.order.tip != null ? widget.order.tip : '0.00'}".currencyFormat(),
+          "  ${AppStrings.currencySymbol} ${widget.order.tip != null ? widget.order.tip : '0.00'}"
+              .currencyFormat(),
           1,
         );
         bluetooth.printNewLine();
         bluetooth.printLeftRight(
           "Total".tr(),
-          "  ${AppStrings.currencySymbol} ${widget.order.total}".currencyFormat(),
+          "  ${AppStrings.currencySymbol} ${widget.order.total}"
+              .currencyFormat(),
           1,
         );
         bluetooth.printNewLine();

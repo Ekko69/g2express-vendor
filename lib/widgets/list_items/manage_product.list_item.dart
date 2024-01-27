@@ -11,14 +11,15 @@ import 'package:velocity_x/velocity_x.dart';
 
 class ManageProductListItem extends StatelessWidget {
   //
-  const ManageProductListItem(this.product,
-      {this.isLoading = false,
-      this.onPressed,
-      this.onEditPressed,
-      this.onToggleStatusPressed,
-      this.onDeletePressed,
-      Key key})
-      : super(key: key);
+  const ManageProductListItem(
+    this.product, {
+    this.isLoading = false,
+    required this.onPressed,
+    required this.onEditPressed,
+    required this.onToggleStatusPressed,
+    required this.onDeletePressed,
+    Key? key,
+  }) : super(key: key);
 
   //
   final Product product;
@@ -40,7 +41,7 @@ class ManageProductListItem extends StatelessWidget {
           [
             //
             Hero(
-              tag: product.heroTag,
+              tag: product.heroTag ?? product.id,
               child: CustomImage(imageUrl: product.photo)
                   .wh(Vx.dp48, Vx.dp48)
                   .box

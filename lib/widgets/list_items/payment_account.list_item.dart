@@ -9,9 +9,9 @@ import 'package:velocity_x/velocity_x.dart';
 class PaymentAccountListItem extends StatelessWidget {
   const PaymentAccountListItem(
     this.paymentAccount, {
-    this.onEditPressed,
-    this.onStatusPressed,
-    Key key,
+    required this.onEditPressed,
+    required this.onStatusPressed,
+    Key? key,
   }) : super(key: key);
   //
   final PaymentAccount paymentAccount;

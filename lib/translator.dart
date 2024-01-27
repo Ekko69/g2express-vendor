@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dartx/dartx.dart';
 import 'package:translator/translator.dart';
 
 import 'constants/app_languages.dart';
@@ -45,9 +46,8 @@ void main() async {
       }
 
       //
-      final langFileEntity = entities.firstWhere(
+      final langFileEntity = entities.firstOrNullWhere(
         (e) => e.path.toLowerCase().contains(code.toLowerCase()),
-        orElse: () => null,
       );
 
       //

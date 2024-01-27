@@ -13,7 +13,7 @@ import 'package:stacked/stacked.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class PayoutBottomSheet extends StatelessWidget {
-  const PayoutBottomSheet({@required this.totalEarningAmount, Key key})
+  const PayoutBottomSheet({required this.totalEarningAmount, Key? key})
       : super(key: key);
 
   final double totalEarningAmount;
@@ -21,7 +21,7 @@ class PayoutBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<PayoutViewModel>.reactive(
       viewModelBuilder: () => PayoutViewModel(context, totalEarningAmount),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return VStack(
           [
@@ -51,7 +51,7 @@ class PayoutBottomSheet extends StatelessWidget {
                                       vm.selectedPaymentAccount = value;
                                       vm.notifyListeners();
                                     },
-                                    items: vm.paymentAccounts.map(
+                                    items: (vm.paymentAccounts ?? []).map(
                                       (e) {
                                         return DropdownMenuItem(
                                             value: e,

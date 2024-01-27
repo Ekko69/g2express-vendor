@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DesignSurface">
-    <option name="filePathToZoomLevelMap">
-      <map>
-        <entry key="..\:/work/g2express/1.6.4/Apps/Vendor/android/app/src/main/res/drawable-v21/launch_background.xml" value="0.1" />
-        <entry key="..\:/work/g2express/1.6.4/Apps/Vendor/android/app/src/main/res/drawable/launch_background.xml" value="0.1" />
-        <entry key="..\:/work/g2express/1.6.4/Apps/Vendor/android/app/src/main/res/mipmap-anydpi-v26/launcher_icon.xml" value="0.1" />
-      </map>
-    </option>
-  </component>
   <component name="FrameworkDetectionExcludesConfiguration">
     <type id="android" />
   </component>

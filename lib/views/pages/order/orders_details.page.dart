@@ -25,7 +25,10 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class OrderDetailsPage extends StatelessWidget {
-  const OrderDetailsPage({this.order, Key key}) : super(key: key);
+  const OrderDetailsPage({
+    required this.order,
+    Key? key,
+  }) : super(key: key);
 
   //
   final Order order;
@@ -35,7 +38,7 @@ class OrderDetailsPage extends StatelessWidget {
     //
     return ViewModelBuilder<OrderDetailsViewModel>.reactive(
       viewModelBuilder: () => OrderDetailsViewModel(context, order),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           title: "",
@@ -116,7 +119,7 @@ class OrderDetailsPage extends StatelessWidget {
                     //attachements
                     Visibility(
                       visible: vm.order.attachments != null &&
-                          vm.order.attachments.isNotEmpty,
+                          vm.order.attachments!.isNotEmpty,
                       child: orderSection(
                         OrderAttachmentView(vm),
                         context,
@@ -138,7 +141,7 @@ class OrderDetailsPage extends StatelessWidget {
                                 VStack(
                                   [
                                     "Driver".tr().text.gray500.medium.sm.make(),
-                                    (vm.order?.driver?.name ?? "")
+                                    (vm.order.driver?.name ?? "")
                                         .text
                                         .medium
                                         .xl
@@ -147,13 +150,16 @@ class OrderDetailsPage extends StatelessWidget {
                                   ],
                                 ).expand(),
                                 //call
-                                CustomButton(
-                                  icon: FlutterIcons.phone_call_fea,
-                                  iconColor: Colors.white,
-                                  color: AppColor.primaryColor,
-                                  shapeRadius: Vx.dp20,
-                                  onPressed: vm.callDriver,
-                                ).wh(Vx.dp64, Vx.dp40).p12(),
+                                Visibility(
+                                  visible: AppUISettings.canCallDriver,
+                                  child: CustomButton(
+                                    icon: FlutterIcons.phone_call_fea,
+                                    iconColor: Colors.white,
+                                    color: AppColor.primaryColor,
+                                    shapeRadius: Vx.dp20,
+                                    onPressed: vm.callDriver,
+                                  ).wh(Vx.dp64, Vx.dp40).p12(),
+                                ),
                               ],
                             ),
 
@@ -189,15 +195,18 @@ class OrderDetailsPage extends StatelessWidget {
                                 ],
                               ).expand(),
                               //call
-                              vm.order.canChatCustomer
-                                  ? CustomButton(
-                                      icon: FlutterIcons.phone_call_fea,
-                                      iconColor: Colors.white,
-                                      color: AppColor.primaryColor,
-                                      shapeRadius: Vx.dp20,
-                                      onPressed: vm.callCustomer,
-                                    ).wh(Vx.dp64, Vx.dp40).p12()
-                                  : UiSpacer.emptySpace(),
+
+                              Visibility(
+                                visible: vm.order.canChatCustomer &&
+                                    AppUISettings.canCallDriver,
+                                child: CustomButton(
+                                  icon: FlutterIcons.phone_call_fea,
+                                  iconColor: Colors.white,
+                                  color: AppColor.primaryColor,
+                                  shapeRadius: Vx.dp20,
+                                  onPressed: vm.callCustomer,
+                                ).wh(Vx.dp64, Vx.dp40).p12(),
+                              ),
                             ],
                           ),
                           //chat btn
@@ -246,7 +255,7 @@ class OrderDetailsPage extends StatelessWidget {
                         tax: vm.order.tax,
                         vendorTax: vm.order.taxRate.toString(),
                         total: vm.order.total,
-                        fees: vm.order.fees,
+                        fees: vm.order.fees ?? [],
                       ),
                       context,
                     ),
@@ -259,7 +268,7 @@ class OrderDetailsPage extends StatelessWidget {
           //fab printing
           fab: Platform.isAndroid
               ? FloatingActionButton.extended(
-                  onPressed: vm.printOrder,
+                  onPressed: () => vm.printOrder(),
                   label: "Print".text.white.make(),
                   backgroundColor: AppColor.primaryColor,
                   icon: Icon(

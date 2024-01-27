@@ -22,4 +22,9 @@ class AppImages {
   static const deliveryVendor = "assets/images/delivery_vendor.png";
   static const pickupLocation = "assets/images/pickup_location.png";
   static const dropoffLocation = "assets/images/dropoff_location.png";
+  static const pendingDocument = "assets/images/pending-document.png";
+  static const overflowPermission = "assets/images/overflow_permission.png";
+
+  //
+  static const newOrderAlert = "assets/images/new_order.gif";
 }

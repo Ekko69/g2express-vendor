@@ -13,14 +13,14 @@ import 'package:velocity_x/velocity_x.dart';
 
 class OptionListItem extends StatelessWidget {
   const OptionListItem({
-    this.option,
+    required this.option,
     this.optionGroup,
-    this.model,
-    Key key,
+    required this.model,
+    Key? key,
   }) : super(key: key);
 
   final Option option;
-  final OptionGroup optionGroup;
+  final OptionGroup? optionGroup;
   final ProductDetailsViewModel model;
 
   @override
@@ -32,7 +32,6 @@ class OptionListItem extends StatelessWidget {
         //image/photo
         Stack(
           children: [
-
             //
             CustomImage(
               imageUrl: option.photo,
@@ -41,12 +40,17 @@ class OptionListItem extends StatelessWidget {
             ).card.clip(Clip.antiAlias).roundedSM.make(),
 
             //
-            model.isOptionSelected(option) ? Positioned(
-              top: 5, bottom: 5, left: 5, right: 5,
-              child: Icon(
-                FlutterIcons.check_ant,
-              ).box.color(AppColor.accentColor).roundedSM.make(),
-            ): UiSpacer.emptySpace(),
+            model.isOptionSelected(option)
+                ? Positioned(
+                    top: 5,
+                    bottom: 5,
+                    left: 5,
+                    right: 5,
+                    child: Icon(
+                      FlutterIcons.check_ant,
+                    ).box.color(AppColor.accentColor).roundedSM.make(),
+                  )
+                : UiSpacer.emptySpace(),
           ],
         ),
 
@@ -56,7 +60,9 @@ class OptionListItem extends StatelessWidget {
             //
             option.name.text.medium.xl.make(),
             option.description != null && option.description.isEmptyOrNull
-                ? "${option.description}".text.sm
+                ? "${option.description}"
+                    .text
+                    .sm
                     .maxLines(3)
                     .overflow(TextOverflow.ellipsis)
                     .make()

@@ -8,8 +8,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ImageSelectorView extends StatefulWidget {
-  const ImageSelectorView({this.imageUrl = "", this.onImageselected, Key key})
-      : super(key: key);
+  const ImageSelectorView({
+    this.imageUrl = "",
+    required this.onImageselected,
+    Key? key,
+  }) : super(key: key);
 
   final String imageUrl;
   final Function(File) onImageselected;
@@ -20,7 +23,7 @@ class ImageSelectorView extends StatefulWidget {
 
 class _ImageSelectorViewState extends State<ImageSelectorView> {
   //
-  File selectedFile;
+  File? selectedFile;
   final picker = ImagePicker();
 
   @override
@@ -28,16 +31,15 @@ class _ImageSelectorViewState extends State<ImageSelectorView> {
     return VStack(
       [
         //
-        Visibility(
-          visible: showImageUrl() && !showSelectedImage(),
-          child: CustomImage(
-            imageUrl: widget.imageUrl ?? "",
+        if (showImageUrl() && !showSelectedImage())
+          CustomImage(
+            imageUrl: widget.imageUrl,
           ).h20(context).wFull(context),
-        ),
+
         //
         showSelectedImage()
             ? Image.file(
-                selectedFile,
+                selectedFile!,
                 fit: BoxFit.cover,
               ).h20(context).wFull(context)
             : UiSpacer.emptySpace(),
@@ -63,7 +65,7 @@ class _ImageSelectorViewState extends State<ImageSelectorView> {
   }
 
   bool showImageUrl() {
-    return widget.imageUrl != null && widget.imageUrl.isNotBlank;
+    return widget.imageUrl.isNotBlank;
   }
 
   bool showSelectedImage() {
@@ -76,7 +78,7 @@ class _ImageSelectorViewState extends State<ImageSelectorView> {
     if (pickedFile != null) {
       selectedFile = File(pickedFile.path);
       //
-      widget.onImageselected(selectedFile);
+      widget.onImageselected(selectedFile!);
     }
   }
 }

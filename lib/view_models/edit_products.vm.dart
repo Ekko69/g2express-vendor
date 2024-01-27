@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/models/menu.dart';
@@ -23,12 +22,12 @@ class EditProductViewModel extends MyBaseViewModel {
   //
   ProductRequest productRequest = ProductRequest();
   VendorRequest vendorRequest = VendorRequest();
-  Product product;
+  late Product product;
   List<ProductCategory> categories = [];
   List<ProductCategory> subCategories = [];
   List<ProductCategory> unFilterSubCategories = [];
   List<Menu> menus = [];
-  List<File> selectedPhotos;
+  List<File> selectedPhotos = [];
 
   void initialise() {
     fetchProductCategories();
@@ -43,7 +42,7 @@ class EditProductViewModel extends MyBaseViewModel {
     try {
       categories = await productRequest.getProductCategories(
         vendorTypeId:
-            (await AuthServices.getCurrentVendor(force: true)).vendorType.id,
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
       );
       clearErrors();
     } catch (error) {
@@ -61,7 +60,7 @@ class EditProductViewModel extends MyBaseViewModel {
       unFilterSubCategories = await productRequest.getProductCategories(
         subCat: true,
         vendorTypeId:
-            (await AuthServices.getCurrentVendor(force: true)).vendorType.id,
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
       );
       clearErrors();
     } catch (error) {
@@ -96,14 +95,32 @@ class EditProductViewModel extends MyBaseViewModel {
 
   //
   processUpdateProduct() async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       //
       setBusy(true);
 
       try {
         Map<String, dynamic> productData = Map.from(
-          formBuilderKey.currentState.value,
+          formBuilderKey.currentState!.value,
         );
+
+        final categoryIds = productData["category_ids"];
+        final subCategoryIds = productData["sub_category_ids"];
+        final menuIds = productData["menu_ids"];
+        //reassing the values
+        if (categoryIds == null ||
+            (categoryIds is List && categoryIds.isEmpty)) {
+          productData["category_ids"] = "[]";
+        }
+        if (subCategoryIds == null ||
+            (subCategoryIds is List && subCategoryIds.isEmpty)) {
+          productData["sub_category_ids"] = "[]";
+        }
+        if (menuIds == null || (menuIds is List && menuIds.isEmpty)) {
+          productData["menu_ids"] = "[]";
+        }
+
+        //
         productData.addAll({
           "description": product.description,
         });
@@ -138,10 +155,11 @@ class EditProductViewModel extends MyBaseViewModel {
     }
   }
 
-  void filterSubcategories(List<String> categoryIds) {
+  void filterSubcategories(List<String?>? categoryIds) {
+    categoryIds ??= [];
     subCategories = unFilterSubCategories.where(
       (e) {
-        return categoryIds.contains(e.categoryId.toString());
+        return categoryIds!.contains(e.categoryId.toString());
       },
     ).toList();
     notifyListeners();
@@ -152,7 +170,7 @@ class EditProductViewModel extends MyBaseViewModel {
     final result = await viewContext.push(
       (context) => CustomTextEditorPage(
         title: "Product Description".tr(),
-        content: product.description,
+        content: product.description ?? "",
       ),
     );
     //

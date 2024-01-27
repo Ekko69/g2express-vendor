@@ -6,7 +6,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ServiceDetailsBottomSheet extends StatelessWidget {
-  const ServiceDetailsBottomSheet(this.vm, {Key key}) : super(key: key);
+  const ServiceDetailsBottomSheet(this.vm, {Key? key}) : super(key: key);
   final ServiceDetailsViewModel vm;
   @override
   Widget build(BuildContext context) {

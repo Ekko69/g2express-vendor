@@ -6,13 +6,17 @@ import 'package:fuodz/widgets/buttons/custom_button.dart';
 import 'package:fuodz/widgets/custom_grid_view.dart';
 import 'package:fuodz/widgets/custom_image.view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class MultipleImageSelectorView extends StatefulWidget {
-  const MultipleImageSelectorView({this.photos, this.onImagesSelected, Key key})
-      : super(key: key);
+  const MultipleImageSelectorView({
+    this.photos,
+    required this.onImagesSelected,
+    Key? key,
+  }) : super(key: key);
 
-  final List<String> photos;
+  final List<String>? photos;
   final Function(List<File>) onImagesSelected;
 
   @override
@@ -22,7 +26,7 @@ class MultipleImageSelectorView extends StatefulWidget {
 
 class _MultipleImageSelectorViewState extends State<MultipleImageSelectorView> {
   //
-  List<File> selectedFiles;
+  List<File>? selectedFiles = [];
   final picker = ImagePicker();
 
   @override
@@ -30,30 +34,29 @@ class _MultipleImageSelectorViewState extends State<MultipleImageSelectorView> {
     return VStack(
       [
         //
-        Visibility(
-          visible: showImageUrl() && !showSelectedImage(),
-          child: CustomGridView(
+        if (showImageUrl() && !showSelectedImage())
+          CustomGridView(
             noScrollPhysics: true,
-            dataSet: widget.photos,
+            dataSet: widget.photos ?? [],
             crossAxisCount: 2,
             crossAxisSpacing: 10,
             itemBuilder: (context, index) {
-              final photo = widget.photos[index];
+              final photo = widget.photos![index];
               return CustomImage(
-                imageUrl: photo ?? "",
+                imageUrl: photo,
               ).h20(context).wFull(context);
             },
           ),
-        ),
+
         //
         showSelectedImage()
             ? CustomGridView(
-              noScrollPhysics: true,
+                noScrollPhysics: true,
                 dataSet: selectedFiles ?? [],
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 itemBuilder: (context, index) {
-                  final file = selectedFiles[index];
+                  final file = selectedFiles![index];
                   return Image.file(
                     file,
                     fit: BoxFit.cover,
@@ -66,7 +69,7 @@ class _MultipleImageSelectorViewState extends State<MultipleImageSelectorView> {
           // visible: !showImageUrl() && !showSelectedImage(),
           visible: true,
           child: CustomButton(
-            title: "Select a photo",
+            title: "Select a photo".tr(),
             onPressed: pickNewPhoto,
           ).centered(),
         ),
@@ -83,7 +86,7 @@ class _MultipleImageSelectorViewState extends State<MultipleImageSelectorView> {
   }
 
   bool showImageUrl() {
-    return widget.photos != null && widget.photos.isNotEmpty;
+    return widget.photos != null && widget.photos!.isNotEmpty;
   }
 
   bool showSelectedImage() {
@@ -92,14 +95,16 @@ class _MultipleImageSelectorViewState extends State<MultipleImageSelectorView> {
 
   //
   pickNewPhoto() async {
-    final pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
+    try {
+      final pickedFiles = await picker.pickMultiImage();
       setState(() {
         selectedFiles = pickedFiles.map((e) => File(e.path)).toList();
       });
       //
-      widget.onImagesSelected(selectedFiles);
+      widget.onImagesSelected(selectedFiles!);
       showSelectedImage();
+    } catch (error) {
+      print(error);
     }
   }
 }

@@ -6,12 +6,12 @@ import 'package:velocity_x/velocity_x.dart';
 class QrcodeScannerTrait {
   //scanning
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Barcode result;
-  QRViewController controller;
+  late Barcode result;
+  late QRViewController? controller;
   bool flashEnabled = false;
 
   //
-  Future<String> openScanner(BuildContext viewContext) async {
+  Future<String?> openScanner(BuildContext viewContext) async {
     final result = await showDialog(
       context: viewContext,
       builder: (context) {
@@ -38,7 +38,7 @@ class QrcodeScannerTrait {
                     value: flashEnabled,
                     onChanged: (value) {
                       flashEnabled = value;
-                      controller.toggleFlash();
+                      controller?.toggleFlash();
                     },
                   ),
                 ],
@@ -53,9 +53,7 @@ class QrcodeScannerTrait {
 
     //
     print("Results ==> $result");
-    if (controller != null) {
-      controller.stopCamera();
-    }
+    controller?.stopCamera();
     //
     FocusScope.of(viewContext).requestFocus(FocusNode());
     return result;

@@ -9,11 +9,14 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class FullImagePreviewPage extends StatelessWidget {
-  const FullImagePreviewPage(this.imageUrl, {this.boxFit, Key key})
-      : super(key: key);
+  const FullImagePreviewPage(
+    this.imageUrl, {
+    this.boxFit,
+    Key? key,
+  }) : super(key: key);
 
   final String imageUrl;
-  final BoxFit boxFit;
+  final BoxFit? boxFit;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +25,7 @@ class FullImagePreviewPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-      //header
+            //header
             HStack(
               [
                 //

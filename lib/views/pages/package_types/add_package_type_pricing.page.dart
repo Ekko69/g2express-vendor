@@ -11,13 +11,13 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NewPackagePricingPage extends StatelessWidget {
-  const NewPackagePricingPage({Key key}) : super(key: key);
+  const NewPackagePricingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ManagePackageTypePricingViewModel>.reactive(
       viewModelBuilder: () => ManagePackageTypePricingViewModel(context, null),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showLeadingAction: true,

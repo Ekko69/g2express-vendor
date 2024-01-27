@@ -13,11 +13,11 @@ class PayoutViewModel extends MyBaseViewModel {
   //
 
   PaymentAccountRequest paymentAccountRequest = PaymentAccountRequest();
-  Currency currency;
-  Earning earning;
+  Currency? currency;
+  Earning? earning;
   bool showPayout = false;
-  List<PaymentAccount> paymentAccounts = [];
-  PaymentAccount selectedPaymentAccount;
+  List<PaymentAccount>? paymentAccounts = [];
+  PaymentAccount? selectedPaymentAccount;
   TextEditingController amountTEC = TextEditingController();
   double totalEarningAmount;
 
@@ -30,9 +30,8 @@ class PayoutViewModel extends MyBaseViewModel {
   }
 
   void fetchPaymentAccounts() async {
-    
     //
-    if (paymentAccounts != null && paymentAccounts.isNotEmpty) {
+    if (paymentAccounts != null && paymentAccounts!.isNotEmpty) {
       return;
     }
     //
@@ -47,19 +46,18 @@ class PayoutViewModel extends MyBaseViewModel {
     setBusyForObject(paymentAccounts, false);
   }
 
-
   processPayoutRequest() async {
     //
     if (selectedPaymentAccount == null) {
       toastError("Please select payment account".tr());
       //
-    } else if (formKey.currentState.validate()) {
+    } else if (formKey.currentState!.validate()) {
       setBusyForObject(selectedPaymentAccount, true);
       //
       final apiResponse = await paymentAccountRequest.requestPayout(
         {
           "amount": amountTEC.text,
-          "payment_account_id": selectedPaymentAccount.id,
+          "payment_account_id": selectedPaymentAccount?.id,
           "vendor_id": (await AuthServices.getCurrentUser()).vendor_id,
         },
       );

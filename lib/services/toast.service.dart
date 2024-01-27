@@ -16,7 +16,7 @@ class ToastService {
     );
   }
 
-  static toastError(String msg, {Toast length}) {
+  static toastError(String msg, {Toast? length}) {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: length ?? Toast.LENGTH_SHORT,

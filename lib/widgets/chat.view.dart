@@ -8,7 +8,7 @@
 
 // class ChatBody extends BaseChat {
 //   ChatBody({
-//     @required ChatEntity entity,
+//     required ChatEntity entity,
 //   }) : super(entity);
 
 //   @override

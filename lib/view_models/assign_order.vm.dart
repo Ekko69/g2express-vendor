@@ -7,7 +7,7 @@ class AssignOrderViewModel extends MyBaseViewModel {
   UserRequest userRequest = UserRequest();
   List<User> drivers = [];
   List<User> unfilteredDrivers = [];
-  int selectedDriverId;
+  int? selectedDriverId;
 
   void initialise() {
     fetchDrivers();
@@ -39,7 +39,7 @@ class AssignOrderViewModel extends MyBaseViewModel {
   }
 
   //
-  changeSelectedDriver(int driverId) {
+  changeSelectedDriver(int? driverId) {
     selectedDriverId = driverId;
     notifyListeners();
   }

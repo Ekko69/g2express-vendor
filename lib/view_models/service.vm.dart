@@ -38,7 +38,7 @@ class ServiceViewModel extends MyBaseViewModel {
     try {
       final mServices = await _serviceRequest.getServices(
         queryParams: {
-          "vendor_id": await AuthServices.currentVendor.id,
+          "vendor_id": await AuthServices.currentVendor?.id,
         },
         page: queryPage,
       );
@@ -74,7 +74,6 @@ class ServiceViewModel extends MyBaseViewModel {
   }
 
   void newPackageTypePricing() async {
-    
     final result = await viewContext.push((context) => NewServicePage());
     if (result != null) {
       fetchMyServices();

@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:dartx/dartx.dart';
 import 'package:fuodz/models/category.dart';
 import 'package:fuodz/models/delivery_address.dart';
 import 'package:fuodz/models/delivery_slot.dart';
@@ -14,71 +15,68 @@ import 'package:random_string/random_string.dart';
 
 class Vendor {
   Vendor({
-    this.id,
-    this.vendorType,
-    this.name,
-    this.description,
-    this.baseDeliveryFee,
-    this.deliveryFee,
-    this.deliveryRange,
-    this.tax,
-    this.phone,
-    this.email,
-    this.address,
-    this.latitude,
-    this.longitude,
-    this.comission,
-    this.pickup,
-    this.delivery,
-    this.rating,
-    this.chargePerKm,
-    this.isOpen,
-    this.isActive,
-    this.createdAt,
-    this.updatedAt,
-    this.formattedDate,
-    this.logo,
-    this.featureImage,
-    this.menus,
-    this.categories,
-    this.packageTypesPricing,
-    this.cities,
-    this.states,
-    this.countries,
-    this.deliverySlots,
-    this.canRate,
-    this.allowScheduleOrder,
-    this.hasSubcategories,
-    this.useSubscription,
-    this.hasSubscription,
+    required this.id,
+    required this.vendorType,
+    required this.name,
+    required this.description,
+    required this.baseDeliveryFee,
+    required this.deliveryFee,
+    required this.deliveryRange,
+    required this.tax,
+    required this.phone,
+    required this.email,
+    required this.address,
+    required this.latitude,
+    required this.longitude,
+    required this.comission,
+    required this.pickup,
+    required this.delivery,
+    required this.rating,
+    required this.chargePerKm,
+    required this.isOpen,
+    required this.isActive,
+    required this.logo,
+    required this.featureImage,
+    this.menus = const [],
+    this.categories = const [],
+    this.packageTypesPricing = const [],
+    this.cities = const [],
+    this.states = const [],
+    this.countries = const [],
+    this.deliverySlots = const [],
+    required this.canRate,
+    required this.allowScheduleOrder,
+    required this.hasSubcategories,
+    required this.useSubscription,
+    required this.hasSubscription,
+    //
+    this.documentRequested = false,
+    this.pendingDocumentApproval = false,
   }) {
     this.heroTag = randomAlphaNumeric(15) + "$id";
   }
 
   int id;
-  VendorType vendorType;
-  String heroTag;
+  VendorType? vendorType;
+  String? heroTag;
   String name;
   String description;
   double baseDeliveryFee;
   double deliveryFee;
-  double deliveryRange;
+  double? deliveryRange;
   String tax;
   String phone;
   String email;
-  String address;
-  String latitude;
-  String longitude;
-  double comission;
+  String? address;
+  String? latitude;
+  String? longitude;
+  double? comission;
   int pickup;
   int delivery;
   int rating;
   int chargePerKm;
   bool isOpen;
   int isActive;
-  DateTime createdAt;
-  DateTime updatedAt;
-  String formattedDate;
   String logo;
   String featureImage;
   List<Menu> menus;
@@ -93,6 +91,9 @@ class Vendor {
   bool hasSubcategories;
   bool useSubscription;
   bool hasSubscription;
+  //
+  bool documentRequested;
+  bool pendingDocumentApproval;
 
   factory Vendor.fromRawJson(String str) => Vendor.fromJson(json.decode(str));
 
@@ -127,23 +128,15 @@ class Vendor {
       pickup: json["pickup"] == null ? 0 : int.parse(json["pickup"].toString()),
       delivery:
           json["delivery"] == null ? 0 : int.parse(json["delivery"].toString()),
-      rating:
-          json["rating"] == null ? null : int.parse(json["rating"].toString()),
+      rating: int.tryParse(json["rating"].toString()) ?? 0,
       chargePerKm: json["charge_per_km"] == null
-          ? null
+          ? 0
           : int.parse(json["charge_per_km"].toString()),
       isOpen: json["is_open"] == null ? true : json["is_open"],
       isActive: json["is_active"] == null
-          ? null
+          ? 0
           : int.parse(json["is_active"].toString()),
-      createdAt: json["created_at"] == null
-          ? null
-          : DateTime.parse(json["created_at"]),
-      updatedAt: json["updated_at"] == null
-          ? null
-          : DateTime.parse(json["updated_at"]),
-      formattedDate:
-          json["formatted_date"] == null ? null : json["formatted_date"],
+
       logo: json["logo"] == null ? null : json["logo"],
       featureImage:
           json["feature_image"] == null ? null : json["feature_image"],
@@ -186,109 +179,104 @@ class Vendor {
           json["has_subscription"] == null ? false : json["has_subscription"],
       useSubscription:
           json["use_subscription"] == null ? false : json["use_subscription"],
+      //
+      documentRequested: json["document_requested"] == null
+          ? false
+          : json["document_requested"],
+      pendingDocumentApproval: json["pending_document_approval"] == null
+          ? false
+          : json["pending_document_approval"],
     );
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id == null ? null : id,
-        "name": name == null ? null : name,
-        "description": description == null ? null : description,
+        "id": id,
+        "name": name,
+        "description": description,
         "base_delivery_fee": baseDeliveryFee,
-        "delivery_fee": deliveryFee == null ? null : deliveryFee,
+        "delivery_fee": deliveryFee,
         "delivery_range": deliveryRange == null ? null : deliveryRange,
-        "tax": tax == null ? null : tax,
-        "phone": phone == null ? null : phone,
-        "email": email == null ? null : email,
-        "address": address == null ? null : address,
-        "latitude": latitude == null ? null : latitude,
-        "longitude": longitude == null ? null : longitude,
+        "tax": tax,
+        "phone": phone,
+        "email": email,
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
         "comission": comission == null ? null : comission,
         "pickup": pickup,
         "delivery": delivery,
-        "rating": rating == null ? null : rating,
-        "charge_per_km": chargePerKm == null ? null : chargePerKm,
-        "is_open": isOpen == null ? null : isOpen,
-        "is_active": isActive == null ? null : isActive,
-        "created_at": createdAt == null ? null : createdAt.toIso8601String(),
-        "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "formatted_date": formattedDate == null ? null : formattedDate,
-        "logo": logo == null ? null : logo,
-        "feature_image": featureImage == null ? null : featureImage,
-        "can_rate": canRate == null ? null : canRate,
+        "rating": rating,
+        "charge_per_km": chargePerKm,
+        "is_open": isOpen,
+        "is_active": isActive,
+        "logo": logo,
+        "feature_image": featureImage,
+        "can_rate": canRate,
         "allow_schedule_order": allowScheduleOrder,
-        "vendor_type": vendorType == null ? null : vendorType.toJson(),
+        "vendor_type": vendorType == null ? null : vendorType?.toJson(),
         "menus": List<dynamic>.from(menus.map((x) => x.toJson())),
         "categories": List<dynamic>.from(categories.map((x) => x.toJson())),
-        "package_types_pricing": packageTypesPricing == null
-            ? null
-            : List<dynamic>.from(packageTypesPricing.map((x) => x.toJson())),
-        "slots": deliverySlots == null
-            ? null
-            : List<dynamic>.from(deliverySlots.map((x) => x.toJson())),
+        "package_types_pricing":
+            List<dynamic>.from(packageTypesPricing.map((x) => x.toJson())),
+        "slots": List<dynamic>.from(deliverySlots.map((x) => x.toJson())),
         'has_subscription': hasSubscription,
         'use_subscription': useSubscription,
+        "document_requested": documentRequested,
+        "pending_document_approval": pendingDocumentApproval,
       };
 
   //
   bool get allowOnlyDelivery => delivery == 1 && pickup == 0;
   bool get allowOnlyPickup => delivery == 0 && pickup == 1;
   bool get isPackageType {
-    return (vendorType != null && vendorType.slug == "parcel");
+    return (vendorType != null && vendorType?.slug == "parcel");
   }
 
   bool get isServiceType {
-    return (vendorType != null && vendorType.slug == "service");
+    return (vendorType != null && vendorType?.slug == "service");
   }
 
   //
   bool canServiceLocation(DeliveryAddress deliveryaddress) {
     //cities,states & countries
-    if (this.countries != null) {
-      final foundCountry = this.countries.firstWhere(
-            (element) =>
-                element.toLowerCase() ==
-                "${deliveryaddress.country}".toLowerCase(),
-            orElse: () => null,
-          );
 
-      //
-      if (foundCountry != null) {
-        print("Country found");
-        return true;
-      }
+    final foundCountry = this.countries.firstOrNullWhere(
+          (element) =>
+              element.toLowerCase() ==
+              "${deliveryaddress.country}".toLowerCase(),
+        );
+
+    //
+    if (foundCountry != null) {
+      print("Country found");
+      return true;
     }
 
     //states
-    if (this.states != null) {
-      final foundState = this.states.firstWhere(
-            (element) =>
-                element.toLowerCase() ==
-                "${deliveryaddress.state}".toLowerCase(),
-            orElse: () => null,
-          );
+    final foundState = this.states.firstOrNullWhere(
+          (element) =>
+              element.toLowerCase() == "${deliveryaddress.state}".toLowerCase(),
+        );
 
-      //
-      if (foundState != null) {
-        print("state found");
-        return true;
-      }
+    //
+    if (foundState != null) {
+      print("state found");
+      return true;
     }
 
     //cities
-    if (this.cities != null) {
-      final foundCity = this.cities.firstWhere(
-        (element) {
-          return element.toLowerCase() == deliveryaddress.city.toLowerCase();
-        },
-        orElse: () => null,
-      );
+    final foundCity = this.cities.firstOrNullWhere(
+      (element) {
+        return element.toLowerCase() == deliveryaddress.city.toLowerCase();
+      },
+    );
 
-      //
-      if (foundCity != null) {
-        print("city found");
-        return true;
-      }
+    //
+    if (foundCity != null) {
+      print("city found");
+      return true;
     }
+
     return false;
   }
 }

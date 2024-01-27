@@ -32,7 +32,7 @@ class LoginViewModel extends MyBaseViewModel with QrcodeScannerTrait {
 
   void processLogin() async {
     // Validate returns true if the form is valid, otherwise false.
-    if (formKey.currentState.validate()) {
+    if (formKey.currentState!.validate()) {
       //
 
       setBusy(true);
@@ -92,7 +92,7 @@ class LoginViewModel extends MyBaseViewModel with QrcodeScannerTrait {
         await AuthServices.saveVendor(apiResponse.body["vendor"]);
         await AuthServices.setAuthBearerToken(apiResponse.body["token"]);
         await AuthServices.isAuthenticated();
-        viewContext.navigator.pushNamedAndRemoveUntil(
+        Navigator.of(viewContext).pushNamedAndRemoveUntil(
           AppRoutes.homeRoute,
           (route) => false,
         );
@@ -115,7 +115,7 @@ class LoginViewModel extends MyBaseViewModel with QrcodeScannerTrait {
   }
 
   void openForgotPassword() {
-    viewContext.navigator.pushNamed(
+    Navigator.of(viewContext).pushNamed(
       AppRoutes.forgotPasswordRoute,
     );
   }

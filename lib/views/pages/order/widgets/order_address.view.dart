@@ -10,7 +10,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class OrderAddressView extends StatelessWidget {
-  const OrderAddressView(this.vm, {Key key}) : super(key: key);
+  const OrderAddressView(this.vm, {Key? key}) : super(key: key);
   final OrderDetailsViewModel vm;
   @override
   Widget build(BuildContext context) {
@@ -23,13 +23,13 @@ class OrderAddressView extends StatelessWidget {
                   //pickup location routing
                   ParcelOrderStopListView(
                     "Pickup Location".tr(),
-                    vm.order.orderStops.first,
+                    vm.order.orderStops!.first,
                     canCall: vm.order.canChatCustomer,
                     routeToLocation: vm.routeToLocation,
                   ),
 
                   //stops
-                  ...(vm.order.orderStops.sublist(1).mapIndexed((stop, index) {
+                  ...(vm.order.orderStops!.sublist(1).mapIndexed((stop, index) {
                     return ParcelOrderStopListView(
                       "Stop".tr() + " ${index + 1}",
                       stop,
@@ -60,8 +60,8 @@ class OrderAddressView extends StatelessWidget {
                   //
                   VStack(
                     [
-                      vm.order.vendor.address != null
-                          ? vm.order.vendor.address.text.make()
+                      vm.order.vendor?.address != null
+                          ? "${vm.order.vendor?.address}".text.make()
                           : UiSpacer.emptySpace(),
                     ],
                   ),
@@ -82,10 +82,11 @@ class OrderAddressView extends StatelessWidget {
                   VStack(
                     [
                       vm.order.deliveryAddress != null
-                          ? vm.order.deliveryAddress.address.text.make()
+                          ? "${vm.order.deliveryAddress?.address}".text.make()
                           : UiSpacer.emptySpace(),
                       vm.order.deliveryAddress != null
-                          ? vm.order.deliveryAddress.name.text
+                          ? "${vm.order.deliveryAddress?.name}"
+                              .text
                               .color(Vx.gray400)
                               .sm
                               .light
@@ -97,19 +98,16 @@ class OrderAddressView extends StatelessWidget {
                 crossAlignment: CrossAxisAlignment.start,
               ),
               //delivery address route
-              Visibility(
-                visible: !vm.order.canChatCustomer &&
-                    vm.order.deliveryAddress != null,
-                child: CustomButton(
+              if (!vm.order.canChatCustomer && vm.order.deliveryAddress != null)
+                CustomButton(
                   icon: FlutterIcons.navigation_fea,
                   iconSize: 12,
                   iconColor: Colors.white,
                   color: AppColor.primaryColor,
                   shapeRadius: Vx.dp20,
                   onPressed: () =>
-                      vm.routeToLocation(vm.order?.deliveryAddress),
+                      vm.routeToLocation(vm.order.deliveryAddress!),
                 ).wh(Vx.dp56, Vx.dp24).p12(),
-              ),
             ],
           ),
         ),

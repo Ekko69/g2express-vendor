@@ -24,10 +24,7 @@ class PackageTypePricingRequest extends HttpService {
   Future<ApiResponse> newPricing(Map<String, dynamic> data) async {
     final apiResult = await post(
       Api.packagePricing,
-      {
-        ...data,
-        "vendor_id": AuthServices.currentVendor.id
-      } ,
+      {...data, "vendor_id": AuthServices.currentVendor?.id},
     );
     //
     return ApiResponse.fromResponse(apiResult);
@@ -36,9 +33,8 @@ class PackageTypePricingRequest extends HttpService {
   //
   Future<ApiResponse> updateDetails(
     PackageTypePricing packageTypePricing, {
-    Map<String, dynamic> data = null,
+    Map<String, dynamic>? data,
   }) async {
-    
     final apiResult = await patch(
       Api.packagePricing + "/${packageTypePricing.id}",
       data == null ? packageTypePricing.toJson() : data,

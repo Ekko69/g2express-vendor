@@ -14,19 +14,19 @@ String packageTypePricingToJson(PackageTypePricing data) =>
 
 class PackageTypePricing {
   PackageTypePricing({
-    this.id,
-    this.isActive,
-    this.vendorId,
-    this.packageTypeId,
-    this.maxBookingDays,
-    this.sizePrice,
-    this.pricePerKg,
-    this.distancePrice,
-    this.basePrice,
-    this.pricePerKm,
-    this.packageType,
-    this.autoReady,
-    this.extraFields,
+    required this.id,
+    required this.isActive,
+    required this.vendorId,
+    required this.packageTypeId,
+    required this.maxBookingDays,
+    required this.sizePrice,
+    required this.pricePerKg,
+    required this.distancePrice,
+    required this.basePrice,
+    required this.pricePerKm,
+    required this.packageType,
+    required this.autoReady,
+    required this.extraFields,
   });
 
   int id;
@@ -35,57 +35,48 @@ class PackageTypePricing {
   int packageTypeId;
   int maxBookingDays;
   double sizePrice;
-  int pricePerKg;
+  double pricePerKg;
   double distancePrice;
   double basePrice;
-  int pricePerKm;
+  double pricePerKm;
   PackageType packageType;
   bool autoReady;
   bool extraFields;
 
   factory PackageTypePricing.fromJson(Map<String, dynamic> json) {
     return PackageTypePricing(
-        id: json["id"] == null ? null : json["id"],
-        vendorId: json["vendor_id"] == null ? null : json["vendor_id"],
-        autoReady:
-            (json["auto_assignment"] == null || json["auto_assignment"] == 0)
-                ? false
-                : true,
-        extraFields:
-            json["field_required"] == null ? false : json["field_required"],
-        isActive: json["is_active"],
-        packageTypeId:
-            json["package_type_id"] == null ? null : json["package_type_id"],
-        maxBookingDays:
-            json["max_booking_days"] == null ? null : json["max_booking_days"],
-        sizePrice: json["size_price"] == null
-            ? null
-            : double.parse(json["size_price"].toString()),
-        pricePerKg: json["price_per_kg"] == null
-            ? null
-            : int.parse(json["price_per_kg"].toString()),
-        distancePrice: json["distance_price"] == null
-            ? null
-            : double.parse(json["distance_price"].toString()),
-        basePrice: json["base_price"] == null
-            ? 0.00
-            : double.parse(json["base_price"].toString()),
-        pricePerKm: json["price_per_km"] == null
-            ? null
-            : int.parse(json["price_per_km"].toString()),
-        packageType: PackageType.fromJson(json["package_type"]));
+      id: json["id"] == null ? null : json["id"],
+      vendorId: json["vendor_id"] == null ? null : json["vendor_id"],
+      autoReady:
+          (json["auto_assignment"] == null || json["auto_assignment"] == 0)
+              ? false
+              : true,
+      extraFields:
+          json["field_required"] == null ? false : json["field_required"],
+      isActive: json["is_active"],
+      packageTypeId:
+          json["package_type_id"] == null ? null : json["package_type_id"],
+      maxBookingDays:
+          json["max_booking_days"] == null ? null : json["max_booking_days"],
+      sizePrice: double.tryParse(json["size_price"].toString()) ?? 0,
+      pricePerKg: double.tryParse(json["price_per_kg"].toString()) ?? 0,
+      distancePrice: double.tryParse(json["distance_price"].toString()) ?? 0,
+      pricePerKm: double.tryParse(json["price_per_km"].toString()) ?? 0,
+      basePrice: double.tryParse(json["base_price"].toString()) ?? 0.00,
+      packageType: PackageType.fromJson(json["package_type"]),
+    );
   }
   Map<String, dynamic> toJson() => {
-        "id": id == null ? null : id,
-        "vendor_id": vendorId == null ? null : vendorId,
-        "package_type_id": packageTypeId == null ? null : packageTypeId,
-        "max_booking_days": maxBookingDays == null ? null : maxBookingDays,
-        "size_price": sizePrice == null ? null : sizePrice,
-        "price_per_kg": pricePerKg == null ? null : pricePerKg,
-        "distance_price": distancePrice == null ? null : distancePrice,
+        "id": id,
+        "vendor_id": vendorId,
+        "package_type_id": packageTypeId,
+        "max_booking_days": maxBookingDays,
+        "size_price": sizePrice,
+        "price_per_kg": pricePerKg,
+        "distance_price": distancePrice,
         "base_price": basePrice,
         "is_active": isActive,
-        "price_per_km": pricePerKm == null ? null : pricePerKm,
+        "price_per_km": pricePerKm,
         "package_type": packageType,
       };
 }

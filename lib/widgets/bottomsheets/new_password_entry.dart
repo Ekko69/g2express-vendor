@@ -7,7 +7,11 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NewPasswordEntry extends StatefulWidget {
-  const NewPasswordEntry({this.onSubmit, this.vm, Key key}) : super(key: key);
+  const NewPasswordEntry({
+    required this.onSubmit,
+    required this.vm,
+    Key? key,
+  }) : super(key: key);
 
   final Function(String) onSubmit;
   final ForgotPasswordViewModel vm;
@@ -42,7 +46,7 @@ class _NewPasswordEntryState extends State<NewPasswordEntry> {
             title: "Reset Password".tr(),
             loading: widget.vm.isBusy,
             onPressed: () {
-              if (resetFormKey.currentState.validate()) {
+              if (resetFormKey.currentState!.validate()) {
                 widget.onSubmit(widget.vm.passwordTEC.text);
               }
             },

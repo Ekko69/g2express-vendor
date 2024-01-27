@@ -14,79 +14,67 @@ String ServiceToJson(Service data) => json.encode(data.toJson());
 
 class Service {
   Service({
-    this.id,
-    this.name,
-    this.description,
-    this.price,
-    this.discountPrice,
-    this.duration,
-    this.location,
-    this.isActive,
-    this.vendorId,
-    this.categoryId,
-    this.subcategoryId,
-    this.createdAt,
-    this.updatedAt,
-    this.formattedDate,
-    this.vendor,
-    this.category,
-    this.photos,
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.discountPrice,
+    required this.duration,
+    required this.location,
+    required this.isActive,
+    required this.vendorId,
+    required this.categoryId,
+    required this.subcategoryId,
+    required this.formattedDate,
+    required this.vendor,
+    required this.category,
+    required this.photos,
     this.selectedQty,
   }) {
     this.heroTag = randomAlphaNumeric(15) + "$id";
   }
 
   int id;
-  String heroTag;
+  String? heroTag;
   String name;
-  String description;
+  String? description;
   double price;
   double discountPrice;
   String duration;
   int location;
   int isActive;
-  int vendorId;
-  int categoryId;
-  int subcategoryId;
-  DateTime createdAt;
-  DateTime updatedAt;
+  int? vendorId;
+  int? categoryId;
+  int? subcategoryId;
   String formattedDate;
-  Vendor vendor;
-  Category category;
+  Vendor? vendor;
+  Category? category;
   List<String> photos;
-  int selectedQty;
+  int? selectedQty;
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
       id: json["id"] == null ? null : json["id"],
       name: json["name"] == null ? null : json["name"],
       description: json["description"] == null ? "" : json["description"],
-      price:
-          json["price"] == null ? null : double.parse(json["price"].toString()),
+      price: double.tryParse(json["price"].toString()) ?? 0,
       discountPrice: json["discount_price"] == null
-          ? null
+          ? 0
           : double.parse(json["discount_price"].toString()),
       duration: json["duration"],
       location: json["location"] == null
           ? 0
           : (json["location"] is bool)
               ? (json["location"] ? 1 : 0)
-              : int.parse(json["location"].toString()) ?? 0,
-      isActive: json["is_active"] == null
-          ? null
-          : int.parse(json["is_active"].toString()),
+              : int.tryParse(json["location"].toString()) ?? 0,
+      isActive: int.tryParse(json["is_active"].toString()) ?? 0,
       vendorId: json["vendor_id"] == null
           ? null
           : int.parse(json["vendor_id"].toString()),
       categoryId: json["category_id"] == null ? null : json["category_id"],
       subcategoryId:
           json["subcategory_id"] == null ? null : json["subcategory_id"],
-      createdAt: json["created_at"] == null
-          ? null
-          : DateTime.parse(json["created_at"]),
-      updatedAt: json["updated_at"] == null
-          ? null
-          : DateTime.parse(json["updated_at"]),
+
       formattedDate:
           json["formatted_date"] == null ? null : json["formatted_date"],
       vendor: json["vendor"] == null ? null : Vendor.fromJson(json["vendor"]),
@@ -103,25 +91,23 @@ class Service {
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id == null ? null : id,
-        "name": name == null ? null : name,
-        "description": description == null ? null : description,
-        "price": price == null ? null : price,
-        "discount_price": discountPrice == null ? null : discountPrice,
+        "id": id,
+        "name": name,
+        "description": description,
+        "price": price,
+        "discount_price": discountPrice,
         "duration": duration,
         "location": location,
-        "is_active": isActive == null ? null : isActive,
+        "is_active": isActive,
         "vendor_id": vendorId == null ? null : vendorId,
-        "category_id": categoryId == null ? null : categoryId,
+        "category_id": categoryId,
         "subcategory_id": subcategoryId,
-        "created_at": createdAt == null ? null : createdAt.toIso8601String(),
-        "updated_at": updatedAt == null ? null : updatedAt.toIso8601String(),
-        "formatted_date": formattedDate == null ? null : formattedDate,
-        "vendor": vendor == null ? null : vendor.toJson(),
+        "formatted_date": formattedDate,
+        "vendor": vendor == null ? null : vendor?.toJson(),
         "category": category?.toJson(),
       };
 
   //getters
-  get showDiscount => discountPrice > 0.00;
+  bool get showDiscount => discountPrice > 0.00;
   bool get isPerHour => duration == "hour";
 }

@@ -6,7 +6,10 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class VendorSalesChart extends StatelessWidget {
-  const VendorSalesChart({this.vm, Key key}) : super(key: key);
+  const VendorSalesChart({
+    required this.vm,
+    Key? key,
+  }) : super(key: key);
 
   final VendorDetailsViewModel vm;
 

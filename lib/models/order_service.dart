@@ -19,14 +19,16 @@ class OrderService {
     this.orderId,
     this.serviceId,
     this.service,
+    this.options,
   });
 
-  int id;
-  int hours;
-  double price;
-  int orderId;
-  int serviceId;
-  Service service;
+  int? id;
+  int? hours;
+  double? price;
+  int? orderId;
+  int? serviceId;
+  Service? service;
+  String? options;
 
   factory OrderService.fromJson(Map<String, dynamic> json) {
     return OrderService(
@@ -42,6 +44,7 @@ class OrderService {
           : int.parse(json["service_id"].toString()),
       service:
           json["service"] == null ? null : Service.fromJson(json["service"]),
+      options: json["options"] == null ? "" : json["options"],
     );
   }
 
@@ -51,6 +54,7 @@ class OrderService {
         "hours": hours,
         "order_id": orderId,
         "service_id": serviceId,
-        "service": service.toJson(),
+        "service": service?.toJson(),
+        "options": options,
       };
 }

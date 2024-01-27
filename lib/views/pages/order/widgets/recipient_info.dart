@@ -8,9 +8,9 @@ import 'package:velocity_x/velocity_x.dart';
 
 class RecipientInfo extends StatelessWidget {
   const RecipientInfo({
-    this.callRecipient,
-    this.order,
-    Key key,
+    required this.callRecipient,
+    required this.order,
+    Key? key,
   }) : super(key: key);
 
   final Function callRecipient;
@@ -18,14 +18,14 @@ class RecipientInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return order.recipientName != null && order.recipientName.isNotBlank
+    return order.recipientName != null && order.recipientName!.isNotBlank
         ? HStack(
             [
               //
               VStack(
                 [
                   "Recipient Name".tr().text.gray500.medium.sm.make(),
-                  order.recipientName.text.medium.xl
+                  order.recipientName!.text.medium.xl
                       .make()
                       .pOnly(bottom: Vx.dp20),
                 ],

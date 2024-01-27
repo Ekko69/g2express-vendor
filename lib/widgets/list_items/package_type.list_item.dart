@@ -5,9 +5,12 @@ import 'package:fuodz/widgets/custom_image.view.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class PackageTypeListItem extends StatelessWidget {
-  const PackageTypeListItem(
-      {this.packageType, this.selected = false, this.onPressed, Key key})
-      : super(key: key);
+  const PackageTypeListItem({
+    required this.packageType,
+    this.selected = false,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
 
   final PackageType packageType;
   final bool selected;
@@ -34,12 +37,14 @@ class PackageTypeListItem extends StatelessWidget {
       // alignment: MainAxisAlignment.start,
     )
         .p12()
-        .onInkTap(onPressed)
+        .onInkTap(
+          () => onPressed(),
+        )
         .box
         // .color(context.cardColor)
         .roundedSM
         .border(
-          color: selected ? AppColor.primaryColor : Colors.grey[300],
+          color: selected ? AppColor.primaryColor : Colors.grey.shade300,
           width: selected ? 3 : 2,
         )
         .make();

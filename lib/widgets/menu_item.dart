@@ -10,16 +10,16 @@ class MenuItem extends StatelessWidget {
     this.topDivider = false,
     this.suffix,
     this.onPressed,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   //
-  final String title;
-  final Widget child;
+  final String? title;
+  final Widget? child;
   final bool divider;
   final bool topDivider;
-  final Widget suffix;
-  final Function onPressed;
+  final Widget? suffix;
+  final Function? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class MenuItem extends StatelessWidget {
         HStack(
           [
             //
-            (child ?? title.text.lg.light.make()).expand(),
+            (child ?? "$title".text.lg.light.make()).expand(),
             //
             suffix ??
                 Icon(
@@ -55,6 +55,8 @@ class MenuItem extends StatelessWidget {
               )
             : SizedBox.shrink(),
       ],
-    ).onInkTap(onPressed);
+    ).onInkTap(
+      onPressed != null ? () => onPressed!() : null,
+    );
   }
 }

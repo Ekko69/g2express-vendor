@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -19,7 +18,7 @@ import 'order/orders.page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -33,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       message: "Press back again to close".tr(),
       child: ViewModelBuilder<HomeViewModel>.reactive(
         viewModelBuilder: () => HomeViewModel(context),
-        onModelReady: (model) => model.initialise(),
+        onViewModelReady: (model) => model.initialise(),
         builder: (context, model, child) {
           return BasePage(
             body: UpgradeAlert(
@@ -62,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 child: GNav(
                   gap: 8,
                   activeColor: Theme.of(context).primaryColor,
-                  color: Theme.of(context).textTheme.bodyLarge.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                   iconSize: 24,
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   duration: Duration(seconds: 2),
@@ -96,7 +95,7 @@ class _HomePageState extends State<HomePage> {
             )
                 .p16
                 .shadow
-                .color(Theme.of(context).bottomSheetTheme.backgroundColor)
+                .color(Theme.of(context).bottomSheetTheme.backgroundColor!)
                 .make(),
           );
         },

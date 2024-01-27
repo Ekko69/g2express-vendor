@@ -8,8 +8,8 @@ class ParcelVendorListItem extends StatelessWidget {
   const ParcelVendorListItem(
     this.vendor, {
     this.selected = false,
-    this.onPressed,
-    Key key,
+    required this.onPressed,
+    Key? key,
   }) : super(key: key);
 
   final Vendor vendor;
@@ -37,12 +37,12 @@ class ParcelVendorListItem extends StatelessWidget {
       // alignment: MainAxisAlignment.start,
     )
         .p12()
-        .onInkTap(onPressed)
+        .onInkTap(() => onPressed())
         .box
         // .color(context.cardColor)
         .roundedSM
         .border(
-          color: selected ? AppColor.primaryColor : Colors.grey[300],
+          color: selected ? AppColor.primaryColor : Colors.grey.shade300,
           width: selected ? 3 : 2,
         )
         .make();

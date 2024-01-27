@@ -1,6 +1,9 @@
 import 'package:firestore_chat/firestore_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/constants/app_routes.dart';
+import 'package:fuodz/models/order.dart';
+import 'package:fuodz/models/notification.dart';
+import 'package:fuodz/models/product.dart';
 import 'package:fuodz/views/pages/auth/forgot_password.page.dart';
 import 'package:fuodz/views/pages/auth/login.page.dart';
 import 'package:fuodz/views/pages/home.page.dart';
@@ -34,20 +37,20 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         settings: RouteSettings(name: AppRoutes.orderDetailsRoute),
         builder: (context) => OrderDetailsPage(
-          order: settings.arguments,
+          order: settings.arguments as Order,
         ),
       );
     case AppRoutes.productDetailsRoute:
       return MaterialPageRoute(
         settings: RouteSettings(name: AppRoutes.productDetailsRoute),
         builder: (context) => ProductDetailsPage(
-          product: settings.arguments,
+          product: settings.arguments as Product,
         ),
       );
     //chat page
     case AppRoutes.chatRoute:
       return FirestoreChat().chatPageWidget(
-        settings.arguments,
+        settings.arguments as ChatEntity,
       );
 
     //
@@ -78,7 +81,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         settings: RouteSettings(
             name: AppRoutes.notificationDetailsRoute, arguments: Map()),
         builder: (context) => NotificationDetailsPage(
-          notification: settings.arguments,
+          notification: settings.arguments as NotificationModel,
         ),
       );
 

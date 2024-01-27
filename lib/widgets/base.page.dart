@@ -8,22 +8,22 @@ import 'package:velocity_x/velocity_x.dart';
 class BasePage extends StatefulWidget {
   final bool showAppBar;
   final bool showLeadingAction;
-  final IconData leadingIconData;
-  final Widget leading;
+  final IconData? leadingIconData;
+  final Widget? leading;
   final bool showCart;
   final bool extendBodyBehindAppBar;
-  final Function onBackPressed;
+  final Function? onBackPressed;
   final String title;
   final Widget body;
-  final Widget bottomSheet;
-  final Widget bottomNavigationBar;
-  final Widget fab;
+  final Widget? bottomSheet;
+  final Widget? bottomNavigationBar;
+  final Widget? fab;
   final bool isLoading;
-  final List<Widget> actions;
+  final List<Widget>? actions;
 
-  final Color appBarItemColor;
-  final Color backgroundColor;
-  final double elevation;
+  final Color? appBarItemColor;
+  final Color? backgroundColor;
+  final double? elevation;
 
   BasePage({
     this.showAppBar = false,
@@ -34,7 +34,7 @@ class BasePage extends StatefulWidget {
     this.showCart = false,
     this.onBackPressed,
     this.title = "",
-    this.body,
+    required this.body,
     this.bottomSheet,
     this.bottomNavigationBar,
     this.fab,
@@ -43,7 +43,7 @@ class BasePage extends StatefulWidget {
     this.elevation,
     this.appBarItemColor,
     this.backgroundColor,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -73,8 +73,9 @@ class _BasePageState extends State<BasePage> {
                               widget.leadingIconData ??
                                   FlutterIcons.arrow_left_fea,
                             ),
-                            onPressed: widget.onBackPressed ??
-                                () => Navigator.pop(context),
+                            onPressed: widget.onBackPressed != null
+                                ? () => widget.onBackPressed!()
+                                : () => Navigator.pop(context),
                           )
                         : widget.leading
                     : null,

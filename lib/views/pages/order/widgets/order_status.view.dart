@@ -7,7 +7,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class OrderStatusView extends StatelessWidget {
-  const OrderStatusView(this.vm, {Key key}) : super(key: key);
+  const OrderStatusView(this.vm, {Key? key}) : super(key: key);
 
   final OrderDetailsViewModel vm;
   @override
@@ -34,7 +34,9 @@ class OrderStatusView extends StatelessWidget {
                 //
                 "Payment Status".tr().text.gray500.medium.sm.make(),
                 //
-                ((vm.order.paymentStatus ?? "").tr().allWordsCapitilize() ?? "")
+                "${vm.order.paymentStatus}"
+                    .tr()
+                    .capitalized
                     .text
                     .color(AppColor.getStausColor(vm.order.paymentStatus))
                     .medium
@@ -53,7 +55,7 @@ class OrderStatusView extends StatelessWidget {
             children: [
               UiSpacer.verticalSpace(),
               "Payment Method".tr().text.gray500.medium.sm.make(),
-              "${vm?.order?.paymentMethod?.name ?? ''}".text.medium.xl.make(),
+              "${vm.order.paymentMethod?.name ?? ''}".text.medium.xl.make(),
             ],
           ),
         ),

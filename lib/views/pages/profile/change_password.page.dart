@@ -9,13 +9,13 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ChangePasswordPage extends StatelessWidget {
-  const ChangePasswordPage({Key key}) : super(key: key);
+  const ChangePasswordPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ChangePasswordViewModel>.reactive(
       viewModelBuilder: () => ChangePasswordViewModel(context),
-      onModelReady: (model) => model.initialise(),
+      onViewModelReady: (model) => model.initialise(),
       builder: (context, model, child) {
         return BasePage(
           showLeadingAction: true,
@@ -28,7 +28,6 @@ class ChangePasswordPage extends StatelessWidget {
                   //
                   VStack(
                 [
-
                   //form
                   Form(
                     key: model.formKey,

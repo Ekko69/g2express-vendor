@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fuodz/constants/app_strings.dart';
 import 'package:fuodz/extensions/dynamic.dart';
+import 'package:fuodz/utils/ui_spacer.dart';
 import 'package:fuodz/view_models/profile.vm.dart';
 import 'package:fuodz/widgets/base.page.dart';
 import 'package:fuodz/widgets/cards/profile.card.dart';
@@ -11,7 +12,7 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key key}) : super(key: key);
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -25,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage>
     return SafeArea(
       child: ViewModelBuilder<ProfileViewModel>.reactive(
         viewModelBuilder: () => ProfileViewModel(context),
-        onModelReady: (model) => model.initialise(),
+        onViewModelReady: (model) => model.initialise(),
         builder: (context, model, child) {
           return BasePage(
             body: VStack(
@@ -36,6 +37,7 @@ class _ProfilePageState extends State<ProfilePage>
 
                 //profile card
                 ProfileCard(model).py12(),
+                UiSpacer.vSpace(20),
 
                 //menu
                 VxBox(
@@ -88,10 +90,11 @@ class _ProfilePageState extends State<ProfilePage>
                     ],
                   ),
                 )
-                    .border(color: Theme.of(context).cardColor)
-                    .color(Theme.of(context).cardColor)
-                    .shadow
-                    .roundedSM
+                    // .border(color: Theme.of(context).cardColor)
+                    // .color(Theme.of(context).cardColor)
+                    .color(Theme.of(context).colorScheme.background)
+                    .outerShadow
+                    .withRounded(value: 5)
                     .make(),
 
                 //

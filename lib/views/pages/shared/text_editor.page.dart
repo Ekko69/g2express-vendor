@@ -9,11 +9,11 @@ import 'package:velocity_x/velocity_x.dart';
 
 class CustomTextEditorPage extends StatefulWidget {
   CustomTextEditorPage({
-    @required this.title,
+    required this.title,
     this.content,
-    Key key,
+    Key? key,
   }) : super(key: key);
-  final String content;
+  final String? content;
   final String title;
 
   @override

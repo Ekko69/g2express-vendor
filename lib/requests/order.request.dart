@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/models/api_response.dart';
 import 'package:fuodz/models/order.dart';
@@ -9,8 +8,8 @@ class OrderRequest extends HttpService {
   //
   Future<List<Order>> getOrders({
     int page = 1,
-    String status,
-    String type,
+    String? status,
+    String? type,
   }) async {
     final vendorId = (await AuthServices.getCurrentUser()).vendor_id;
 
@@ -34,7 +33,7 @@ class OrderRequest extends HttpService {
   }
 
   //
-  Future<Order> getOrderDetails({@required int id}) async {
+  Future<Order> getOrderDetails({required int id}) async {
     final apiResult = await get(Api.orders + "/$id");
     //
     final apiResponse = ApiResponse.fromResponse(apiResult);
@@ -46,7 +45,10 @@ class OrderRequest extends HttpService {
   }
 
   //
-  Future<Order> updateOrder({int id, String status = "delivered"}) async {
+  Future<Order> updateOrder({
+    required int id,
+    String status = "delivered",
+  }) async {
     final apiResult = await patch(
       Api.orders + "/$id",
       {
@@ -64,8 +66,11 @@ class OrderRequest extends HttpService {
   }
 
   //
-  Future<Order> assignOrderToDriver(
-      {int id, int driverId, @required String status}) async {
+  Future<Order> assignOrderToDriver({
+    required int id,
+    required int driverId,
+    required String status,
+  }) async {
     final apiResult = await patch(
       Api.orders + "/$id",
       {

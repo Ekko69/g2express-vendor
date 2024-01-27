@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fuodz/services/toast.service.dart';
 import 'package:fuodz/widgets/buttons/custom_button.dart';
@@ -12,11 +11,11 @@ import 'package:velocity_x/velocity_x.dart';
 class MultiImageSelectorView extends StatefulWidget {
   const MultiImageSelectorView({
     this.links,
-    this.onImagesSelected,
-    Key key,
+    required this.onImagesSelected,
+    Key? key,
   }) : super(key: key);
 
-  final List<String> links;
+  final List<String>? links;
   final Function(List<File>) onImagesSelected;
 
   @override
@@ -25,7 +24,7 @@ class MultiImageSelectorView extends StatefulWidget {
 
 class _MultiImageSelectorViewState extends State<MultiImageSelectorView> {
   //
-  List<File> selectedFiles = [];
+  List<File>? selectedFiles = [];
   final picker = ImagePicker();
 
   @override
@@ -33,30 +32,27 @@ class _MultiImageSelectorViewState extends State<MultiImageSelectorView> {
     return VStack(
       [
         //
-        Visibility(
-          visible: showImageUrl() && !showSelectedImage(),
-          child: CustomGridView(
-            dataSet: widget.links,
+        if (showImageUrl() && !showSelectedImage())
+          CustomGridView(
+            dataSet: widget.links!,
             itemBuilder: (ctx, index) {
               return CustomImage(
-                imageUrl: widget.links[index] ?? "",
+                imageUrl: widget.links![index],
               ).h20(context).wFull(context);
             },
           ),
-        ),
+
         //
-        Visibility(
-          visible: showSelectedImage(),
-          child: CustomGridView(
-            dataSet: selectedFiles,
+        if (showSelectedImage())
+          CustomGridView(
+            dataSet: selectedFiles ?? [],
             itemBuilder: (ctx, index) {
               return Image.file(
-                selectedFiles[index] ?? "",
+                selectedFiles![index],
                 fit: BoxFit.cover,
               ).h20(context).wFull(context);
             },
           ),
-        ),
 
         //
         Visibility(
@@ -80,28 +76,28 @@ class _MultiImageSelectorViewState extends State<MultiImageSelectorView> {
   }
 
   bool showImageUrl() {
-    return widget.links != null && widget.links.isNotEmpty;
+    return widget.links != null && widget.links!.isNotEmpty;
   }
 
   bool showSelectedImage() {
-    return selectedFiles != null && selectedFiles.isNotEmpty;
+    return selectedFiles != null && selectedFiles!.isNotEmpty;
   }
 
   //
   pickNewPhoto() async {
-    final pickedFiles = await picker.pickMultiImage();
-    if (pickedFiles != null) {
+    try {
+      final pickedFiles = await picker.pickMultiImage();
       selectedFiles = [];
 
       for (var selectedFile in pickedFiles) {
-        selectedFiles.add(File(selectedFile.path));
+        selectedFiles!.add(File(selectedFile.path));
       }
       //
-      widget.onImagesSelected(selectedFiles);
+      widget.onImagesSelected(selectedFiles ?? []);
       setState(() {
         selectedFiles = selectedFiles;
       });
-    } else {
+    } catch (error) {
       ToastService.toastError("No Image/Photo selected".tr());
     }
   }

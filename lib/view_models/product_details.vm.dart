@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/models/option.dart';
 import 'package:fuodz/models/option_group.dart';
@@ -55,9 +56,9 @@ class ProductDetailsViewModel extends MyBaseViewModel {
       //if it allows only one selection
       if (optionGroup.multiple == 0) {
         //
-        final foundOption = selectedProductOptions.firstWhere(
-            (option) => option.optionGroupId == optionGroup.id,
-            orElse: () => null);
+        final foundOption = selectedProductOptions.firstOrNullWhere(
+          (option) => option.optionGroupId == optionGroup.id,
+        );
         if (foundOption != null) {
           selectedProductOptionsIDs.remove(foundOption.id);
           selectedProductOptions.remove(foundOption);
@@ -92,9 +93,7 @@ class ProductDetailsViewModel extends MyBaseViewModel {
 
     //
     subTotal = productPrice + totalOptionPrice;
-    total = subTotal * (product.selectedQty ?? 1);
+    total = subTotal * (product.selectedQty);
     notifyListeners();
   }
-
-
 }

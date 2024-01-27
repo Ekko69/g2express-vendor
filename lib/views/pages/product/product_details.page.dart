@@ -15,14 +15,17 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ProductDetailsPage extends StatelessWidget {
-  ProductDetailsPage({this.product, Key key}) : super(key: key);
+  ProductDetailsPage({
+    required this.product,
+    Key? key,
+  }) : super(key: key);
 
   final Product product;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<ProductDetailsViewModel>.reactive(
       viewModelBuilder: () => ProductDetailsViewModel(context, product),
-      onModelReady: (model) => model.getProductDetails(),
+      onViewModelReady: (model) => model.getProductDetails(),
       builder: (context, model, child) {
         return BasePage(
           title: model.product.name,
@@ -32,19 +35,23 @@ class ProductDetailsPage extends StatelessWidget {
           body: VStack(
             [
               //product image
-              Hero(
-                tag: model.product.heroTag,
-                child: CustomImage(
-                  imageUrl: model.product.photo,
-                ).wFull(context).hOneThird(context),
-              ),
+              CustomImage(
+                imageUrl: model.product.photo,
+              ).wFull(context).hOneThird(context),
 
               //product header
               ProductDetailsHeader(product: model.product),
               UiSpacer.divider().pOnly(bottom: Vx.dp12),
 
               //product details
-              "Product Description".tr().text.semiBold.xl.underline.make().px20(),
+              "Product Description"
+                  .tr()
+                  .text
+                  .semiBold
+                  .xl
+                  .underline
+                  .make()
+                  .px20(),
               UiSpacer.vSpace(),
               HtmlTextView(model.product.description).px20(),
               UiSpacer.divider().py12(),

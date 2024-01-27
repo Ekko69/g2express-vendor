@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,6 @@ import 'package:fuodz/services/firebase.service.dart';
 import 'package:fuodz/utils/utils.dart';
 import 'package:fuodz/widgets/cards/language_selector.view.dart';
 import 'base.view_model.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class SplashViewModel extends MyBaseViewModel {
   SplashViewModel(BuildContext context) {
@@ -49,7 +47,7 @@ class SplashViewModel extends MyBaseViewModel {
   }
 
   //
-  void updateAppVariables(dynamic json) async {
+  Future<void> updateAppVariables(dynamic json) async {
     //
     await AppStrings.saveAppSettingsToLocalStorage(jsonEncode(json));
   }
@@ -60,7 +58,7 @@ class SplashViewModel extends MyBaseViewModel {
     await AppColor.saveColorsToLocalStorage(jsonEncode(colorJson));
     //change theme
     // await AdaptiveTheme.of(viewContext).reset();
-    await AdaptiveTheme.of(viewContext).setTheme(
+    AdaptiveTheme.of(viewContext).setTheme(
       light: AppTheme().lightTheme(),
       dark: AppTheme().darkTheme(),
       notify: true,
@@ -86,18 +84,18 @@ class SplashViewModel extends MyBaseViewModel {
 
     //
     if (AuthServices.firstTimeOnApp()) {
-      viewContext.navigator
+      Navigator.of(viewContext)
           .pushNamedAndRemoveUntil(AppRoutes.welcomeRoute, (route) => false);
     } else if (!AuthServices.authenticated()) {
-      viewContext.navigator
+      Navigator.of(viewContext)
           .pushNamedAndRemoveUntil(AppRoutes.loginRoute, (route) => false);
     } else {
-      viewContext.navigator
+      Navigator.of(viewContext)
           .pushNamedAndRemoveUntil(AppRoutes.homeRoute, (route) => false);
     }
 
     //
-    RemoteMessage initialMessage =
+    RemoteMessage? initialMessage =
         await FirebaseService().firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       //

@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:awesome_notifications/awesome_notifications.dart' hide NotificationModel;
+import 'package:app_to_foreground/app_to_foreground.dart';
+import 'package:awesome_notifications/awesome_notifications.dart'
+    hide NotificationModel;
 import 'package:flutter/services.dart';
 import 'package:fuodz/constants/app_strings.dart';
 import 'package:fuodz/models/notification.dart';
+import 'package:fuodz/services/app.service.dart';
 import 'package:fuodz/services/firebase.service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import 'in_app_order_notification.service.dart';
 import 'local_storage.service.dart';
 
 class NotificationService {
@@ -49,7 +54,7 @@ class NotificationService {
       //confirm is more than the required channels is found
       final notificationChannelNames = notificationChannels
           .map(
-            (e) => e.toString().split(" -- ")[1] ?? "",
+            (e) => e.toString().split(" -- ")[1],
           )
           .toList();
 
@@ -58,7 +63,7 @@ class NotificationService {
           .where(
             (e) =>
                 e.toLowerCase() ==
-                appNotificationChannel().channelName.toLowerCase(),
+                appNotificationChannel().channelName?.toLowerCase(),
           )
           .toList();
 
@@ -137,11 +142,11 @@ class NotificationService {
 
   static void addNotification(NotificationModel notification) async {
     //
-    final notifications = await getNotifications() ?? [];
+    final notifications = await getNotifications();
     notifications.insert(0, notification);
 
     //
-    await LocalStorageService.prefs.setString(
+    await LocalStorageService.prefs!.setString(
       AppStrings.notificationsKey,
       jsonEncode(notifications),
     );
@@ -150,24 +155,69 @@ class NotificationService {
   static void updateNotification(NotificationModel notificationModel) async {
     //
     final notifications = await getNotifications();
-    notifications.removeAt(notificationModel.index);
-    notifications.insert(notificationModel.index, notificationModel);
-    await LocalStorageService.prefs.setString(
+    notifications.removeAt(notificationModel.index!);
+    notifications.insert(notificationModel.index!, notificationModel);
+    await LocalStorageService.prefs!.setString(
       AppStrings.notificationsKey,
       jsonEncode(notifications),
     );
   }
 
   static listenToActions() {
-    AwesomeNotifications().actionStream.listen((receivedNotification) async {
-      //try opening page associated with the notification data
-      FirebaseService().saveNewNotification(
-        null,
-        title: receivedNotification.title,
-        body: receivedNotification.body,
-      );
-      FirebaseService().notificationPayloadData = receivedNotification.payload;
-      FirebaseService().selectNotification("");
-    });
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: onActionReceivedMethod,
+      onNotificationCreatedMethod: onNotificationCreatedMethod,
+    );
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> onActionReceivedMethod(
+    ReceivedAction receivedNotification,
+  ) async {
+    //try opening page associated with the notification data
+    FirebaseService().saveNewNotification(
+      null,
+      title: receivedNotification.title,
+      body: receivedNotification.body,
+    );
+    FirebaseService().notificationPayloadData = receivedNotification.payload;
+    FirebaseService().selectNotification("");
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> onNotificationCreatedMethod(
+    ReceivedNotification receivedNotification,
+  ) async {
+    //
+    final notificationId = receivedNotification.id;
+    final payload = receivedNotification.payload;
+    // log("notificationId: $notificationId");
+    // log("payload: $payload");
+    //
+    if (notificationId != AppService().neworderNotificationId ||
+        payload == null) {
+      return;
+    }
+    //new status
+    final statues = ["pending", "new"];
+    bool isPending = statues.contains(payload["status"]);
+    if (isPending) {
+      //
+      //
+      try {
+        if (Platform.isAndroid) {
+          PermissionStatus status = await Permission.systemAlertWindow.status;
+          if (status.isGranted) {
+            //bring app to foreground
+            AppToForeground.appToForeground();
+          }
+        }
+      } catch (error) {
+        print("Error ==> $error");
+      }
+
+      //
+      InAppOrderNotificationService().handleNewOrderAlert(payload);
+    }
   }
 }

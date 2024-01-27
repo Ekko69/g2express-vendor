@@ -11,72 +11,75 @@ import 'local_storage.service.dart';
 class AuthServices {
   //
   static bool firstTimeOnApp() {
-    return LocalStorageService.prefs.getBool(AppStrings.firstTimeOnApp) ?? true;
+    return LocalStorageService.prefs!.getBool(AppStrings.firstTimeOnApp) ??
+        true;
   }
 
   static firstTimeCompleted() async {
-    await LocalStorageService.prefs.setBool(AppStrings.firstTimeOnApp, false);
+    await LocalStorageService.prefs!.setBool(AppStrings.firstTimeOnApp, false);
   }
 
   //
   static bool authenticated() {
-    return LocalStorageService.prefs.getBool(AppStrings.authenticated) ?? false;
+    return LocalStorageService.prefs!.getBool(AppStrings.authenticated) ??
+        false;
   }
 
   static Future<bool> isAuthenticated() {
-    return LocalStorageService.prefs.setBool(AppStrings.authenticated, true);
+    return LocalStorageService.prefs!.setBool(AppStrings.authenticated, true);
   }
 
   // Token
   static Future<String> getAuthBearerToken() async {
-    return LocalStorageService.prefs.getString(AppStrings.userAuthToken) ?? "";
+    return LocalStorageService.prefs!.getString(AppStrings.userAuthToken) ?? "";
   }
 
   static Future<bool> setAuthBearerToken(token) async {
-    return LocalStorageService.prefs.setString(AppStrings.userAuthToken, token);
+    return LocalStorageService.prefs!
+        .setString(AppStrings.userAuthToken, token);
   }
 
   //Locale
   static String getLocale() {
-    return LocalStorageService.prefs.getString(AppStrings.appLocale) ?? "en";
+    return LocalStorageService.prefs!.getString(AppStrings.appLocale) ?? "en";
   }
 
   static Future<bool> setLocale(language) async {
-    return LocalStorageService.prefs.setString(AppStrings.appLocale, language);
+    return LocalStorageService.prefs!.setString(AppStrings.appLocale, language);
   }
 
   //
   //
-  static User currentUser;
+  static User? currentUser;
   static Future<User> getCurrentUser({bool force = false}) async {
     if (currentUser == null || force) {
       final userStringObject =
-          await LocalStorageService.prefs.getString(AppStrings.userKey);
-      final userObject = json.decode(userStringObject);
+          await LocalStorageService.prefs!.getString(AppStrings.userKey);
+      final userObject = json.decode(userStringObject!);
       currentUser = User.fromJson(userObject);
     }
-    return currentUser;
+    return currentUser!;
   }
 
 //
-  static Vendor currentVendor;
+  static Vendor? currentVendor;
   static Future<Vendor> getCurrentVendor({bool force = false}) async {
     if (currentVendor == null || force) {
       final vendorStringObject =
-          await LocalStorageService.prefs.getString(AppStrings.vendorKey);
-      final vendorObject = json.decode(vendorStringObject);
+          await LocalStorageService.prefs!.getString(AppStrings.vendorKey);
+      final vendorObject = json.decode(vendorStringObject!);
       currentVendor = Vendor.fromJson(vendorObject);
     }
-    return currentVendor;
+    return currentVendor!;
   }
 
   ///
   ///
   ///
-  static Future<User> saveUser(dynamic jsonObject) async {
+  static Future<User?> saveUser(dynamic jsonObject) async {
     final currentUser = User.fromJson(jsonObject);
     try {
-      await LocalStorageService.prefs.setString(
+      await LocalStorageService.prefs!.setString(
         AppStrings.userKey,
         json.encode(
           currentUser.toJson(),
@@ -92,6 +95,7 @@ class AuthServices {
 
       return currentUser;
     } catch (error) {
+      print("Error Saving user ==> $error");
       return null;
     }
   }
@@ -100,7 +104,7 @@ class AuthServices {
   static Future<void> saveVendor(dynamic jsonObject) async {
     final userVendor = Vendor.fromJson(jsonObject);
     try {
-      await LocalStorageService.prefs.setString(
+      await LocalStorageService.prefs!.setString(
         AppStrings.vendorKey,
         json.encode(
           userVendor.toJson(),
@@ -114,15 +118,32 @@ class AuthServices {
   ///
   ///
   //
-  static void logout() async {
+  static Future<void> logout() async {
     await HttpService().getCacheManager().clearAll();
-    await LocalStorageService.prefs.clear();
-    await LocalStorageService.prefs.setBool(AppStrings.firstTimeOnApp, false);
+    await LocalStorageService.prefs!.clear();
+    await LocalStorageService.prefs!.setBool(AppStrings.firstTimeOnApp, false);
     FirebaseService()
         .firebaseMessaging
-        .unsubscribeFromTopic("v_${currentUser.vendor_id}");
+        .unsubscribeFromTopic("v_${currentUser?.vendor_id}");
     FirebaseService()
         .firebaseMessaging
-        .unsubscribeFromTopic("${currentUser.role}");
+        .unsubscribeFromTopic("${currentUser?.role}");
+  }
+
+  //firebase subscription
+  static Future<void> subscribeToFirebaseTopic(
+    String topic, {
+    bool clear = false,
+  }) async {
+    if (clear) {
+      List topics = [
+        "v_${currentUser?.vendor_id}",
+        "${currentUser?.role}",
+      ];
+      for (var topic in topics) {
+        await FirebaseService().firebaseMessaging.unsubscribeFromTopic(topic);
+      }
+    }
+    await FirebaseService().firebaseMessaging.subscribeToTopic(topic);
   }
 }

@@ -7,20 +7,20 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class CustomButton extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final double iconSize;
-  final Widget child;
-  final TextStyle titleStyle;
-  final Function onPressed;
-  final ShapeBorder shape;
+  final String? title;
+  final IconData? icon;
+  final double? iconSize;
+  final Widget? child;
+  final TextStyle? titleStyle;
+  final Function? onPressed;
+  final OutlinedBorder? shape;
   final bool isFixedHeight;
-  final double height;
+  final double? height;
   final bool loading;
   final double shapeRadius;
-  final Color color;
-  final Color iconColor;
-  final double elevation;
+  final Color? color;
+  final Color? iconColor;
+  final double? elevation;
 
   const CustomButton({
     this.title,
@@ -37,7 +37,7 @@ class CustomButton extends StatelessWidget {
     this.color,
     this.titleStyle,
     this.elevation,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -55,7 +55,12 @@ class CustomButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(this.shapeRadius),
               ),
         ),
-        onPressed: this.loading ? null : this.onPressed,
+        onPressed: (this.loading || this.onPressed == null)
+            ? null
+            : () {
+                FocusScope.of(context).requestFocus(new FocusNode());
+                this.onPressed!();
+              },
         child: this.loading
             ? BusyIndicator(color: Colors.white)
             : Container(
@@ -70,17 +75,25 @@ class CustomButton extends StatelessWidget {
                             ? Icon(this.icon,
                                     color: this.iconColor ?? Colors.white,
                                     size: this.iconSize ?? 20,
-                                    textDirection: translator.activeLocale.languageCode == "ar"
-                                        ? TextDirection.rtl
-                                        : TextDirection.ltr)
+                                    textDirection:
+                                        translator.activeLocale.languageCode ==
+                                                "ar"
+                                            ? TextDirection.rtl
+                                            : TextDirection.ltr)
                                 .pOnly(
-                                right: translator.activeLocale.languageCode == "ar" ? Vx.dp0 : Vx.dp5,
-                                left: translator.activeLocale.languageCode != "ar" ? Vx.dp0 : Vx.dp5,
+                                right:
+                                    translator.activeLocale.languageCode == "ar"
+                                        ? Vx.dp0
+                                        : Vx.dp5,
+                                left:
+                                    translator.activeLocale.languageCode != "ar"
+                                        ? Vx.dp0
+                                        : Vx.dp5,
                               )
                             : UiSpacer.emptySpace(),
-                        this.title != null && this.title.isNotBlank
+                        this.title != null
                             ? Text(
-                                this.title,
+                                "${this.title}",
                                 textAlign: TextAlign.center,
                                 style: this.titleStyle ??
                                     AppTextStyle.h3TitleTextStyle(

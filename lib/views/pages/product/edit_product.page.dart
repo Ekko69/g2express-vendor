@@ -17,13 +17,13 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EditProductPage extends StatelessWidget {
-  const EditProductPage(this.product, {Key key}) : super(key: key);
+  const EditProductPage(this.product, {Key? key}) : super(key: key);
   final Product product;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<EditProductViewModel>.reactive(
       viewModelBuilder: () => EditProductViewModel(context, product),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showLeadingAction: true,
@@ -60,11 +60,11 @@ class EditProductPage extends StatelessWidget {
                         [
                           "Description".tr().text.make().expand(),
                           CustomButton(
-                            title: vm.product?.description == null
+                            title: vm.product.description == null
                                 ? "Add".tr()
                                 : "Edit".tr(),
                             onPressed: vm.handleDescriptionEdit,
-                            icon: vm.product?.description == null
+                            icon: vm.product.description == null
                                 ? FlutterIcons.add_mdi
                                 : FlutterIcons.edit_mdi,
                           ).h(30),
@@ -72,7 +72,7 @@ class EditProductPage extends StatelessWidget {
                       ),
                       UiSpacer.vSpace(10),
                       //preview description
-                      HtmlTextView(vm.product.description ?? "", padding: 0),
+                      HtmlTextView(vm.product.description, padding: 0),
                     ],
                   ).p(10).box.border().roundedSM.make(),
                   UiSpacer.verticalSpace(),
@@ -189,24 +189,30 @@ class EditProductPage extends StatelessWidget {
                     ],
                   ),
                   //
-                  UiSpacer.verticalSpace(),
-                  //deliverable
-                  FormBuilderCheckbox(
-                    initialValue: product.deliverable == 1,
-                    name: 'deliverable',
-                    onChanged: (value) {},
-                    valueTransformer: (value) => value ? 1 : 0,
-                    title: "Can be delivered".tr().text.make(),
-                  ),
-                  //Active
-                  FormBuilderCheckbox(
-                    initialValue: product.isActive == 1,
-                    name: 'is_active',
-                    onChanged: (value) {},
-                    valueTransformer: (value) => value ? 1 : 0,
-                    title: "Active".tr().text.make(),
+                  UiSpacer.vSpace(10),
+                  HStack(
+                    [
+                      //deliverable
+                      FormBuilderCheckbox(
+                        initialValue: product.deliverable == 1,
+                        name: 'deliverable',
+                        onChanged: (value) {},
+                        valueTransformer: (value) => (value ?? false) ? 1 : 0,
+                        title: "Can be delivered".tr().text.make(),
+                      ).expand(),
+                      20.widthBox,
+                      //Active
+                      FormBuilderCheckbox(
+                        initialValue: product.isActive == 1,
+                        name: 'is_active',
+                        onChanged: (value) {},
+                        valueTransformer: (value) => (value ?? false) ? 1 : 0,
+                        title: "Active".tr().text.make(),
+                      ).expand(),
+                    ],
                   ),
                   //
+                  UiSpacer.vSpace(10),
 
                   //categories
                   vm.busy(vm.categories)
@@ -220,18 +226,19 @@ class EditProductPage extends StatelessWidget {
                             labelText: 'Category'.tr(),
                           ),
                           spacing: 5,
-                          selectedColor: AppColor.primaryColor,
+                          // selectedColor: AppColor.primaryColor,
+                          checkmarkColor: AppColor.primaryColor,
                           options: vm.categories
                               .map(
                                 (category) => FormBuilderChipOption<String>(
                                   value: '${category.id}',
-                                  child: Text('${category.name}'),
+                                  child: '${category.name}'.text.make(),
                                 ),
                               )
                               .toList(),
                           onChanged: vm.filterSubcategories,
                         ),
-                  UiSpacer.verticalSpace(),
+                  UiSpacer.vSpace(10),
                   //subcategories
                   vm.busy(vm.subCategories)
                       ? BusyIndicator().centered()
@@ -253,6 +260,15 @@ class EditProductPage extends StatelessWidget {
                                 ),
                               )
                               .toList(),
+                          valueTransformer: (newValue) {
+                            if (newValue == null || newValue.isEmpty) {
+                              return [];
+                            }
+                            //make the value a list of int
+                            return newValue
+                                .map((value) => int.parse(value))
+                                .toList();
+                          },
                         ),
                   UiSpacer.verticalSpace(),
                   //menus

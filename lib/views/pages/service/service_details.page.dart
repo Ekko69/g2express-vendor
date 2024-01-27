@@ -17,7 +17,7 @@ import 'package:velocity_x/velocity_x.dart';
 class ServiceDetailsPage extends StatelessWidget {
   const ServiceDetailsPage(
     this.service, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   //

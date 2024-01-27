@@ -10,7 +10,7 @@ import 'package:stacked/stacked.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class OnboardingPage extends StatefulWidget {
-  OnboardingPage({Key key}) : super(key: key);
+  OnboardingPage({Key? key}) : super(key: key);
 
   @override
   State<OnboardingPage> createState() => _OnboardingPageState();
@@ -22,7 +22,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return BasePage(
       body: ViewModelBuilder<OnboardingViewModel>.nonReactive(
         viewModelBuilder: () => OnboardingViewModel(context, finishLoading),
-        onModelReady: (vm) => vm.initialise(),
+        onViewModelReady: (vm) => vm.initialise(),
         builder: (context, vm, child) {
           return VStack(
             [

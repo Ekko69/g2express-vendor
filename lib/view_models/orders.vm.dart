@@ -8,7 +8,6 @@ import 'package:fuodz/services/app.service.dart';
 import 'package:fuodz/view_models/base.view_model.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class OrdersViewModel extends MyBaseViewModel {
   //
@@ -33,7 +32,7 @@ class OrdersViewModel extends MyBaseViewModel {
   //
   int queryPage = 1;
   RefreshController refreshController = RefreshController();
-  StreamSubscription refreshOrderStream;
+  StreamSubscription? refreshOrderStream;
 
   void initialise() async {
     refreshOrderStream = AppService().refreshAssignedOrders.listen((refresh) {
@@ -47,10 +46,7 @@ class OrdersViewModel extends MyBaseViewModel {
 
   dispose() {
     super.dispose();
-
-    if (refreshOrderStream != null) {
-      refreshOrderStream.cancel();
-    }
+    refreshOrderStream?.cancel();
   }
 
   //
@@ -96,7 +92,7 @@ class OrdersViewModel extends MyBaseViewModel {
   }
 
   openOrderDetails(Order order) async {
-    final result = await viewContext.navigator.pushNamed(
+    final result = await Navigator.of(viewContext).pushNamed(
       AppRoutes.orderDetailsRoute,
       arguments: order,
     );
@@ -112,7 +108,7 @@ class OrdersViewModel extends MyBaseViewModel {
   }
 
   void openLogin() async {
-    await viewContext.navigator.pushNamed(AppRoutes.loginRoute);
+    await Navigator.of(viewContext).pushNamed(AppRoutes.loginRoute);
     notifyListeners();
     fetchMyOrders();
   }

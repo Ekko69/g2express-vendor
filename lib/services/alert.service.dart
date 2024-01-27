@@ -8,17 +8,17 @@ class AlertService {
   //
 
   static Future<bool> showConfirm({
-    String title,
-    String text,
+    String? title,
+    required String text,
     String cancelBtnText = "Cancel",
     String confirmBtnText = "Ok",
-    Function onConfirm,
+    Function? onConfirm,
   }) async {
     //
     bool result = false;
 
     await CoolAlert.show(
-        context: AppService().navigatorKey.currentContext,
+        context: AppService().navigatorKey.currentContext!,
         type: CoolAlertType.confirm,
         title: title,
         text: text,
@@ -27,7 +27,7 @@ class AlertService {
         onConfirmBtnTap: () {
           if (onConfirm == null) {
             result = true;
-            AppService().navigatorKey.currentContext.pop();
+            AppService().navigatorKey.currentContext?.pop();
           } else {
             onConfirm();
           }
@@ -38,8 +38,8 @@ class AlertService {
   }
 
   static Future<bool> success({
-    String title,
-    String text,
+    String? title,
+    required String text,
     String cancelBtnText = "Cancel",
     String confirmBtnText = "Ok",
   }) async {
@@ -47,14 +47,14 @@ class AlertService {
     bool result = false;
 
     await CoolAlert.show(
-        context: AppService().navigatorKey.currentContext,
+        context: AppService().navigatorKey.currentContext!,
         type: CoolAlertType.success,
         title: title,
         text: text,
         confirmBtnText: confirmBtnText.tr(),
         onConfirmBtnTap: () {
           result = true;
-          AppService().navigatorKey.currentContext.pop();
+          AppService().navigatorKey.currentContext?.pop();
         });
 
     //
@@ -62,22 +62,22 @@ class AlertService {
   }
 
   static Future<bool> error({
-    String title,
-    String text,
+    String? title,
+    required String text,
     String confirmBtnText = "Ok",
   }) async {
     //
     bool result = false;
 
     await CoolAlert.show(
-        context: AppService().navigatorKey.currentContext,
+        context: AppService().navigatorKey.currentContext!,
         type: CoolAlertType.error,
         title: title,
         text: text,
         confirmBtnText: confirmBtnText.tr(),
         onConfirmBtnTap: () {
           result = true;
-          AppService().navigatorKey.currentContext.pop();
+          AppService().navigatorKey.currentContext?.pop();
         });
 
     //
@@ -86,7 +86,7 @@ class AlertService {
 
   static void showLoading() {
     CoolAlert.show(
-      context: AppService().navigatorKey.currentContext,
+      context: AppService().navigatorKey.currentContext!,
       type: CoolAlertType.loading,
       title: "".tr(),
       text: "Processing. Please wait...".tr(),
@@ -95,6 +95,6 @@ class AlertService {
   }
 
   static void stopLoading() {
-    AppService().navigatorKey.currentContext.pop();
+    AppService().navigatorKey.currentContext?.pop();
   }
 }

@@ -7,10 +7,10 @@ import 'package:velocity_x/velocity_x.dart';
 
 class CustomGridView extends StatelessWidget {
   //
-  final Widget title;
-  final Widget loadingWidget;
-  final Widget errorWidget;
-  final Widget emptyWidget;
+  final Widget? title;
+  final Widget? loadingWidget;
+  final Widget? errorWidget;
+  final Widget? emptyWidget;
   final List<dynamic> dataSet;
   final bool isLoading;
   final bool hasError;
@@ -18,9 +18,9 @@ class CustomGridView extends StatelessWidget {
   final bool reversed;
   final bool noScrollPhysics;
   final Axis scrollDirection;
-  final EdgeInsets padding;
-  final Function(BuildContext, int) itemBuilder;
-  final Function(BuildContext, int) separatorBuilder;
+  final EdgeInsets? padding;
+  final Widget Function(BuildContext, int) itemBuilder;
+  final Widget Function(BuildContext, int)? separatorBuilder;
   final int crossAxisCount;
   final double childAspectRatio;
   final double crossAxisSpacing;
@@ -28,13 +28,13 @@ class CustomGridView extends StatelessWidget {
 
   //
   final bool canRefresh;
-  final RefreshController refreshController;
-  final Function onRefresh;
-  final Function onLoading;
+  final RefreshController? refreshController;
+  final Function? onRefresh;
+  final Function? onLoading;
   final bool canPullUp;
 
   const CustomGridView({
-    @required this.dataSet,
+    required this.dataSet,
     this.title,
     this.loadingWidget,
     this.errorWidget,
@@ -45,7 +45,7 @@ class CustomGridView extends StatelessWidget {
     this.reversed = false,
     this.noScrollPhysics = false,
     this.scrollDirection = Axis.vertical,
-    @required this.itemBuilder,
+    required this.itemBuilder,
     this.separatorBuilder,
     this.padding,
     this.crossAxisCount = 2,
@@ -59,7 +59,7 @@ class CustomGridView extends StatelessWidget {
     this.onRefresh,
     this.onLoading,
     this.canPullUp = false,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -91,14 +91,14 @@ class CustomGridView extends StatelessWidget {
 
   //
   Widget _getBodyList() {
-    return this.canRefresh
+    return (this.canRefresh && this.refreshController != null)
         ? SmartRefresher(
             scrollDirection: this.scrollDirection,
             enablePullDown: true,
             enablePullUp: canPullUp,
-            controller: this.refreshController,
-            onRefresh: this.onRefresh,
-            onLoading: this.onLoading,
+            controller: this.refreshController!,
+            onRefresh: this.onRefresh != null ? this.onRefresh!() : null,
+            onLoading: this.onLoading != null ? this.onLoading!() : null,
             child: _getListView(),
           )
         : _getListView();

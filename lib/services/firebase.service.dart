@@ -6,28 +6,30 @@ import 'package:awesome_notifications/awesome_notifications.dart'
     hide NotificationModel;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firestore_chat/firestore_chat.dart';
+import 'package:flutter/material.dart';
 import 'package:fuodz/constants/app_routes.dart';
 import 'package:fuodz/constants/app_strings.dart';
+import 'package:fuodz/constants/app_ui_settings.dart';
 import 'package:fuodz/models/notification.dart';
 import 'package:fuodz/models/order.dart';
+import 'package:fuodz/requests/order.request.dart';
 import 'package:fuodz/services/app.service.dart';
 import 'package:fuodz/services/chat.service.dart';
 import 'package:fuodz/services/notification.service.dart';
+import 'package:fuodz/views/pages/home.page.dart';
 import 'package:singleton/singleton.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class FirebaseService {
   //
   /// Factory method that reuse same instance automatically
-  factory FirebaseService() =>
-      Singleton.lazy(() => FirebaseService._());
+  factory FirebaseService() => Singleton.lazy(() => FirebaseService._());
 
   /// Private constructor
   FirebaseService._() {}
 
   //
-  NotificationModel notificationModel;
+  NotificationModel? notificationModel;
   FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   dynamic notificationPayloadData;
 
@@ -58,7 +60,11 @@ class FirebaseService {
   }
 
   //write to notification list
-  saveNewNotification(RemoteMessage message, {String title, String body}) {
+  saveNewNotification(
+    RemoteMessage? message, {
+    String? title,
+    String? body,
+  }) {
     //
     notificationPayloadData = message != null ? message.data : null;
     if (message?.notification == null &&
@@ -69,9 +75,9 @@ class FirebaseService {
     }
     //Saving the notification
     notificationModel = NotificationModel();
-    notificationModel.title =
+    notificationModel!.title =
         message?.notification?.title ?? title ?? message?.data["title"] ?? "";
-    notificationModel.body =
+    notificationModel!.body =
         message?.notification?.body ?? body ?? message?.data["body"] ?? "";
     //
     try {
@@ -79,14 +85,14 @@ class FirebaseService {
           (Platform.isAndroid
               ? message?.notification?.android?.imageUrl
               : message?.notification?.apple?.imageUrl);
-      notificationModel.image = imageUrl;
+      notificationModel!.image = imageUrl;
     } catch (error) {
       print("Error ==> $error");
     }
-    notificationModel.timeStamp = DateTime.now().millisecondsSinceEpoch;
+    notificationModel!.timeStamp = DateTime.now().millisecondsSinceEpoch;
 
     //add to database/shared pref
-    NotificationService.addNotification(notificationModel);
+    NotificationService.addNotification(notificationModel!);
   }
 
   //
@@ -103,23 +109,54 @@ class FirebaseService {
       //
       final imageUrl = message.data["image"] ??
           (Platform.isAndroid
-              ? message?.notification?.android?.imageUrl
-              : message?.notification?.apple?.imageUrl);
-      //
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: Random().nextInt(20),
-          channelKey: getNotificationChannelKey(message),
-          title: message.data["title"] ?? message.notification.title,
-          body: message.data["body"] ?? message.notification.body,
-          bigPicture: imageUrl,
-          icon: "resource://drawable/notification_icon",
-          notificationLayout: imageUrl != null
-              ? NotificationLayout.BigPicture
-              : NotificationLayout.Default,
-          payload: Map<String, String>.from(message.data),
-        ),
+              ? message.notification?.android?.imageUrl
+              : message.notification?.apple?.imageUrl);
+
+      //crete notification content
+      NotificationContent notificationContent = NotificationContent(
+        id: Random().nextInt(20),
+        channelKey: getNotificationChannelKey(message),
+        title: message.data["title"] ?? message.notification?.title,
+        body: message.data["body"] ?? message.notification?.body,
+        bigPicture: imageUrl,
+        icon: "resource://drawable/notification_icon",
+        notificationLayout: imageUrl != null
+            ? NotificationLayout.BigPicture
+            : NotificationLayout.Default,
+        payload: Map<String, String>.from(message.data),
       );
+      //for new order
+      final isOrder = notificationPayloadData != null &&
+          notificationPayloadData["is_order"] != null;
+      if (isOrder) {
+        //new status
+        final statues = ["pending", "new"];
+        bool isPending = statues.contains(notificationPayloadData["status"]);
+        Map<String, String> payload = Map<String, String>.from(message.data);
+        if (isPending) {
+          notificationContent = NotificationContent(
+            id: AppService().neworderNotificationId,
+            channelKey: getNotificationChannelKey(message),
+            title: message.data["title"] ?? message.notification?.title,
+            body: message.data["body"] ?? message.notification?.body,
+            bigPicture: imageUrl,
+            icon: "resource://drawable/notification_icon",
+            notificationLayout: imageUrl != null
+                ? NotificationLayout.BigPicture
+                : NotificationLayout.Default,
+            payload: payload,
+            //
+            wakeUpScreen: true,
+            fullScreenIntent: true,
+            locked: true,
+            autoDismissible: false,
+            criticalAlert: true,
+          );
+        }
+      }
+
+      //
+      AwesomeNotifications().createNotification(content: notificationContent);
 
       ///
     } catch (error) {
@@ -128,7 +165,7 @@ class FirebaseService {
   }
 
   //handle on notification selected
-  Future selectNotification(String payload) async {
+  Future selectNotification(String? payload) async {
     if (payload == null) {
       return;
     }
@@ -162,7 +199,7 @@ class FirebaseService {
         //
         final chatEntity = ChatEntity(
           onMessageSent: ChatService.sendChatMessage,
-          mainUser: peers['${user['id']}'],
+          mainUser: peers['${user['id']}']!,
           peers: peers,
           //don't translate this
           path: chatPath,
@@ -171,27 +208,39 @@ class FirebaseService {
               : peerRole == 'vendor'
                   ? "Chat with vendor".tr()
                   : "Chat with driver".tr(),
+          supportMedia: AppUISettings.canVendorChatSupportMedia,
         );
-        AppService().navigatorKey.currentContext.navigator.pushNamed(
-              AppRoutes.chatRoute,
-              arguments: chatEntity,
-            );
+        Navigator.of(AppService().navigatorKey.currentContext!).pushNamed(
+          AppRoutes.chatRoute,
+          arguments: chatEntity,
+        );
       }
       //order
       else if (isOrder) {
         //
-        final order = Order(
-          id: int.parse(notificationPayloadData['order_id'].toString()),
-        );
-        //
-        AppService().navigatorKey.currentContext.navigator.pushNamed(
-              AppRoutes.orderDetailsRoute,
-              arguments: order,
-            );
+        try {
+          //fetch order from api
+          int orderId = int.parse("${notificationPayloadData!['order_id']}");
+          Order order = await OrderRequest().getOrderDetails(id: orderId);
+          //
+          Navigator.of(AppService().navigatorKey.currentContext!).pushNamed(
+            AppRoutes.orderDetailsRoute,
+            arguments: order,
+          );
+        } catch (error) {
+          //navigate to orders page
+          await Navigator.of(AppService().navigatorKey.currentContext!).push(
+            MaterialPageRoute(
+              builder: (_) => HomePage(),
+            ),
+          );
+          //then switch to orders tab
+          AppService().changeHomePageIndex();
+        }
       }
       //regular notifications
       else {
-        AppService().navigatorKey.currentContext.navigator.pushNamed(
+        Navigator.of(AppService().navigatorKey.currentContext!).pushNamed(
             AppRoutes.notificationDetailsRoute,
             arguments: notificationModel);
       }
@@ -202,7 +251,7 @@ class FirebaseService {
 
   //refresh orders list if the notification is about assigned order
   void refreshOrdersList(RemoteMessage message) async {
-    if (message.data != null && message.data["is_order"] != null) {
+    if (message.data["is_order"] != null) {
       await Future.delayed(Duration(seconds: 3));
       AppService().refreshAssignedOrders.add(true);
     }
@@ -211,15 +260,15 @@ class FirebaseService {
   //get notification sound
   String getNotificationChannelKey(RemoteMessage message) {
     //check if message is from order
-    if (message.data != null && message.data["is_order"] != null) {
+    if (message.data["is_order"] != null) {
       final orderStatus = message.data["status"] ?? "new";
       if (orderStatus == "pending") {
         return NotificationService.appNotificationChannel(
           mChannelKey: AppStrings.newOrderNotificationChannelKey,
           mSoundSource: AppStrings.newOrderNotificationSoundSource,
-        ).channelKey;
+        ).channelKey!;
       }
     }
-    return NotificationService.appNotificationChannel().channelKey;
+    return NotificationService.appNotificationChannel().channelKey!;
   }
 }

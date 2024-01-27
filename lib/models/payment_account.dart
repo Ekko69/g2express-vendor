@@ -12,15 +12,15 @@ String paymentAccountToJson(PaymentAccount data) => json.encode(data.toJson());
 
 class PaymentAccount {
   PaymentAccount({
-    this.name,
-    this.number,
-    this.instructions,
-    this.isActive,
-    this.updatedAt,
-    this.createdAt,
-    this.id,
-    this.formattedDate,
-    this.formattedUpdatedDate,
+    required this.name,
+    required this.number,
+    required this.instructions,
+    required this.isActive,
+    required this.updatedAt,
+    required this.createdAt,
+    required this.id,
+    required this.formattedDate,
+    required this.formattedUpdatedDate,
   });
 
   String name;

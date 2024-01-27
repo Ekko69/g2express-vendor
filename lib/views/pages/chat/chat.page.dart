@@ -6,7 +6,7 @@
 // class ChatPage extends StatelessWidget {
 //   const ChatPage({
 //     this.chatEntity,
-//     Key key,
+//     Key? key,
 //   }) : super(key: key);
 
 //   final ChatEntity chatEntity;

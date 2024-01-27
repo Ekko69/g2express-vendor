@@ -14,13 +14,13 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NewServicePage extends StatelessWidget {
-  const NewServicePage({Key key}) : super(key: key);
+  const NewServicePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<NewServiceViewModel>.reactive(
       viewModelBuilder: () => NewServiceViewModel(context),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showAppBar: true,
@@ -36,17 +36,18 @@ class NewServicePage extends StatelessWidget {
                   child: VStack(
                     [
                       "Category".tr().text.make(),
-                      FormBuilderDropdown(
+                      FormBuilderDropdown<int>(
                         name: "category_id",
                         items: vm.categories
                             .map(
                               (category) => DropdownMenuItem(
-                                value: '${category.id}',
+                                value: category.id,
                                 child: Text('${category.name}'),
                               ),
                             )
                             .toList(),
                         validator: CustomFormBuilderValidator.required,
+                        initialValue: vm.selectedCategoryId,
                         onChanged: vm.fetchSubCategories,
                       ),
                     ],
@@ -59,15 +60,20 @@ class NewServicePage extends StatelessWidget {
                   child: VStack(
                     [
                       "Sub Category".tr().text.make(),
-                      FormBuilderDropdown(
+                      FormBuilderDropdown<int>(
                         name: "subcategory_id",
                         decoration: InputDecoration(
                           hintText: "",
                         ),
+                        initialValue: vm.selectedSubCategoryId,
+                        onChanged: (value) {
+                          vm.selectedSubCategoryId = value;
+                          vm.notifyListeners();
+                        },
                         items: vm.subcategories
                             .map(
                               (subcategory) => DropdownMenuItem(
-                                value: '${subcategory.id}',
+                                value: subcategory.id,
                                 child: Text('${subcategory.name}'),
                               ),
                             )
@@ -96,11 +102,10 @@ class NewServicePage extends StatelessWidget {
                       [
                         "Description".tr().text.make().expand(),
                         CustomButton(
-                          title: vm.service?.description == null
-                              ? "Add".tr()
-                              : "Edit".tr(),
+                          title:
+                              vm.description == null ? "Add".tr() : "Edit".tr(),
                           onPressed: vm.handleDescriptionEdit,
-                          icon: vm.service?.description == null
+                          icon: vm.description == null
                               ? FlutterIcons.add_mdi
                               : FlutterIcons.edit_mdi,
                         ).h(30),
@@ -108,7 +113,7 @@ class NewServicePage extends StatelessWidget {
                     ),
                     UiSpacer.vSpace(10),
                     //preview description
-                    HtmlTextView(vm.service.description ?? "", padding: 0),
+                    HtmlTextView(vm.description ?? "", padding: 0),
                   ],
                 ).p(10).box.border().roundedSM.make(),
                 UiSpacer.verticalSpace(),
@@ -123,17 +128,22 @@ class NewServicePage extends StatelessWidget {
                   child: VStack(
                     [
                       "Duration Type".tr().text.make(),
-                      FormBuilderDropdown(
+                      FormBuilderDropdown<String>(
                         name: "duration",
                         validator: CustomFormBuilderValidator.required,
                         decoration: InputDecoration(
                           hintText: "",
                         ),
+                        initialValue: vm.selectedServiceDuration,
+                        onChanged: (value) {
+                          vm.selectedServiceDuration = value;
+                          vm.notifyListeners();
+                        },
                         items: vm.serviceDurations
                             .map(
                               (serviceDuration) => DropdownMenuItem(
                                 value: '$serviceDuration',
-                                child: Text('${serviceDuration}'),
+                                child: Text('${serviceDuration}'.tr()),
                               ),
                             )
                             .toList(),
@@ -190,7 +200,7 @@ class NewServicePage extends StatelessWidget {
                       initialValue: false,
                       name: 'location',
                       onChanged: (value) {},
-                      valueTransformer: (value) => value ? 1 : 0,
+                      valueTransformer: (value) => (value ?? false) ? 1 : 0,
                       title: "Location Required".tr().text.make(),
                     ).expand(),
                     UiSpacer.horizontalSpace(),
@@ -199,7 +209,7 @@ class NewServicePage extends StatelessWidget {
                       initialValue: true,
                       name: 'is_active',
                       onChanged: (value) {},
-                      valueTransformer: (value) => value ? 1 : 0,
+                      valueTransformer: (value) => (value ?? false) ? 1 : 0,
                       title: "Active".tr().text.make(),
                     ).expand(),
                   ],

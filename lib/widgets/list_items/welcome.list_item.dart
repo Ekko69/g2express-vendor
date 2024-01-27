@@ -4,11 +4,11 @@ import 'package:velocity_x/velocity_x.dart';
 
 class WelcomeListItem extends StatelessWidget {
   const WelcomeListItem({
-    this.title,
-    this.text,
-    this.imagePath,
-    this.onPressed,
-    Key key,
+    required this.title,
+    required this.text,
+    required this.imagePath,
+    required this.onPressed,
+    Key? key,
   }) : super(key: key);
 
   final String title;
@@ -18,7 +18,7 @@ class WelcomeListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onPressed,
+      onTap: () => onPressed(),
       child: HStack(
         [
           //

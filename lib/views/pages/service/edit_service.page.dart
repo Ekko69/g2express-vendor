@@ -15,14 +15,14 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EditServicePage extends StatelessWidget {
-  const EditServicePage(this.service, {Key key}) : super(key: key);
+  const EditServicePage(this.service, {Key? key}) : super(key: key);
 
   final Service service;
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<EditServiceViewModel>.reactive(
       viewModelBuilder: () => EditServiceViewModel(context, service),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showAppBar: true,
@@ -62,18 +62,22 @@ class EditServicePage extends StatelessWidget {
                   child: VStack(
                     [
                       "Sub Category".tr().text.make(),
-                      FormBuilderDropdown(
+                      FormBuilderDropdown<int>(
                         name: "subcategory_id",
                         decoration: InputDecoration(
                           hintText: "",
                         ),
+                        onChanged: (value) {
+                          vm.selectedSubCategoryId = value;
+                          vm.notifyListeners();
+                        },
                         initialValue: vm.service.subcategoryId != null
-                            ? vm.service.subcategoryId.toString()
+                            ? vm.service.subcategoryId
                             : null,
                         items: vm.subcategories
                             .map(
                               (subcategory) => DropdownMenuItem(
-                                value: '${subcategory.id}',
+                                value: subcategory.id,
                                 child: Text('${subcategory.name}'),
                               ),
                             )
@@ -103,11 +107,11 @@ class EditServicePage extends StatelessWidget {
                       [
                         "Description".tr().text.make().expand(),
                         CustomButton(
-                          title: vm.service?.description == null
+                          title: vm.service.description == null
                               ? "Add".tr()
                               : "Edit".tr(),
                           onPressed: vm.handleDescriptionEdit,
-                          icon: vm.service?.description == null
+                          icon: vm.service.description == null
                               ? FlutterIcons.add_mdi
                               : FlutterIcons.edit_mdi,
                         ).h(30),
@@ -131,13 +135,18 @@ class EditServicePage extends StatelessWidget {
                   child: VStack(
                     [
                       "Duration Type".tr().text.make(),
-                      FormBuilderDropdown(
+                      FormBuilderDropdown<String>(
                         name: "duration",
                         validator: CustomFormBuilderValidator.required,
-                        initialValue: vm.service.duration,
+                        initialValue:
+                            vm.selectedServiceDuration ?? vm.service.duration,
                         decoration: InputDecoration(
                           hintText: "",
                         ),
+                        onChanged: (value) {
+                          vm.selectedServiceDuration = value;
+                          vm.notifyListeners();
+                        },
                         items: vm.serviceDurations
                             .map(
                               (serviceDuration) => DropdownMenuItem(
@@ -200,7 +209,7 @@ class EditServicePage extends StatelessWidget {
                       initialValue: service.location == 1,
                       name: 'location',
                       onChanged: (value) {},
-                      valueTransformer: (value) => value ? 1 : 0,
+                      valueTransformer: (value) => (value ?? false) ? 1 : 0,
                       title: "Location Required".tr().text.make(),
                     ).expand(),
                     UiSpacer.horizontalSpace(),
@@ -209,7 +218,7 @@ class EditServicePage extends StatelessWidget {
                       initialValue: service.isActive == 1,
                       name: 'is_active',
                       onChanged: (value) {},
-                      valueTransformer: (value) => value ? 1 : 0,
+                      valueTransformer: (value) => (value ?? false) ? 1 : 0,
                       title: "Active".tr().text.make(),
                     ).expand(),
                   ],

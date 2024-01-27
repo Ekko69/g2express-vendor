@@ -3,18 +3,18 @@ import 'package:fuodz/constants/app_colors.dart';
 import 'package:fuodz/constants/app_text_styles.dart';
 
 class CustomTextButton extends StatelessWidget {
-  final Function onPressed;
+  final Function? onPressed;
   final String title;
   const CustomTextButton({
     this.onPressed,
-    this.title,
-    Key key,
+    required this.title,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: this.onPressed,
+      onPressed: (this.onPressed != null) ? () => this.onPressed!() : null,
       child: Text(
         this.title,
         style: AppTextStyle.h4TitleTextStyle(

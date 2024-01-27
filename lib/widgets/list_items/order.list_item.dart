@@ -8,14 +8,14 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class OrderListItem extends StatelessWidget {
   const OrderListItem({
-    this.order,
+    required this.order,
     this.onPayPressed,
-    this.orderPressed,
-    Key key,
+    required this.orderPressed,
+    Key? key,
   }) : super(key: key);
 
   final Order order;
-  final Function onPayPressed;
+  final Function? onPayPressed;
   final Function orderPressed;
   @override
   Widget build(BuildContext context) {
@@ -27,17 +27,18 @@ class OrderListItem extends StatelessWidget {
         HStack(
           [
             (order.isPackageDelivery
-                    ? order.packageType.name
+                    ? order.packageType!.name
                     : order.isSerice
-                        ? "${order?.orderService?.service?.category?.name}"
+                        ? "${order.orderService?.service?.category?.name}"
                         : "%s Product(s)"
                             .tr()
-                            .fill([order.orderProducts.length]))
+                            .fill([order.orderProducts?.length]))
                 .text
                 .medium
                 .make()
                 .expand(),
-            "${AppStrings.currencySymbol} ${order.total}".currencyFormat()
+            "${AppStrings.currencySymbol} ${order.total}"
+                .currencyFormat()
                 .text
                 .xl
                 .semiBold
@@ -49,7 +50,8 @@ class OrderListItem extends StatelessWidget {
           [
             //time
             order.formattedDate.text.sm.make().expand(),
-            order.status.tr()
+            order.status
+                .tr()
                 .allWordsCapitilize()
                 .text
                 .lg
@@ -63,7 +65,7 @@ class OrderListItem extends StatelessWidget {
       ],
     )
         .p12()
-        .onInkTap(orderPressed)
+        .onInkTap(() => orderPressed())
         .card
         .elevation(1)
         .clip(Clip.antiAlias)

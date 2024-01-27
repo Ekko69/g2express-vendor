@@ -16,13 +16,13 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class NewProductPage extends StatelessWidget {
-  const NewProductPage({Key key}) : super(key: key);
+  const NewProductPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<NewProductViewModel>.reactive(
       viewModelBuilder: () => NewProductViewModel(context),
-      onModelReady: (vm) => vm.initialise(),
+      onViewModelReady: (vm) => vm.initialise(),
       builder: (context, vm, child) {
         return BasePage(
           showLeadingAction: true,
@@ -57,11 +57,11 @@ class NewProductPage extends StatelessWidget {
                         [
                           "Description".tr().text.make().expand(),
                           CustomButton(
-                            title: vm.product?.description == null
+                            title: vm.productDescription == null
                                 ? "Add".tr()
                                 : "Edit".tr(),
                             onPressed: vm.handleDescriptionEdit,
-                            icon: vm.product?.description == null
+                            icon: vm.productDescription == null
                                 ? FlutterIcons.add_mdi
                                 : FlutterIcons.edit_mdi,
                           ).h(30),
@@ -69,7 +69,7 @@ class NewProductPage extends StatelessWidget {
                       ),
                       UiSpacer.vSpace(10),
                       //preview description
-                      HtmlTextView(vm.product.description ?? "", padding: 0),
+                      HtmlTextView(vm.productDescription ?? "", padding: 0),
                     ],
                   ).p(10).box.border().roundedSM.make(),
 
@@ -179,25 +179,30 @@ class NewProductPage extends StatelessWidget {
                     ],
                   ),
                   //
-                  UiSpacer.verticalSpace(),
-                  //deliverable
-                  FormBuilderCheckbox(
-                    initialValue: false,
-                    name: 'deliverable',
-                    onChanged: (value) {},
-                    valueTransformer: (value) => value ? 1 : 0,
-                    title: "Can be delivered".tr().text.make(),
-                  ),
-                  //Active
-                  FormBuilderCheckbox(
-                    initialValue: false,
-                    name: 'is_active',
-                    onChanged: (value) {},
-                    valueTransformer: (value) => value ? 1 : 0,
-                    title: "Active".tr().text.make(),
+                  UiSpacer.vSpace(10),
+                  HStack(
+                    [
+                      //deliverable
+                      FormBuilderCheckbox(
+                        initialValue: false,
+                        name: 'deliverable',
+                        onChanged: (value) {},
+                        valueTransformer: (value) => (value ?? false) ? 1 : 0,
+                        title: "Can be delivered".tr().text.make(),
+                      ).expand(),
+                      20.widthBox,
+                      //Active
+                      FormBuilderCheckbox(
+                        initialValue: false,
+                        name: 'is_active',
+                        onChanged: (value) {},
+                        valueTransformer: (value) => (value ?? false) ? 1 : 0,
+                        title: "Active".tr().text.make(),
+                      ).expand(),
+                    ],
                   ),
                   //
-
+                  UiSpacer.vSpace(10),
                   //categories
                   vm.busy(vm.categories)
                       ? BusyIndicator().centered()
@@ -218,7 +223,7 @@ class NewProductPage extends StatelessWidget {
                               .toList(),
                           onChanged: vm.filterSubcategories,
                         ),
-                  UiSpacer.verticalSpace(),
+                  UiSpacer.vSpace(10),
                   //subcategories
                   vm.busy(vm.subCategories)
                       ? BusyIndicator().centered()
@@ -228,7 +233,7 @@ class NewProductPage extends StatelessWidget {
                             labelText: 'Sub-Category'.tr(),
                           ),
                           spacing: 5,
-                          selectedColor: AppColor.primaryColor,
+                          checkmarkColor: AppColor.primaryColor,
                           options: vm.subCategories
                               .map(
                                 (category) => FormBuilderChipOption<String>(

@@ -66,7 +66,7 @@ class ProductViewModel extends MyBaseViewModel {
 
   //
   openProductDetails(Product product) {
-    viewContext.navigator.pushNamed(
+    Navigator.of(viewContext).pushNamed(
       AppRoutes.productDetailsRoute,
       arguments: product,
     );

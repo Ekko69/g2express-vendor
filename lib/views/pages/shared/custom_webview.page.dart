@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fuodz/constants/app_colors.dart';
+import 'package:fuodz/services/app.service.dart';
 import 'package:fuodz/widgets/base.page.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -13,8 +15,8 @@ import 'package:velocity_x/velocity_x.dart';
 class CustomWebviewPage extends StatefulWidget {
   //
   CustomWebviewPage({
-    Key key,
-    this.selectedUrl,
+    Key? key,
+    required this.selectedUrl,
   }) : super(key: key);
 
   final String selectedUrl;
@@ -29,35 +31,34 @@ class _CustomWebviewPageState extends State<CustomWebviewPage> {
   String selectedUrl = "";
   bool isLoading = false;
   final GlobalKey webViewKey = GlobalKey();
-  InAppWebViewController webViewController;
-  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
-      crossPlatform: InAppWebViewOptions(
-        useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
-        clearCache: true,
-        cacheEnabled: false,
-      ),
-      android: AndroidInAppWebViewOptions(
-        useHybridComposition: true,
-        clearSessionCache: true,
-      ),
-      ios: IOSInAppWebViewOptions(
-        allowsInlineMediaPlayback: true,
-      ));
+  InAppWebViewController? webViewController;
+  InAppWebViewSettings initialSettings = InAppWebViewSettings(
+    useShouldOverrideUrlLoading: true,
+    mediaPlaybackRequiresUserGesture: false,
+    allowFileAccess: true,
+    javaScriptEnabled: true,
+    allowsInlineMediaPlayback: true,
+    clearCache: true,
+    cacheEnabled: false,
+    clearSessionCache: true,
+    useHybridComposition: true,
+  );
 
-  PullToRefreshController pullToRefreshController;
+  PullToRefreshController? pullToRefreshController;
   String url = "";
   double progress = 0;
   final urlController = TextEditingController();
+  bool pageClosed = false;
 
   @override
   void initState() {
     super.initState();
+    pageClosed = false;
 
     //
     pullToRefreshController = PullToRefreshController(
-      options: PullToRefreshOptions(
-        color: Colors.blue,
+      settings: PullToRefreshSettings(
+        color: AppColor.primaryColor,
       ),
       onRefresh: () async {
         if (Platform.isAndroid) {
@@ -83,13 +84,54 @@ class _CustomWebviewPageState extends State<CustomWebviewPage> {
   }
 
   //setup listeners
-  setupCustomEventListener(controller, BuildContext context) {
+  setupCustomEventListener(
+    InAppWebViewController controller,
+    BuildContext context,
+  ) {
+    //close page
     controller.addJavaScriptHandler(
       handlerName: 'handlerClosePage',
       callback: (args) {
-        context.pop();
+        //only call once
+        if (pageClosed) {
+          return;
+        }
+        closePage();
       },
     );
+    //open link in browser
+    controller.addJavaScriptHandler(
+      handlerName: 'handlerOpenLink',
+      callback: (args) {
+        //only call once
+        if (pageClosed) {
+          return;
+        }
+
+        bool closePage = args[1] ?? true;
+        String url = args[0];
+        if (closePage) {
+          this.closePage();
+        }
+        launchUrlString(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      },
+    );
+  }
+
+  //close page
+  closePage() {
+    //only call once
+    if (pageClosed) {
+      return;
+    }
+    AppService().navigatorKey.currentContext?.pop();
+    pageClosed = true;
+    setState(() {
+      pageClosed = true;
+    });
   }
 
   //UI Build
@@ -117,8 +159,12 @@ class _CustomWebviewPageState extends State<CustomWebviewPage> {
           //page
           InAppWebView(
             key: webViewKey,
-            initialUrlRequest: URLRequest(url: Uri.parse(selectedUrl)),
-            initialOptions: options,
+            initialUrlRequest: URLRequest(
+              url: WebUri.uri(
+                Uri.parse(selectedUrl),
+              ),
+            ),
+            initialSettings: initialSettings,
             pullToRefreshController: pullToRefreshController,
             onWebViewCreated: (controller) {
               webViewController = controller;
@@ -130,10 +176,11 @@ class _CustomWebviewPageState extends State<CustomWebviewPage> {
                 urlController.text = this.url;
               });
             },
-            androidOnPermissionRequest: (controller, origin, resources) async {
-              return PermissionRequestResponse(
-                resources: resources,
-                action: PermissionRequestResponseAction.GRANT,
+            onPermissionRequest: (controller, permissionRequest) async {
+              //
+              return PermissionResponse(
+                resources: permissionRequest.resources,
+                action: PermissionResponseAction.GRANT,
               );
             },
             shouldOverrideUrlLoading: (controller, navigationAction) async {
@@ -147,7 +194,7 @@ class _CustomWebviewPageState extends State<CustomWebviewPage> {
                 "data",
                 "javascript",
                 "about"
-              ].contains(uri.scheme)) {
+              ].contains(uri?.scheme)) {
                 if (await canLaunchUrlString(url)) {
                   // Launch the App
                   await launchUrlString(
@@ -168,12 +215,13 @@ class _CustomWebviewPageState extends State<CustomWebviewPage> {
                 urlController.text = this.url;
               });
             },
-            onLoadError: (controller, url, code, message) {
+            onReceivedError:
+                (inAppWebViewController, webResourceRequest, webResourceError) {
               pullToRefreshController?.endRefreshing();
             },
             onProgressChanged: (controller, progress) {
               if (progress == 100) {
-                pullToRefreshController.endRefreshing();
+                pullToRefreshController?.endRefreshing();
               }
               setState(() {
                 this.progress = progress / 100;

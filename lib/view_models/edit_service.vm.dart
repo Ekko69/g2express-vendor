@@ -22,11 +22,16 @@ class EditServiceViewModel extends MyBaseViewModel {
   ServiceRequest serviceRequest = ServiceRequest();
   ProductRequest productRequest = ProductRequest();
   VendorRequest vendorRequest = VendorRequest();
-  Service service;
+  late Service service;
+  //
+  int? selectedCategoryId;
+  int? selectedSubCategoryId;
+  String? selectedServiceDuration;
+  //
   List<ProductCategory> categories = [];
   List<ProductCategory> subcategories = [];
   List<String> serviceDurations = [];
-  List<File> selectedPhotos;
+  List<File>? selectedPhotos;
 
   void initialise() {
     fetchVendorTypeCategories();
@@ -43,7 +48,7 @@ class EditServiceViewModel extends MyBaseViewModel {
     try {
       categories = await productRequest.getProductCategories(
         vendorTypeId:
-            (await AuthServices.getCurrentVendor(force: true)).vendorType.id,
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
       );
       clearErrors();
     } catch (error) {
@@ -54,7 +59,7 @@ class EditServiceViewModel extends MyBaseViewModel {
     setBusyForObject(categories, false);
   }
 
-  fetchSubCategories(String categoryId) async {
+  fetchSubCategories(String? categoryId) async {
     setBusyForObject(subcategories, true);
 
     try {
@@ -92,7 +97,7 @@ class EditServiceViewModel extends MyBaseViewModel {
 
   //
   processUpdateService() async {
-    if (formBuilderKey.currentState.saveAndValidate()) {
+    if (formBuilderKey.currentState!.saveAndValidate()) {
       //
       setBusy(true);
 
@@ -100,7 +105,7 @@ class EditServiceViewModel extends MyBaseViewModel {
         final apiResponse = await serviceRequest.updateService(
           service,
           data: {
-            ...formBuilderKey.currentState.value,
+            ...formBuilderKey.currentState!.value,
             "description": service.description,
           },
           photos: selectedPhotos != null ? selectedPhotos : [],
@@ -134,7 +139,7 @@ class EditServiceViewModel extends MyBaseViewModel {
   }
 
   bool validateSelectedPhotos() {
-    if (selectedPhotos == null || selectedPhotos.isEmpty) {
+    if (selectedPhotos == null || selectedPhotos!.isEmpty) {
       CoolAlert.show(
         context: viewContext,
         type: CoolAlertType.warning,
@@ -151,7 +156,7 @@ class EditServiceViewModel extends MyBaseViewModel {
     final result = await viewContext.push(
       (context) => CustomTextEditorPage(
         title: "Service Description".tr(),
-        content: service.description,
+        content: service.description ?? "",
       ),
     );
     //
