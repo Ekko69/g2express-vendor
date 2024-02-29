@@ -121,11 +121,11 @@ class Utils {
 
   static setJiffyLocale() async {
     String cLocale = translator.activeLocale.languageCode;
-    List<String> supportedLocales = Jiffy.getAllAvailableLocales();
+    List<String> supportedLocales = Jiffy.getSupportedLocales();
     if (supportedLocales.contains(cLocale)) {
-      await Jiffy.locale(translator.activeLocale.languageCode);
+      await Jiffy.setLocale(translator.activeLocale.languageCode);
     } else {
-      await Jiffy.locale("en");
+      await Jiffy.setLocale("en");
     }
   }
 

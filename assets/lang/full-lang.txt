@@ -421,3 +421,26 @@ Day
 Month
 Year
 Select a photo
+Tag
+Variations/Option Groups
+Required
+Multiple
+Add new option
+Add new Variation/Option Group
+Sales Report
+Sales
+Earnings
+Name
+Total Unit
+Total Amount
+Sales Report
+From
+To
+No data to export
+Report
+Report exported successfully
+Package Type
+Service
+No Payment Account
+When you add a payment account, it will appear here. You can add multiple payment accounts.
+Click the + button to add a payment account.

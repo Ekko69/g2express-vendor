@@ -30,6 +30,7 @@ class Api {
   static const users = "/users";
   static const products = "/products";
   static const productCategories = "/categories";
+  static const productTags = "/tags";
   static const packagePricing = "/vendor/package/pricing";
   static const packageTypes = "/package/types";
   static const services = "/my/services";
@@ -48,6 +49,8 @@ class Api {
   //manage vendors
   static const myVendors = "/my/vendors";
   static const switchVendor = "/switch/vendor";
+  static const salesReport = "/my/vendor/sales/report";
+  static const earningsReport = "/my/vendor/earnings/report";
 
   //map
   static const geocoderForward = "/geocoder/forward";

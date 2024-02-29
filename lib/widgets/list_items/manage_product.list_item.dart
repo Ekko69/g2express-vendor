@@ -3,9 +3,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fuodz/extensions/dynamic.dart';
 import 'package:fuodz/models/product.dart';
 import 'package:fuodz/constants/app_strings.dart';
-import 'package:fuodz/utils/ui_spacer.dart';
-import 'package:fuodz/widgets/buttons/custom_button.dart';
-import 'package:fuodz/widgets/currency_hstack.dart';
 import 'package:fuodz/widgets/custom_image.view.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -34,106 +31,89 @@ class ManageProductListItem extends StatelessWidget {
     final currencySymbol = AppStrings.currencySymbol;
 
     //
-    return VStack(
+    return HStack(
       [
         //
-        HStack(
-          [
-            //
-            Hero(
-              tag: product.heroTag ?? product.id,
-              child: CustomImage(imageUrl: product.photo)
-                  .wh(Vx.dp48, Vx.dp48)
-                  .box
-                  .clip(Clip.antiAlias)
-                  .roundedSM
-                  .make(),
-            ),
+        CustomImage(
+          imageUrl: product.photo,
+          width: context.percentWidth * 18,
+          height: context.percentWidth * 14,
+        ).box.clip(Clip.antiAlias).roundedSM.make(),
 
-            //Details
-            VStack(
-              [
-                //name
-                product.name.text.lg.medium.maxLines(3).ellipsis.make(),
-                //
-                HStack(
-                  [
-                    //discount
-                    product.showDiscount
-                        ? CurrencyHStack(
-                            [
-                              currencySymbol.text.lineThrough.xs.make(),
-                              product.price
-                                  .currencyValueFormat()
-                                  .text
-                                  .lineThrough
-                                  .lg
-                                  .medium
-                                  .make(),
-                            ],
-                          )
-                        : UiSpacer.emptySpace(),
-                    UiSpacer.horizontalSpace(space: 10),
-                    //price
-                    CurrencyHStack(
-                      [
-                        currencySymbol.text.lg.make(),
-                        (product.showDiscount
-                                ? product.discountPrice
-                                : product.price)
-                            .currencyValueFormat()
-                            .text
-                            .xl
-                            .semiBold
-                            .make(),
-                      ],
-                      crossAlignment: CrossAxisAlignment.end,
-                    ),
-                  ],
-                ),
-              ],
-            ).px12().expand(),
-          ],
-        ).p8(),
-        UiSpacer.divider(),
-        //actions
-        HStack(
+        //Details
+        VStack(
           [
+            //name
+            product.name.text.scale(0.95).semiBold.maxLines(1).ellipsis.make(),
             //
-            CustomButton(
-              loading: isLoading,
-              height: 30,
-              icon: FlutterIcons.edit_fea,
-              // title: "Edit",
-              onPressed: () => onEditPressed(product),
-              color: Colors.grey,
-            ),
-            CustomButton(
-              loading: isLoading,
-              height: 30,
-              icon: product.isActive != 1
-                  ? FlutterIcons.check_ant
-                  : FlutterIcons.close_ant,
-              // title:
-              //     (packageTypePricing.isActive != 1 ? "Activate" : "Deactivate")
-              //         .tr(),
-              onPressed: () => onToggleStatusPressed(product),
-              color: product.isActive != 1 ? Colors.green : Colors.red[400],
-            ).px12(),
-            CustomButton(
-              loading: isLoading,
-              height: 30,
-              icon: FlutterIcons.delete_ant,
-              // title: "Delete".tr(),
-              onPressed: () => onDeletePressed(product),
-              color: Colors.red,
+            HStack(
+              [
+                //discount
+                if (product.showDiscount)
+                  "$currencySymbol ${product.price}"
+                      .currencyFormat()
+                      .text
+                      .lineThrough
+                      .xs
+                      .make(),
+
+                //price
+                "$currencySymbol ${product.sellPrice}"
+                    .currencyFormat()
+                    .text
+                    .scale(0.90)
+                    .semiBold
+                    .make(),
+              ],
+              spacing: 10,
             ),
           ],
-          alignment: MainAxisAlignment.spaceEvenly,
-          crossAlignment: CrossAxisAlignment.center,
-        ).centered().p8(),
+          spacing: 2,
+        ).expand(),
+
+        //actions
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: context.percentWidth * 24,
+          ),
+          child: Wrap(
+            children: [
+              IconButton(
+                iconSize: 18,
+                padding: EdgeInsets.zero,
+                color: context.primaryColor,
+                onPressed: () => onEditPressed(product),
+                icon: Icon(
+                  FlutterIcons.edit_2_fea,
+                ),
+              ),
+              // IconButton(
+              //   iconSize: 18,
+              //   padding: EdgeInsets.zero,
+              //   onPressed: () => onToggleStatusPressed(product),
+              //   color: product.isActive != 1 ? Colors.green : Colors.red[400],
+              //   icon: Icon(
+              //     product.isActive != 1
+              //         ? FlutterIcons.check_ant
+              //         : FlutterIcons.close_ant,
+              //   ),
+              // ),
+              IconButton(
+                iconSize: 18,
+                padding: EdgeInsets.zero,
+                onPressed: () => onDeletePressed(product),
+                color: Colors.red,
+                icon: Icon(
+                  FlutterIcons.trash_fea,
+                ),
+              ),
+            ],
+            spacing: 0,
+          ),
+        ),
         //
       ],
+      spacing: 15,
     ).onInkTap(() => onPressed(product)).card.make();
   }
 }

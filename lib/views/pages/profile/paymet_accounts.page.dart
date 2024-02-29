@@ -4,6 +4,7 @@ import 'package:fuodz/view_models/payment_accounts.vm.dart';
 import 'package:fuodz/widgets/base.page.dart';
 import 'package:fuodz/widgets/custom_list_view.dart';
 import 'package:fuodz/widgets/list_items/payment_account.list_item.dart';
+import 'package:fuodz/widgets/states/payment_account.empty.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:stacked/stacked.dart';
 
@@ -39,6 +40,7 @@ class PaymentAccountsPage extends StatelessWidget {
                     vm.togglePaymentAccountStatus(paymentAccount),
               );
             },
+            emptyWidget: EmptyPaymentAccount(),
           ),
           fab: FloatingActionButton(
             child: Icon(

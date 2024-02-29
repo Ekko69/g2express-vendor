@@ -84,14 +84,21 @@ class SplashViewModel extends MyBaseViewModel {
 
     //
     if (AuthServices.firstTimeOnApp()) {
-      Navigator.of(viewContext)
-          .pushNamedAndRemoveUntil(AppRoutes.welcomeRoute, (route) => false);
+      Navigator.of(viewContext).pushNamedAndRemoveUntil(
+        AppRoutes.welcomeRoute,
+        (route) => false,
+      );
     } else if (!AuthServices.authenticated()) {
-      Navigator.of(viewContext)
-          .pushNamedAndRemoveUntil(AppRoutes.loginRoute, (route) => false);
+      Navigator.of(viewContext).pushNamedAndRemoveUntil(
+        AppRoutes.loginRoute,
+        (route) => false,
+      );
     } else {
-      Navigator.of(viewContext)
-          .pushNamedAndRemoveUntil(AppRoutes.homeRoute, (route) => false);
+      await AuthServices.getCurrentUser(force: true);
+      Navigator.of(viewContext).pushNamedAndRemoveUntil(
+        AppRoutes.homeRoute,
+        (route) => false,
+      );
     }
 
     //

@@ -55,20 +55,28 @@ class ProductDetailsPage extends StatelessWidget {
               UiSpacer.vSpace(),
               HtmlTextView(model.product.description).px20(),
               UiSpacer.divider().py12(),
-
-              //options header
-              ProductOptionsHeader(
-                description: "Available options attached to this product".tr(),
-              ),
-
-              //options
-              model.busy(model.product)
-                  ? BusyIndicator().centered().py20()
-                  : VStack(
-                      [
-                        ...buildProductOptions(model),
-                      ],
+              //options section
+              Visibility(
+                visible: model.product.optionGroups.isNotEmpty,
+                child: VStack(
+                  [
+                    //options header
+                    ProductOptionsHeader(
+                      description:
+                          "Available options attached to this product".tr(),
                     ),
+
+                    //options
+                    model.busy(model.product)
+                        ? BusyIndicator().centered().py20()
+                        : VStack(
+                            [
+                              ...buildProductOptions(model),
+                            ],
+                          ),
+                  ],
+                ),
+              ),
             ],
           ).pOnly(bottom: context.percentHeight * 30).scrollVertical(),
         );

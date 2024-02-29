@@ -4,11 +4,18 @@ import 'package:fuodz/constants/app_strings.dart';
 import 'package:fuodz/models/user.dart';
 import 'package:fuodz/models/vendor.dart';
 import 'package:fuodz/services/firebase.service.dart';
+import 'package:singleton/singleton.dart';
 
 import 'http.service.dart';
 import 'local_storage.service.dart';
 
 class AuthServices {
+  /// Factory method that reuse same instance automatically
+  factory AuthServices() => Singleton.lazy(() => AuthServices._());
+
+  /// Private constructor
+  AuthServices._() {}
+
   //
   static bool firstTimeOnApp() {
     return LocalStorageService.prefs!.getBool(AppStrings.firstTimeOnApp) ??

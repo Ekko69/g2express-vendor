@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/models/api_response.dart';
+import 'package:fuodz/models/report/sale_report.dart';
 import 'package:fuodz/models/vendor.dart';
 import 'package:fuodz/services/auth.service.dart';
 import 'package:fuodz/services/http.service.dart';
@@ -80,5 +80,52 @@ class VendorRequest extends HttpService {
       formData: formData,
     );
     return ApiResponse.fromResponse(apiResult);
+  }
+
+  Future<List<SaleReport>> getSalesReport({
+    String? sDate,
+    String? eDate,
+    int page = 1,
+  }) async {
+    final apiResult = await get(
+      Api.salesReport,
+      queryParameters: {
+        "page": page,
+        "start_date": sDate,
+        "end_date": eDate,
+      },
+    );
+    final apiResponse = ApiResponse.fromResponse(apiResult);
+    if (apiResponse.allGood) {
+      return (apiResponse.body as List)
+          .map((e) => SaleReport.fromJson(e))
+          .toList();
+    } else {
+      throw apiResponse.message;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getEarningsReport({
+    String? sDate,
+    String? eDate,
+    int page = 1,
+  }) async {
+    //
+    final apiResult = await get(
+      Api.earningsReport,
+      queryParameters: {
+        "page": page,
+        "start_date": sDate,
+        "end_date": eDate,
+      },
+    );
+    final apiResponse = ApiResponse.fromResponse(apiResult);
+    if (apiResponse.allGood) {
+      return (apiResponse.body as List)
+          .map((e) => e as Map<String, dynamic>)
+          .toList();
+    } else {
+      throw apiResponse.message;
+    }
   }
 }

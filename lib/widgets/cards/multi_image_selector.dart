@@ -12,11 +12,15 @@ class MultiImageSelectorView extends StatefulWidget {
   const MultiImageSelectorView({
     this.links,
     required this.onImagesSelected,
+    this.crossAxisCount = 2,
+    this.itemHeight,
     Key? key,
   }) : super(key: key);
 
   final List<String>? links;
   final Function(List<File>) onImagesSelected;
+  final int crossAxisCount;
+  final double? itemHeight;
 
   @override
   _MultiImageSelectorViewState createState() => _MultiImageSelectorViewState();
@@ -34,23 +38,33 @@ class _MultiImageSelectorViewState extends State<MultiImageSelectorView> {
         //
         if (showImageUrl() && !showSelectedImage())
           CustomGridView(
+            noScrollPhysics: true,
             dataSet: widget.links!,
+            crossAxisCount: widget.crossAxisCount,
             itemBuilder: (ctx, index) {
               return CustomImage(
                 imageUrl: widget.links![index],
-              ).h20(context).wFull(context);
+              )
+                  .h(widget.itemHeight ?? context.mq.size.height * 0.2)
+                  // .h20(context)
+                  .wFull(context);
             },
           ),
 
         //
         if (showSelectedImage())
           CustomGridView(
+            noScrollPhysics: true,
             dataSet: selectedFiles ?? [],
+            crossAxisCount: widget.crossAxisCount,
             itemBuilder: (ctx, index) {
               return Image.file(
                 selectedFiles![index],
                 fit: BoxFit.cover,
-              ).h20(context).wFull(context);
+              )
+                  .h(widget.itemHeight ?? context.mq.size.height * 0.2)
+                  // .h20(context)
+                  .wFull(context);
             },
           ),
 

@@ -124,18 +124,18 @@ class VendorDetailsViewModel extends MyBaseViewModel {
   Future<String> WeekFirstDay() async {
     DateTime today = DateTime.now();
     final formattedDate = today.subtract(Duration(days: today.weekday - 1));
-    await Jiffy.locale(translator.activeLocale.languageCode);
-    return Jiffy.unixFromMillisecondsSinceEpoch(
-            formattedDate.millisecondsSinceEpoch)
-        .yMMMEd;
+    await Jiffy.setLocale(translator.activeLocale.languageCode);
+    return Jiffy.parseFromMillisecondsSinceEpoch(
+      formattedDate.millisecondsSinceEpoch,
+    ).yMMMEd;
   }
 
   Future<String> WeekLastDay() async {
     DateTime today = DateTime.now();
     final formattedDate =
         today.add(Duration(days: DateTime.daysPerWeek - today.weekday));
-    await Jiffy.locale(translator.activeLocale.languageCode);
-    return Jiffy.unixFromMillisecondsSinceEpoch(
+    await Jiffy.setLocale(translator.activeLocale.languageCode);
+    return Jiffy.parseFromMillisecondsSinceEpoch(
             formattedDate.millisecondsSinceEpoch)
         .yMMMEd;
   }

@@ -27,4 +27,7 @@ class AppImages {
 
   //
   static const newOrderAlert = "assets/images/new_order.gif";
+  static const placeholder = "assets/images/placeholder.png";
+  static const noImage = "assets/images/no_image.png";
+  static const noPaymentAccount = "assets/images/no_payment_account.png";
 }

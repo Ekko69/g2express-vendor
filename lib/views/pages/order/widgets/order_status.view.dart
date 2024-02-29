@@ -81,19 +81,20 @@ class OrderStatusView extends StatelessWidget {
                     ],
                   ).expand(),
                   //time
-                  VStack(
-                    [
-                      //
-                      "Scheduled Time".tr().text.gray500.medium.sm.make(),
-                      "${Jiffy(vm.order.pickupTime).format("hh:mm a")}"
-                          .text
-                          .color(AppColor.getStausColor(vm.order.status))
-                          .medium
-                          .xl
-                          .make()
-                          .pOnly(bottom: Vx.dp20),
-                    ],
-                  ),
+                  if (vm.order.pickupTime != null)
+                    VStack(
+                      [
+                        //
+                        "Scheduled Time".tr().text.gray500.medium.sm.make(),
+                        "${Jiffy.parse(vm.order.pickupTime!).format(pattern: "hh:mm a")}"
+                            .text
+                            .color(AppColor.getStausColor(vm.order.status))
+                            .medium
+                            .xl
+                            .make()
+                            .pOnly(bottom: Vx.dp20),
+                      ],
+                    ),
                 ],
               )
             : UiSpacer.emptySpace(),

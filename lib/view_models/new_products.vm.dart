@@ -1,19 +1,19 @@
 import 'dart:io';
-
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:fuodz/models/menu.dart';
 import 'package:fuodz/models/product_category.dart';
+import 'package:fuodz/models/product_tag.dart';
 import 'package:fuodz/models/vendor.dart';
 import 'package:fuodz/requests/product.request.dart';
 import 'package:fuodz/requests/vendor.request.dart';
 import 'package:fuodz/services/auth.service.dart';
-import 'package:fuodz/view_models/base.view_model.dart';
+import 'package:fuodz/view_models/product_manage.vm.dart';
 import 'package:fuodz/views/pages/shared/text_editor.page.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class NewProductViewModel extends MyBaseViewModel {
+class NewProductViewModel extends ProductManageViewModel {
   //
   NewProductViewModel(BuildContext context) {
     this.viewContext = context;
@@ -24,6 +24,7 @@ class NewProductViewModel extends MyBaseViewModel {
   String? productDescription;
   ProductRequest productRequest = ProductRequest();
   VendorRequest vendorRequest = VendorRequest();
+  List<ProductTag> tags = [];
   List<ProductCategory> categories = [];
   List<ProductCategory> subCategories = [];
   List<ProductCategory> unFilterSubCategories = [];
@@ -31,9 +32,28 @@ class NewProductViewModel extends MyBaseViewModel {
   List<File> selectedPhotos = [];
 
   void initialise() {
+    fetchProductTags();
     fetchProductCategories();
     fetchProductSubCategories();
     fetchMenus();
+  }
+
+  //
+  fetchProductTags() async {
+    setBusyForObject(tags, true);
+
+    try {
+      tags = await productRequest.getProductTags(
+        vendorTypeId:
+            (await AuthServices.getCurrentVendor(force: true)).vendorType?.id,
+      );
+      clearErrors();
+    } catch (error) {
+      print("Categories Error ==> $error");
+      setError(error);
+    }
+
+    setBusyForObject(tags, false);
   }
 
   //
@@ -105,6 +125,8 @@ class NewProductViewModel extends MyBaseViewModel {
         Map<String, dynamic> productData = Map.from(
           formBuilderKey.currentState!.value,
         );
+        //append option group data
+        productData = appendOptionGroupData(productData);
 
         final categoryIds = productData["category_ids"];
         final subCategoryIds = productData["sub_category_ids"];

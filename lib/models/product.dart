@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:fuodz/models/menu.dart';
 import 'package:fuodz/models/product_category.dart';
+import 'package:fuodz/models/product_tag.dart';
 import 'package:fuodz/models/vendor.dart';
 import 'package:fuodz/models/option_group.dart';
 import 'package:random_string/random_string.dart';
@@ -33,6 +34,7 @@ class Product {
     this.optionGroups = const [],
     this.availableQty,
     this.selectedQty = 0,
+    this.tags = const [],
     this.menus = const [],
     this.categories = const [],
     this.subCategories = const [],
@@ -64,6 +66,7 @@ class Product {
   List<ProductCategory> subCategories;
   List<OptionGroup> optionGroups;
   List<String> photos;
+  List<ProductTag> tags;
 
   //
   int? availableQty;
@@ -121,6 +124,10 @@ class Product {
           : List<Menu>.from(
               json["menus"].map((x) => Menu.fromJson(x)),
             ),
+      tags: json["tags"] == null
+          ? []
+          : List<ProductTag>.from(
+              json["tags"].map((x) => ProductTag.fromJson(x))),
       // photos
       photos: json["photos"] == null
           ? []
@@ -157,6 +164,11 @@ class Product {
         "vendor": vendor == null ? null : vendor?.toJson(),
         "option_groups":
             List<dynamic>.from(optionGroups.map((x) => x.toJson())),
+        "categories": List<dynamic>.from(categories.map((x) => x.toJson())),
+        "sub_categories":
+            List<dynamic>.from(subCategories.map((x) => x.toJson())),
+        "menus": List<dynamic>.from(menus.map((x) => x.toJson())),
+        "tags": List<dynamic>.from(tags.map((x) => x.toJson())),
 
         //
         "photos": photos,
@@ -167,4 +179,10 @@ class Product {
   //getters
   get showDiscount => discountPrice > 0.00;
   get canBeDelivered => deliverable == 1;
+  double get sellPrice {
+    if (showDiscount) {
+      return discountPrice;
+    }
+    return price;
+  }
 }

@@ -3,7 +3,9 @@ import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fuodz/constants/app_upgrade_settings.dart';
+import 'package:fuodz/services/auth.service.dart';
 import 'package:fuodz/utils/utils.dart';
+import 'package:fuodz/views/pages/finance/vendor_finance_report.page.dart';
 import 'package:fuodz/views/pages/profile/profile.page.dart';
 import 'package:fuodz/view_models/home.vm.dart';
 import 'package:fuodz/views/pages/vendor/vendor_details.page.dart';
@@ -28,6 +30,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    //
+    bool canViewReport = AuthServices.currentUser?.allPermissions
+            .contains("view_report_on_app") ??
+        true;
+
+    //
     return DoubleBack(
       message: "Press back again to close".tr(),
       child: ViewModelBuilder<HomeViewModel>.reactive(
@@ -50,8 +58,13 @@ class _HomePageState extends State<HomePage> {
                   OrdersPage(),
                   //
                   Utils.vendorSectionPage(model.currentVendor),
-
                   VendorDetailsPage(),
+                  //
+                  if (canViewReport)
+                    //show report page
+                    VendorFinanceReportPage(),
+
+                  //
                   ProfilePage(),
                 ],
               ),
@@ -68,24 +81,34 @@ class _HomePageState extends State<HomePage> {
                   curve: Curves.bounceInOut,
                   tabBackgroundColor: Colors.transparent,
                   style: GnavStyle.oldSchool,
-                  textSize: 14,
+                  textSize: 0,
                   tabBorderRadius: 0,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   tabs: [
                     GButton(
                       icon: FlutterIcons.inbox_ant,
-                      text: 'Orders'.tr(),
+                      // text: 'Orders'.tr(),
                     ),
                     GButton(
                       icon: Utils.vendorIconIndicator(model.currentVendor),
-                      text: Utils.vendorTypeIndicator(model.currentVendor).tr(),
+                      // text: Utils.vendorTypeIndicator(model.currentVendor).tr(),
                     ),
                     GButton(
                       icon: FlutterIcons.briefcase_fea,
-                      text: 'Vendor'.tr(),
+                      // text: 'Vendor'.tr(),
                     ),
+
+                    //show report page
+                    if (canViewReport)
+                      GButton(
+                        icon: FlutterIcons.dollar_sign_fea,
+                        // text: 'Report'.tr(),
+                      ),
+
+                    //
                     GButton(
                       icon: FlutterIcons.menu_fea,
-                      text: 'More'.tr(),
+                      // text: 'More'.tr(),
                     ),
                   ],
                   selectedIndex: model.currentIndex,
@@ -93,7 +116,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             )
-                .p16
+                // .p16
+                .p12
                 .shadow
                 .color(Theme.of(context).bottomSheetTheme.backgroundColor!)
                 .make(),

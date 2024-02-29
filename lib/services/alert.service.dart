@@ -42,20 +42,25 @@ class AlertService {
     required String text,
     String cancelBtnText = "Cancel",
     String confirmBtnText = "Ok",
+    Function? onConfirm,
   }) async {
     //
     bool result = false;
 
     await CoolAlert.show(
-        context: AppService().navigatorKey.currentContext!,
-        type: CoolAlertType.success,
-        title: title,
-        text: text,
-        confirmBtnText: confirmBtnText.tr(),
-        onConfirmBtnTap: () {
-          result = true;
-          AppService().navigatorKey.currentContext?.pop();
-        });
+      context: AppService().navigatorKey.currentContext!,
+      type: CoolAlertType.success,
+      title: title,
+      text: text,
+      confirmBtnText: confirmBtnText.tr(),
+      onConfirmBtnTap: () {
+        result = true;
+        AppService().navigatorKey.currentContext?.pop();
+        if (onConfirm != null) {
+          onConfirm();
+        }
+      },
+    );
 
     //
     return result;

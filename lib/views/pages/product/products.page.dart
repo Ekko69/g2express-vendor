@@ -30,12 +30,12 @@ class _ProductsPageState extends State<ProductsPage>
         onViewModelReady: (vm) => vm.initialise(),
         builder: (context, vm, child) {
           return BasePage(
-            fab: FloatingActionButton.extended(
+            fab: FloatingActionButton(
               backgroundColor: AppColor.primaryColor,
               onPressed: vm.newProduct,
-              label: "New Product".tr().text.white.make(),
-              icon: Icon(
-                FlutterIcons.plus_fea,
+              // label: "New Product".tr().text.white.make(),
+              child: Icon(
+                FlutterIcons.plus_faw,
                 color: Colors.white,
               ),
             ),
@@ -79,6 +79,7 @@ class _ProductsPageState extends State<ProductsPage>
                       onDeletePressed: vm.deleteProduct,
                     );
                   },
+                  separatorBuilder: (p0, p1) => 5.heightBox,
                 ).expand(),
               ],
             ).px20(),

@@ -228,7 +228,7 @@ class Order {
           ? null
           : DeliveryAddress.fromJson(json["dropoff_location"]),
       pickupDate: json["pickup_date"] != null
-          ? Jiffy(json["pickup_date"]).format("dd MMM, yyyy")
+          ? Jiffy.parse(json["pickup_date"]).format(pattern: "dd MMM, yyyy")
           : "",
       pickupTime: "${json["pickup_date"]} ${json["pickup_time"] ?? '00:00:00'}",
       // // Jiffy("${json["pickup_date"]} ${json["pickup_time"]}","yyyy-MM-dd hh:mm:ss").format("hh:mm a"),

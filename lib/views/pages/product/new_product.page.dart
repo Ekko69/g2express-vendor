@@ -6,11 +6,12 @@ import 'package:fuodz/constants/app_colors.dart';
 import 'package:fuodz/services/custom_form_builder_validator.service.dart';
 import 'package:fuodz/utils/ui_spacer.dart';
 import 'package:fuodz/view_models/new_products.vm.dart';
+import 'package:fuodz/views/pages/product/widgets/product_variation.section.dart';
 import 'package:fuodz/widgets/base.page.dart';
-import 'package:fuodz/widgets/busy_indicator.dart';
 import 'package:fuodz/widgets/buttons/custom_button.dart';
 import 'package:fuodz/widgets/cards/multi_image_selector.dart';
 import 'package:fuodz/widgets/html_text_view.dart';
+import 'package:fuodz/widgets/states/loading_indicator.view.dart';
 import 'package:stacked/stacked.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -20,6 +21,11 @@ class NewProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final inputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+    );
+
+    //
     return ViewModelBuilder<NewProductViewModel>.reactive(
       viewModelBuilder: () => NewProductViewModel(context),
       onViewModelReady: (vm) => vm.initialise(),
@@ -40,16 +46,18 @@ class NewProductPage extends StatelessWidget {
                     name: 'name',
                     decoration: InputDecoration(
                       labelText: 'Name'.tr(),
+                      border: inputBorder,
                     ),
                     onChanged: (value) {},
                     validator: CustomFormBuilderValidator.required,
                   ),
-                  UiSpacer.verticalSpace(),
+
                   //image
                   MultiImageSelectorView(
                     onImagesSelected: vm.onImagesSelected,
+                    crossAxisCount: 4,
                   ),
-                  UiSpacer.verticalSpace(),
+
                   VStack(
                     [
                       //hstack with Description text expanded and edit button
@@ -67,13 +75,13 @@ class NewProductPage extends StatelessWidget {
                           ).h(30),
                         ],
                       ),
-                      UiSpacer.vSpace(10),
+
                       //preview description
                       HtmlTextView(vm.productDescription ?? "", padding: 0),
                     ],
+                    spacing: 12,
                   ).p(10).box.border().roundedSM.make(),
 
-                  UiSpacer.verticalSpace(),
                   //pricing
                   HStack(
                     [
@@ -82,6 +90,7 @@ class NewProductPage extends StatelessWidget {
                         name: 'price',
                         decoration: InputDecoration(
                           labelText: 'Price'.tr(),
+                          border: inputBorder,
                         ),
                         onChanged: (value) {},
                         validator: (value) =>
@@ -100,6 +109,7 @@ class NewProductPage extends StatelessWidget {
                         name: 'discount_price',
                         decoration: InputDecoration(
                           labelText: 'Discount Price'.tr(),
+                          border: inputBorder,
                         ),
                         onChanged: (value) {},
                         keyboardType: TextInputType.numberWithOptions(
@@ -113,7 +123,7 @@ class NewProductPage extends StatelessWidget {
                     ],
                   ),
                   //
-                  UiSpacer.verticalSpace(),
+
                   //packaging
                   HStack(
                     [
@@ -122,6 +132,7 @@ class NewProductPage extends StatelessWidget {
                         name: 'capacity',
                         decoration: InputDecoration(
                           labelText: 'Capacity'.tr(),
+                          border: inputBorder,
                         ),
                         onChanged: (value) {},
                         inputFormatters: [
@@ -138,13 +149,14 @@ class NewProductPage extends StatelessWidget {
                         name: 'unit',
                         decoration: InputDecoration(
                           labelText: 'Unit'.tr(),
+                          border: inputBorder,
                         ),
                         onChanged: (value) {},
                       ).expand(),
                     ],
                   ),
                   //
-                  UiSpacer.verticalSpace(),
+
                   //pricing
                   HStack(
                     [
@@ -153,6 +165,7 @@ class NewProductPage extends StatelessWidget {
                         name: 'package_count',
                         decoration: InputDecoration(
                           labelText: 'Package Count'.tr(),
+                          border: inputBorder,
                         ),
                         onChanged: (value) {},
                         inputFormatters: [
@@ -169,6 +182,7 @@ class NewProductPage extends StatelessWidget {
                         name: 'available_qty',
                         decoration: InputDecoration(
                           labelText: 'Available Qty'.tr(),
+                          border: inputBorder,
                         ),
                         onChanged: (value) {},
                         inputFormatters: [
@@ -179,7 +193,7 @@ class NewProductPage extends StatelessWidget {
                     ],
                   ),
                   //
-                  UiSpacer.vSpace(10),
+
                   HStack(
                     [
                       //deliverable
@@ -202,75 +216,109 @@ class NewProductPage extends StatelessWidget {
                     ],
                   ),
                   //
-                  UiSpacer.vSpace(10),
+//
+                  //tags
+                  LoadingIndicator(
+                    loading: vm.busy(vm.tags),
+                    child: FormBuilderFilterChip<String>(
+                      name: 'tag_ids',
+                      decoration: InputDecoration(
+                        labelText: 'Tag'.tr(),
+                        border: inputBorder,
+                      ),
+                      spacing: 5,
+                      checkmarkColor: AppColor.primaryColor,
+                      options: vm.tags
+                          .map(
+                            (tag) => FormBuilderChipOption<String>(
+                              value: '${tag.id}',
+                              child: '${tag.name}'.text.make(),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
                   //categories
-                  vm.busy(vm.categories)
-                      ? BusyIndicator().centered()
-                      : FormBuilderFilterChip<String>(
-                          name: 'category_ids',
-                          decoration: InputDecoration(
-                            labelText: 'Category'.tr(),
-                          ),
-                          spacing: 5,
-                          selectedColor: AppColor.primaryColor,
-                          options: vm.categories
-                              .map(
-                                (category) => FormBuilderChipOption<String>(
-                                  value: '${category.id}',
-                                  child: '${category.name}'.text.make(),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: vm.filterSubcategories,
-                        ),
-                  UiSpacer.vSpace(10),
+                  LoadingIndicator(
+                    loading: vm.busy(vm.categories),
+                    child: FormBuilderFilterChip<String>(
+                      name: 'category_ids',
+                      decoration: InputDecoration(
+                        labelText: 'Category'.tr(),
+                        border: inputBorder,
+                      ),
+                      spacing: 5,
+                      selectedColor: AppColor.primaryColor,
+                      options: vm.categories
+                          .map(
+                            (category) => FormBuilderChipOption<String>(
+                              value: '${category.id}',
+                              child: '${category.name}'.text.make(),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: vm.filterSubcategories,
+                    ),
+                  ),
+
                   //subcategories
-                  vm.busy(vm.subCategories)
-                      ? BusyIndicator().centered()
-                      : FormBuilderFilterChip<String>(
-                          name: 'sub_category_ids',
-                          decoration: InputDecoration(
-                            labelText: 'Sub-Category'.tr(),
-                          ),
-                          spacing: 5,
-                          checkmarkColor: AppColor.primaryColor,
-                          options: vm.subCategories
-                              .map(
-                                (category) => FormBuilderChipOption<String>(
-                                  value: '${category.id}',
-                                  child: '${category.name}'.text.make(),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                  UiSpacer.verticalSpace(),
+                  LoadingIndicator(
+                    loading: vm.busy(vm.subCategories),
+                    child: FormBuilderFilterChip<String>(
+                      name: 'sub_category_ids',
+                      decoration: InputDecoration(
+                        labelText: 'Sub-Category'.tr(),
+                        border: inputBorder,
+                      ),
+                      spacing: 5,
+                      checkmarkColor: AppColor.primaryColor,
+                      options: vm.subCategories
+                          .map(
+                            (category) => FormBuilderChipOption<String>(
+                              value: '${category.id}',
+                              child: '${category.name}'.text.make(),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
                   //menus
-                  vm.busy(vm.menus)
-                      ? BusyIndicator().centered()
-                      : FormBuilderFilterChip<String>(
-                          name: 'menu_ids',
-                          decoration: InputDecoration(
-                            labelText: 'Menus'.tr(),
-                          ),
-                          spacing: 5,
-                          selectedColor: AppColor.primaryColor,
-                          options: vm.menus
-                              .map(
-                                (menu) => FormBuilderChipOption<String>(
-                                  value: '${menu.id}',
-                                  child: '${menu.name}'.text.make(),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                  UiSpacer.verticalSpace(),
+                  LoadingIndicator(
+                    loading: vm.busy(vm.menus),
+                    child: FormBuilderFilterChip<String>(
+                      name: 'menu_ids',
+                      decoration: InputDecoration(
+                        labelText: 'Menus'.tr(),
+                        border: inputBorder,
+                      ),
+                      spacing: 5,
+                      selectedColor: AppColor.primaryColor,
+                      options: vm.menus
+                          .map(
+                            (menu) => FormBuilderChipOption<String>(
+                              value: '${menu.id}',
+                              child: '${menu.name}'.text.make(),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+
+                  //options
+                  ProductVariationSection(
+                    optionGroups: vm.productOptionGroups,
+                    vm: vm,
+                    onAddOptionGroup: vm.onAddOptionGroup,
+                    onAddOption: vm.onAddOption,
+                  ),
                   //
                   CustomButton(
                     title: "Save Product".tr(),
                     loading: vm.isBusy,
                     onPressed: vm.processNewProduct,
-                  ).centered().py12(),
+                  ).centered(),
                 ],
+                spacing: 30,
               ),
             )
                 .p20()

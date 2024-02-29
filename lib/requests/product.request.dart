@@ -5,6 +5,7 @@ import 'package:fuodz/constants/api.dart';
 import 'package:fuodz/models/api_response.dart';
 import 'package:fuodz/models/product.dart';
 import 'package:fuodz/models/product_category.dart';
+import 'package:fuodz/models/product_tag.dart';
 import 'package:fuodz/services/auth.service.dart';
 import 'package:fuodz/services/http.service.dart';
 import 'package:fuodz/utils/utils.dart';
@@ -175,6 +176,24 @@ class ProductRequest extends HttpService {
     if (apiResponse.allGood) {
       return apiResponse.data.map((jsonObject) {
         return ProductCategory.fromJson(jsonObject);
+      }).toList();
+    } else {
+      throw apiResponse.message;
+    }
+  }
+
+  Future<List<ProductTag>> getProductTags({int? vendorTypeId}) async {
+    final apiResult = await get(
+      Api.productTags,
+      queryParameters: {
+        "vendor_type_id": vendorTypeId,
+      },
+    );
+    //
+    final apiResponse = ApiResponse.fromResponse(apiResult);
+    if (apiResponse.allGood) {
+      return (apiResponse.body as List).map((jsonObject) {
+        return ProductTag.fromJson(jsonObject);
       }).toList();
     } else {
       throw apiResponse.message;
